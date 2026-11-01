@@ -5,7 +5,9 @@ import {
   CheckCircle2,
   ShieldCheck,
   Send,
-  BellRing
+  BellRing,
+  AlertCircle,
+  Loader2
 } from 'lucide-react';
 
 export const NewsletterPage: React.FC = () => {
@@ -16,7 +18,9 @@ export const NewsletterPage: React.FC = () => {
     'Exam Notifications',
     'Research Grants & Proposals'
   ]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const availableTopics = [
     'Jobs & JRF Openings',
@@ -28,6 +32,7 @@ export const NewsletterPage: React.FC = () => {
   ];
 
   const toggleTopic = (topic: string) => {
+    setErrorMessage(null);
     if (selectedTopics.includes(topic)) {
       setSelectedTopics(selectedTopics.filter((t) => t !== topic));
     } else {
@@ -37,8 +42,32 @@ export const NewsletterPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !email.includes('@')) return;
-    setIsSubmitted(true);
+    setErrorMessage(null);
+
+    // Validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email.trim())) {
+      setErrorMessage('Please provide a valid email address (e.g. scholar@university.ac.in).');
+      return;
+    }
+
+    if (selectedTopics.length === 0) {
+      setErrorMessage('Please select at least one topic of interest for your weekly digest.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    // Simulate real network request and client registration
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+      try {
+        localStorage.setItem('bioscience_newsletter_email', email.trim());
+        localStorage.setItem('bioscience_newsletter_topics', JSON.stringify(selectedTopics));
+      } catch (err) {
+        // Safe localStorage failure fallback
+      }
+    }, 600);
   };
 
   return (
@@ -71,13 +100,20 @@ export const NewsletterPage: React.FC = () => {
           </p>
           <button
             onClick={() => setIsSubmitted(false)}
-            className="mt-4 px-4 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50"
+            className="mt-4 px-4 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
           >
             Manage Preferences
           </button>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 space-y-6 shadow-xs">
+          {errorMessage && (
+            <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-center gap-2 text-xs text-rose-800">
+              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
           <div>
             <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
               Email Address
@@ -88,7 +124,10 @@ export const NewsletterPage: React.FC = () => {
                 type="email"
                 required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setErrorMessage(null);
+                }}
                 placeholder="scholar@university.ac.in"
                 className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white"
               />
@@ -127,10 +166,20 @@ export const NewsletterPage: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full py-3 px-4 text-xs sm:text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-xs"
+            disabled={isSubmitting}
+            className="w-full py-3 px-4 text-xs sm:text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 disabled:bg-slate-600 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
           >
-            <span>Subscribe to Weekly Dispatch</span>
-            <Send className="w-4 h-4" />
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Subscribing...</span>
+              </>
+            ) : (
+              <>
+                <span>Subscribe to Weekly Dispatch</span>
+                <Send className="w-4 h-4" />
+              </>
+            )}
           </button>
 
           <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-400 text-center">

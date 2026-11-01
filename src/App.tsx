@@ -23,7 +23,9 @@ import { PrivacyPolicyPage, TermsPage, ContactPage } from './pages/public/LegalP
 
 // Expanded BioScience Hub Opportunity & Community Pages
 import { JobsPage } from './pages/public/JobsPage.tsx';
+import { JobDetailPage } from './pages/public/JobDetailPage.tsx';
 import { InternshipsPage } from './pages/public/InternshipsPage.tsx';
+import { InternshipDetailPage } from './pages/public/InternshipDetailPage.tsx';
 import { ScholarshipsAdmissionsPage } from './pages/public/ScholarshipsAdmissionsPage.tsx';
 import { BiotechNewsPage } from './pages/public/BiotechNewsPage.tsx';
 import { ResearchProposalsPage } from './pages/public/ResearchProposalsPage.tsx';
@@ -31,6 +33,7 @@ import { EventsWorkshopsPage } from './pages/public/EventsWorkshopsPage.tsx';
 import { CareerGuidancePage } from './pages/public/CareerGuidancePage.tsx';
 import { ResearchClubsPage } from './pages/public/ResearchClubsPage.tsx';
 import { NewsletterPage } from './pages/public/NewsletterPage.tsx';
+import { NotFoundPage } from './pages/public/NotFoundPage.tsx';
 
 export default function App() {
   return (
@@ -50,9 +53,11 @@ export default function App() {
 
               {/* 3. Jobs */}
               <Route path="/jobs" element={<JobsPage />} />
+              <Route path="/jobs/:slug" element={<JobDetailPage />} />
 
               {/* 4. Internships */}
               <Route path="/internships" element={<InternshipsPage />} />
+              <Route path="/internships/:slug" element={<InternshipDetailPage />} />
 
               {/* 5. Exam Alerts (6 Competitive Portals) */}
               <Route path="/exams" element={<ExamsPage />} />
@@ -103,8 +108,8 @@ export default function App() {
               <Route path="/onboarding" element={<Navigate to="/subjects" replace />} />
               <Route path="/dashboard" element={<Navigate to="/subjects" replace />} />
 
-              {/* Catch-all */}
-              <Route path="*" element={<Navigate to="/" replace />} />
+              {/* Catch-all 404 Page */}
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </main>
           <Footer />

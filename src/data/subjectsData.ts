@@ -662,4 +662,194 @@ export const SAMPLE_TOPIC_DETAILS: Record<string, TopicDetail> = {
       { citation: 'Alberts B. et al. Molecular Biology of the Cell. Garland Science.', doiOrLink: 'https://www.ncbi.nlm.nih.gov/books/NBK26850/' },
     ],
   },
+  'chromatin-organization-and-nucleosome-dynamics': {
+    slug: 'chromatin-organization-and-nucleosome-dynamics',
+    subjectSlug: 'cell-biology',
+    title: {
+      en: 'Chromatin Architecture: Nucleosome Core, Classical 30 nm Models, and Modern in vivo Realities',
+      hinglish: 'Chromatin Structure: Nucleosome Core, Classical 30 nm Model, aur Modern in vivo Evidence',
+    },
+    difficulty: 'Advanced',
+    readTimeMin: 14,
+    definitions: [
+      {
+        term: 'Nucleosome Core Particle',
+        en: 'The fundamental repeating unit of eukaryotic chromatin comprising 147 bp of DNA wrapped 1.65 left-handed superhelical turns around a histone octamer containing two copies each of core histones H2A, H2B, H3, and H4.',
+        hinglish: 'Eukaryotic chromatin ki basic structural unit jisme 147 bp DNA ek histone octamer (H2A, H2B, H3, H4) ke charo taraf 1.65 turns me wrap hota hai.',
+      },
+      {
+        term: 'Linker Histone H1',
+        en: 'A winged-helix protein that binds the entry/exit DNA at the nucleosome dyad, sealing ~166-168 bp of DNA to form a chromatosome and facilitating higher-order condensation.',
+        hinglish: 'Linker histone H1 entry aur exit DNA par bind karta hai, chromatosome structure banata hai aur chromatin packaging me help karta hai.',
+      },
+      {
+        term: 'Bacterial NAPs vs Archaeal Histones',
+        en: 'Bacteria lack true histones and organize their nucleoid using Nucleoid-Associated Proteins (NAPs like HU, IHF, H-NS, and Fis). In contrast, Archaea (such as Euryarchaeota) possess genuine histone homologs (HMf) that form DNA-wrapping tetramers and multimeric structures.',
+        hinglish: 'Bacteria me true histones nahi hote; wo NAPs (HU, IHF, H-NS) use karte hain. Jabki Archaea me true histone homologs (HMf proteins) hote hain jo DNA ko wrap karte hain.',
+      },
+    ],
+    content: {
+      en: {
+        introduction: 'Eukaryotic genome packaging spans a vast compaction scale, from 2-meter naked duplex DNA to the microscopic cell nucleus. Historically, textbook paradigms portrayed a rigid hierarchical folding cascade: 10 nm beads-on-a-string -> 30 nm solenoid/zigzag fiber -> 300 nm looped domains -> 700 nm metaphase chromatids. However, contemporary quantitative biophysics (cryo-electron tomography and ChromEMT) has revolutionized this view, establishing that regular 30 nm fibers do not predominate in living interphase nuclei.',
+        mechanism: [
+          'First-Order Packaging (10 nm Fiber): Core histones assemble into a central (H3-H4)2 tetramer flanked by two H2A-H2B dimers. Negatively charged DNA phosphodiester backbones form electrostatic bonds with basic lysine and arginine residues, generating a 6-fold compaction factor.',
+          'Classical 30 nm Models (In Vitro Evidence): Under low ionic strength in isolated in vitro preparations, addition of linker histone H1 induces compaction into either a continuous one-start solenoid (Finch & Klug, 1976) or a two-start zigzag ribbon (Woodcock & Schalch).',
+          'Modern In Vivo Reality: State-of-the-art cryo-electron tomography, small-angle X-ray scattering (SAXS), and ChromEMT (Ou et al., Science 2017) demonstrate that native interphase chromatin lacks regular 30 nm periodic fibers. Instead, chromatin behaves as a disordered, polymorphic 5–24 nm polymer mesh with variable local compaction densities.',
+          'Prokaryotic & Archaeal Distinction: Bacteria package circular genomes into looped domains using dynamic NAPs: HU induces flexible bending, IHF mediates sequence-specific looping for recombination, and H-NS bridges DNA duplexes to repress transcription. Euryarchaeal histones share the eukaryotic histone-fold motif but form continuous variable-length protein cores without requiring linker histones.',
+          'High-Order Regulation: Topological Associated Domains (TADs) are demarcated by CTCF insulator proteins and cohesin-driven loop extrusion complexes rather than rigid crystalline fiber coiling.',
+        ],
+        pathwaySteps: [
+          'Naked Duplex DNA (2 nm diameter)',
+          'Nucleosome core particle assembly (11 nm diameter, 147 bp wrap)',
+          'Linker DNA association with Histone H1 (chromatosome, ~166 bp)',
+          'Flexible disordered 10 nm polymer folding into variable density chromatin domains',
+          'Cohesin & CTCF loop extrusion forming Topologically Associating Domains (TADs)',
+          'Mitotic chromosome condensin-dependent hyper-compaction for anaphase segregation',
+        ],
+        keyPoints: [
+          'CRITICAL SCIENTIFIC CORRECTION: The 30 nm chromatin fiber is a validated in vitro structure under low-salt conditions, but high-resolution in situ imaging confirms that interphase eukaryotic nuclei predominantly contain flexible 10 nm fibers in disordered, fluid conformational states.',
+          'Histone octamer composition: Heterotetramer of (H3-H4)2 plus two (H2A-H2B) heterodimers. Core histones lack the winged-helix domain characteristic of linker histone H1.',
+          'Epigenetic Tail Dynamics: N-terminal histone tails project outward from the core; post-translational acetylation (HATs) neutralizes positive charges to promote open euchromatin, while methylation (HMTs) recruits HP1 or Polycomb complexes for heterochromatin formation.',
+          'Evolutionary divergence: Archaea possess genuine histone folds (ancestral to eukaryotes), whereas bacteria utilize fundamentally distinct NAPs (HU, IHF, H-NS).',
+        ],
+        applications: [
+          'Histone Deacetylase (HDAC) inhibitors (e.g., Vorinostat) in cutaneous T-cell lymphoma therapeutics.',
+          'Assay for Transposase-Accessible Chromatin with sequencing (ATAC-seq) mapping open genomic regulatory regions in biotechnology cell lines.',
+          'CRISPR-dCas9 targeted epigenome editing with engineered histone acetyltransferases.',
+        ],
+        revisionNotes: [
+          'Nucleosome core DNA = 147 bp; 1.65 left-handed superhelical turns',
+          'Octamer = 2 × (H2A, H2B, H3, H4)',
+          'Histone H1 = Linker histone (binds dyad; not part of core octamer)',
+          '30 nm fiber = In vitro model (solenoid / zigzag); in vivo chromatin is a disordered 10 nm polymer network',
+          'Bacteria = NAPs (HU, IHF, H-NS), NO true histones',
+          'Archaea = True histone homologs (HMf), histone-fold present',
+        ],
+      },
+      hinglish: {
+        introduction: 'Chromatin organization eukaryotic cells me DNA ko nucleus ke microscopic space me package karta hai. Pehle standard textbooks me 30 nm fiber ko universal intermediate model bataya jata tha, lekin modern cryo-electron tomography aur ChromEMT studies ne prove kiya hai ki living cells ke andar chromatin mostly flexible, disordered 10 nm chains ke roop me rehta hai.',
+        mechanism: [
+          'Nucleosome Core: 147 bp DNA 8 histone proteins ke octamer (do copies each of H2A, H2B, H3, H4) ke charo taraf wrap hota hai.',
+          'Classical 30 nm Model: Lab me low salt conditions me histone H1 ki presence me solenoid ya zigzag 30 nm structure banta hai.',
+          'Modern in vivo Discovery: Living cells ke nucleus me regular 30 nm fiber observe nahi hota; chromatin variable density ke 10 nm polymer fibers me packed rehta hai.',
+          'Bacteria vs Archaea: Bacteria me true histones nahi hote, wo NAPs (HU, H-NS, IHF) use karte hain. Archaea me eukaryotic histones ke homologs (HMf) hote hain.',
+        ],
+        keyPoints: [
+          'Exam Correction: 30 nm fiber in vitro low salt condition me banta hai, lekin living interphase nucleus me disordered 10 nm chromatin domains hote hain.',
+          'Octamer me H3-H4 tetramer aur do H2A-H2B dimers hote hain; H1 linker histone bahar bind karta hai.',
+          'Bacteria NAPs use karte hain jabki Archaea true histone proteins rakhte hain.',
+        ],
+        applications: [
+          'HDAC inhibitor cancer drugs ka development.',
+          'ATAC-seq aur Hi-C mapping techniques me chromatin accessibility analyze karna.',
+        ],
+        revisionNotes: [
+          'Nucleosome core DNA = 147 bp',
+          'Octamer = (H2A, H2B, H3, H4) × 2',
+          'Linker H1 = Chromatosome (~166 bp)',
+          'Bacteria = NAPs (HU, IHF, H-NS), no true histones',
+          'Archaea = True histones present (HMf)',
+        ],
+      },
+    },
+    references: [
+      { citation: 'Alberts B. et al. Molecular Biology of the Cell. 7th Edition, W. W. Norton & Company.', doiOrLink: 'https://www.ncbi.nlm.nih.gov/books/NBK26850/' },
+      { citation: 'Ou H.D. et al. ChromEMT: Visualizing 3D chromatin structure and compaction in interphase and mitotic cells. Science 357(6349), 2017.', doiOrLink: 'https://doi.org/10.1126/science.aag0025' },
+      { citation: 'Eukaryotic and Archaeal Histones Review. Trends in Biochemical Sciences.', doiOrLink: 'https://doi.org/10.1016/j.tibs.2020.08.006' },
+    ],
+  },
+  'ribosome-architecture-and-comparative-translation': {
+    slug: 'ribosome-architecture-and-comparative-translation',
+    subjectSlug: 'biochemistry',
+    title: {
+      en: 'Ribosome Architecture: 70S, 80S, and Mitochondrial Structural Exceptions',
+      hinglish: 'Ribosome Structure: 70S, 80S, aur Mitochondrial Mitoribosome Exceptions',
+    },
+    difficulty: 'Intermediate',
+    readTimeMin: 12,
+    definitions: [
+      {
+        term: 'Svedberg Unit (S)',
+        en: 'A non-SI metric of sedimentation velocity under centrifugal force (1 S = 10^-13 seconds), determined by particle mass, density, and shape (non-additive).',
+        hinglish: 'Centrifugation me sedimentation coefficient ki unit (1 S = 10^-13 sec). Ye mass aur shape dono par depend karta hai isliye additive nahi hota (50S + 30S = 70S).',
+      },
+      {
+        term: 'Peptidyl Transferase Center (PTC)',
+        en: 'The catalytic ribozyme site in the large ribosomal subunit (23S rRNA in bacteria; 28S rRNA in eukaryotes) that synthesizes peptide bonds without protein catalysis.',
+        hinglish: 'Large ribosomal subunit ka catalytic ribozyme center (23S rRNA in bacteria, 28S rRNA in eukaryotes) jo amino acids ke beech peptide bond banata hai.',
+      },
+      {
+        term: 'Mitoribosome (~55S)',
+        en: 'The specialized translation machinery of mammalian mitochondria possessing a 39S large subunit and 28S small subunit with an inverted RNA:protein ratio (2:1 protein:RNA) compared to bacterial 70S.',
+        hinglish: 'Mammalian mitochondria ka 55S ribosome jisme RNA kam aur protein content zyada hota hai (protein-to-RNA ratio reverse hota hai).',
+      },
+    ],
+    content: {
+      en: {
+        introduction: 'Ribosomes are ribonucleoprotein megadalton machines universal to all cellular life. While textbook introductions present a binary distinction between bacterial 70S and eukaryotic cytosolic 80S ribosomes, evolutionary biophysics reveals crucial structural nuances, including specialized mitochondrial and chloroplast ribosomes.',
+        mechanism: [
+          'Bacterial 70S Assembly: Composed of a 50S large subunit (23S rRNA [2904 nt], 5S rRNA [120 nt], and 34 ribosomal proteins L1-L34) and a 30S small subunit (16S rRNA [1542 nt] and 21 proteins S1-S21). Total mass: ~2.5 MDa; composition: ~65% RNA, 35% protein.',
+          'Eukaryotic Cytosolic 80S Assembly: Composed of a 60S large subunit (28S rRNA [~4700 nt], 5.8S rRNA [160 nt], 5S rRNA [120 nt], and ~49 proteins) and a 40S small subunit (18S rRNA [~1900 nt] and ~33 proteins). Total mass: ~4.2 MDa; composition: ~50% RNA, 50% protein.',
+          'Mitochondrial Ribosome Exception (Mitoribosomes): In mammalian mitochondria, mitoribosomes sediment at ~55S (39S large subunit with 16S mt-rRNA and 28S small subunit with 12S mt-rRNA). Unlike bacterial ribosomes, mammalian mitoribosomes contain ~67% protein and only ~33% RNA, having recruited numerous mitochondria-specific proteins to stabilize shortened rRNAs.',
+          'Chloroplast Ribosomes: Chloroplasts retain ancestral ~70S ribosomes (50S and 30S subunits) with 23S, 16S, 5S, and 4.5S rRNAs, mirroring their endosymbiotic cyanobacterial heritage.',
+          'Translational Antibiotic Selectivity: Aminoglycosides (Streptomycin, Kanamycin) target the decoding site of 16S rRNA in 30S; Macrolides (Erythromycin) and Chloramphenicol block the 23S rRNA exit tunnel and PTC of 50S; Cycloheximide selectively inhibits eukaryotic 60S translocation.',
+        ],
+        pathwaySteps: [
+          'Small Subunit Initiation Complex formation (mRNA binding + initiator tRNA)',
+          'Shine-Dalgarno (prokaryotes: 16S anti-SD pairing) vs 5\'-Cap Kozak scanning (eukaryotes: eIF4F)',
+          'Large Subunit recruitment (GTP hydrolysis by IF2 / eIF5B)',
+          'Elongation: A-site aminoacyl-tRNA selection -> Peptidyl transferase bond formation -> Translocation',
+          'Termination: Class I Release Factors (RF1/RF2 in bacteria; eRF1 in eukaryotes) recognise stop codons',
+          'Recycling: RRF and EF-G dissociate 70S into free subunits',
+        ],
+        keyPoints: [
+          'CRITICAL EXCEPTION: Mitochondrial ribosomes are NOT standard 70S. Mammalian mitoribosomes are 55S (39S + 28S) with reversed protein-rich stoichiometry, though chloroplast ribosomes remain standard ~70S.',
+          'The ribosome is an authentic Ribozyme: High-resolution X-ray crystallography (Steitz, Ramakrishnan, Yonath) demonstrated that no amino acid side chain resides within 18 Å of the catalytic peptidyl transferase center.',
+          'Prokaryotic initiation uses Shine-Dalgarno: AGGAGG consensus pairing with the 3\' end of 16S rRNA (anti-Shine-Dalgarno). Eukaryotes use 5\' 7-methylguanosine cap recognition and 40S scanning for the Kozak sequence (ACCAUGG).',
+        ],
+        applications: [
+          'Selective antibacterial drug discovery targeting 50S and 30S bacterial ribosomal pockets.',
+          'Biopharmaceutical recombinant protein yield enhancement through codon optimization matched to host tRNA pools.',
+          'Mitochondrial toxicity screening for novel antibiotic candidate pipelines.',
+        ],
+        revisionNotes: [
+          'Bacterial 70S = 50S (23S, 5S, 34 proteins) + 30S (16S, 21 proteins)',
+          'Eukaryotic 80S = 60S (28S, 5.8S, 5S, ~49 proteins) + 40S (18S, ~33 proteins)',
+          'Mammalian Mitoribosome = 55S (39S + 28S); ~67% protein, ~33% RNA (inverted ratio)',
+          'Chloroplast ribosome = ~70S (cyanobacterial heritage)',
+          'Shine-Dalgarno = Prokaryotes (pairs with 16S rRNA 3\' end)',
+          'Kozak sequence = Eukaryotes (ACC[A/G]GGAUGG)',
+        ],
+      },
+      hinglish: {
+        introduction: 'Ribosome cell ka translation engine hai. Standard biology me bacteria ke 70S aur eukaryotes ke 80S ribosome ko compare kiya jata hai, lekin mitochondrial ribosomes (mitoribosomes) jaise critical exceptions scientific exams me zaroor puche jaate hain.',
+        mechanism: [
+          'Bacterial 70S: 50S subunit (23S rRNA, 5S rRNA, 34 proteins) aur 30S subunit (16S rRNA, 21 proteins). RNA content approx 65% hota hai.',
+          'Eukaryotic 80S: 60S subunit (28S, 5.8S, 5S rRNA, ~49 proteins) aur 40S subunit (18S rRNA, ~33 proteins).',
+          'Mitochondrial Exception (55S): Mammalian mitochondria me ribosome 55S hota hai (39S large + 28S small subunit). Isme protein content RNA se zyada hota hai (inverted ratio).',
+          'Chloroplast: Plant chloroplasts me ancestral 70S ribosomes hote hain.',
+        ],
+        keyPoints: [
+          'Exam Point: Mammalian mitochondrial ribosomes 70S nahi, balki 55S (39S + 28S) hote hain.',
+          'Ribosome ek Ribozyme hai: Peptide bond formation 23S/28S rRNA se catalyze hoti hai.',
+          'Prokaryotes me Shine-Dalgarno sequence 16S rRNA se pair karta hai, jabki eukaryotes me 5\' cap aur Kozak consensus scan hota hai.',
+        ],
+        applications: [
+          'Antibiotics mode of action: Streptomycin (30S), Chloramphenicol (50S), Cycloheximide (80S eukaryotic specific).',
+          'Bioprocess me recombinant protein translation rate optimization.',
+        ],
+        revisionNotes: [
+          '70S = 50S (23S + 5S) + 30S (16S)',
+          '80S = 60S (28S + 5.8S + 5S) + 40S (18S)',
+          'Mitoribosome = 55S (39S + 28S) with high protein ratio',
+          'Peptidyl transferase = 23S/28S rRNA ribozyme',
+        ],
+      },
+    },
+    references: [
+      { citation: 'Ramakrishnan V. The Ribosome: Structure, Function, and Evolution. Nobel Lecture.', doiOrLink: 'https://doi.org/10.1002/anie.201004383' },
+      { citation: 'Greber B.J. & Ban N. Structure and Function of the Mitochondrial Ribosome. Annual Review of Biochemistry 85, 2016.', doiOrLink: 'https://doi.org/10.1146/annurev-biochem-060815-014343' },
+      { citation: 'Alberts B. et al. Molecular Biology of the Cell. 7th Edition.', doiOrLink: 'https://www.ncbi.nlm.nih.gov/books/NBK26850/' },
+    ],
+  },
 };

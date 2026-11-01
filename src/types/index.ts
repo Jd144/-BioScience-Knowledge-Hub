@@ -151,6 +151,11 @@ export interface Examination {
     en: string[];
     hinglish: string[];
   };
+  cycleYear?: string;
+  applicationWindow?: string;
+  examDate?: string;
+  statusNote?: string;
+  officialBulletinUrl?: string;
 }
 
 export interface LabInstrument {
@@ -215,23 +220,38 @@ export interface LabProtocol {
 // Expanded Opportunity & Community Interfaces
 // -----------------------------------------------------------------------------
 
+export type ApplicationStatus = 'OPEN' | 'UPCOMING' | 'CLOSED' | 'EXPIRED' | 'UNVERIFIED' | 'ARCHIVED';
+
+export type VerificationStatus = 'VERIFIED_OFFICIAL' | 'VERIFIED_SECONDARY' | 'UNVERIFIED' | 'UNDER_REVIEW';
+
 export interface BiotechJob {
   id: string;
   title: string;
   slug: string;
   organization: string;
   category: 'Government' | 'Industry' | 'Research Position' | 'JRF/SRF' | 'Freshers' | 'Bioinformatics' | 'QC/QA';
+  qualification: string;
   experienceLevel: 'Entry Level / Freshers' | '1-3 Years' | '3-5 Years' | 'Senior / 5+ Years';
   location: string;
   eligibility: string;
   salaryOrStipend: string;
+  applicationOpeningDate: string;
   applicationDeadline: string; // YYYY-MM-DD or 'Rolling'
-  officialLink: string;
+  officialNotificationUrl: string;
+  officialApplicationUrl: string;
+  sourceUrl: string;
   sourceCitation: string;
-  publishedDate: string;
-  isVerified: boolean;
-  isActive: boolean;
+  sourcePublicationDate: string;
+  lastVerifiedDate: string;
+  applicationStatus: ApplicationStatus;
+  verificationStatus: VerificationStatus;
+  archivedStatus: boolean;
   jobDescription: string;
+  // Backward compatibility aliases
+  officialLink?: string;
+  publishedDate?: string;
+  isVerified?: boolean;
+  isActive?: boolean;
 }
 
 export interface InternshipOpportunity {
@@ -240,15 +260,28 @@ export interface InternshipOpportunity {
   slug: string;
   institution: string;
   internshipType: 'IIT/IISc/IISER' | 'Government National' | 'University Research' | 'Biotech Industry';
+  qualification: string;
+  location: string;
   duration: string;
   stipendAmount: string;
   eligibility: string;
-  deadline: string;
-  officialLink: string;
+  applicationOpeningDate: string;
+  applicationDeadline: string;
+  officialNotificationUrl: string;
+  officialApplicationUrl: string;
+  sourceUrl: string;
   sourceCitation: string;
-  isVerified: boolean;
-  isActive: boolean;
+  sourcePublicationDate: string;
+  lastVerifiedDate: string;
+  applicationStatus: ApplicationStatus;
+  verificationStatus: VerificationStatus;
+  archivedStatus: boolean;
   overview: string;
+  // Backward compatibility aliases
+  deadline?: string;
+  officialLink?: string;
+  isVerified?: boolean;
+  isActive?: boolean;
 }
 
 export interface ScholarshipAdmission {
@@ -259,11 +292,24 @@ export interface ScholarshipAdmission {
   issuingBody: string;
   fundingAmount: string;
   eligibility: string;
-  deadline: string;
-  officialLink: string;
-  isVerified: boolean;
-  isActive: boolean;
+  qualification: string;
+  applicationOpeningDate: string;
+  applicationDeadline: string;
+  officialNotificationUrl: string;
+  officialApplicationUrl: string;
+  sourceUrl: string;
+  sourceCitation: string;
+  lastVerifiedDate: string;
+  applicationStatus: ApplicationStatus;
+  verificationStatus: VerificationStatus;
+  archivedStatus: boolean;
+  location?: string;
   details: string;
+  // Backward compatibility aliases
+  deadline?: string;
+  officialLink?: string;
+  isVerified?: boolean;
+  isActive?: boolean;
 }
 
 export interface BiotechNewsArticle {
