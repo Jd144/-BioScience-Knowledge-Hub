@@ -1,0 +1,8 @@
+{
+  "name": "BioScience Knowledge Hub",
+  "description": "Comprehensive bilingual biotechnology encyclopedia, competitive exam preparation portal (GAT-B, DBT-JRF, GATE BT, IIT JAM, CUET-PG, CSIR-NET), and interactive laboratory knowledge platform.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
