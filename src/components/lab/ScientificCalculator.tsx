@@ -1,11 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext.tsx';
 import { SCIENTIFIC_CALCULATORS, CalculatorConfig } from '../../data/calculatorsConfig.ts';
-import { Calculator, ArrowRight, RotateCcw, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Calculator, ArrowRight, RotateCcw, CheckCircle2, AlertCircle, Info } from 'lucide-react';
 
 export const ScientificCalculator: React.FC = () => {
   const { language, t } = useLanguage();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedCalcId, setSelectedCalcId] = useState<string>('molarity');
+
+  // Deep linking for ?calc=
+  useEffect(() => {
+    const rawCalc = searchParams.get('calc');
+    if (rawCalc) {
+      let mapped = rawCalc;
+      if (rawCalc === 'centrifuge-rcf') mapped = 'rpm-to-rcf';
+      if (rawCalc === 'dna-purity') mapped = 'dna-concentration';
+
+      const exists = SCIENTIFIC_CALCULATORS.some((c) => c.id === mapped);
+      if (exists) {
+        setSelectedCalcId(mapped);
+      }
+    }
+  }, [searchParams]);
 
   // Calculator 1: Molarity
   const [molMolarity, setMolMolarity] = useState<string>('0.5');
@@ -77,17 +94,49 @@ export const ScientificCalculator: React.FC = () => {
   };
 
   const computeDilution = () => {
-    const c1 = parseFloat(dilC1) || 0;
-    const c2 = parseFloat(dilC2) || 0;
-    const v2 = parseFloat(dilV2) || 0;
-    if (c1 <= 0) return { v1: '0.00', dilFactor: '0' };
+    const c1 = parseFloat(dilC1);
+    const c2 = parseFloat(dilC2);
+    const v2 = parseFloat(dilV2);
+
+    if (isNaN(c1) || isNaN(c2) || isNaN(v2)) {
+      return {
+        isValid: false,
+        error: 'Please enter valid numeric values for C1, C2, and V2.',
+        v1: '0.000',
+        dilFactor: '0',
+        bufferVol: '0.00'
+      };
+    }
+    if (c1 <= 0 || c2 <= 0 || v2 <= 0) {
+      return {
+        isValid: false,
+        error: 'Concentrations and target volumes must be positive numbers strictly greater than 0.',
+        v1: '0.000',
+        dilFactor: '0',
+        bufferVol: '0.00'
+      };
+    }
+    if (c2 > c1) {
+      return {
+        isValid: false,
+        error: 'Target concentration (C2) cannot exceed stock concentration (C1) in a dilution protocol. Buffer volume would be negative.',
+        v1: '0.000',
+        dilFactor: '0',
+        bufferVol: '0.00'
+      };
+    }
+
     const v1 = (c2 * v2) / c1;
     const dilFactor = (c1 / c2).toFixed(2);
-    const bufferVol = (v2 - v1).toFixed(2);
+    const bufferVol = Math.max(0, v2 - v1).toFixed(2);
+
     return {
+      isValid: true,
+      error: null,
       v1: v1.toFixed(3),
       dilFactor,
       bufferVol,
+      formulaExplanation: `C1 × V1 = C2 × V2  ⟹  V1 = (${c2} × ${v2}) / ${c1} = ${v1.toFixed(3)} ${dilV2Unit}. Required diluent/buffer = V2 - V1 = ${v2} - ${v1.toFixed(3)} = ${bufferVol} ${dilV2Unit}.`
     };
   };
 
@@ -154,23 +203,42 @@ export const ScientificCalculator: React.FC = () => {
   const computeOligo = () => {
     const cleanSeq = oligoSeq.toUpperCase().replace(/[^ATGCN]/g, '');
     const len = cleanSeq.length;
-    let aCount = 0, tCount = 0, gCount = 0, cCount = 0;
+    let aCount = 0, tCount = 0, gCount = 0, cCount = 0, nCount = 0;
     for (const char of cleanSeq) {
       if (char === 'A') aCount++;
-      if (char === 'T') tCount++;
-      if (char === 'G') gCount++;
-      if (char === 'C') cCount++;
+      else if (char === 'T') tCount++;
+      else if (char === 'G') gCount++;
+      else if (char === 'C') cCount++;
+      else if (char === 'N') nCount++;
     }
-    const gcPercent = len > 0 ? (((gCount + cCount) / len) * 100).toFixed(1) : '0';
+
+    const definitiveBases = aCount + tCount + gCount + cCount;
+    const gcPercent = definitiveBases > 0 ? (((gCount + cCount) / definitiveBases) * 100).toFixed(1) : '0';
+
     // Wallace rule: 2*(A+T) + 4*(G+C)
-    const tmWallace = 2 * (aCount + tCount) + 4 * (gCount + cCount);
-    // Approximate MW: A=313.21, T=304.2, C=289.18, G=329.21
-    const mw = aCount * 313.21 + tCount * 304.2 + cCount * 289.18 + gCount * 329.21 - 61.96;
+    // For ambiguous base N: minimum Tm assumes A/T (2 deg each); maximum assumes G/C (4 deg each)
+    const baseTm = 2 * (aCount + tCount) + 4 * (gCount + cCount);
+    const minTm = baseTm + 2 * nCount;
+    const maxTm = baseTm + 4 * nCount;
+
+    // Molecular weights: dAMP=313.21, dTMP=304.2, dCMP=289.18, dGMP=329.21 (minus 61.96 for terminal OH/phosphate)
+    // N range: dCMP (289.18) to dGMP (329.21)
+    const baseMW = (aCount * 313.21 + tCount * 304.2 + cCount * 289.18 + gCount * 329.21) - (definitiveBases > 0 ? 61.96 : 0);
+    const minMW = baseMW + (nCount * 289.18);
+    const maxMW = baseMW + (nCount * 329.21);
+
     return {
       length: len,
+      definitiveBases,
+      nCount,
+      hasAmbiguity: nCount > 0,
       gcPercent,
-      tmWallace: len > 0 ? tmWallace.toFixed(1) : '0',
-      mw: len > 0 ? Math.max(0, mw).toFixed(1) : '0',
+      tmWallace: len > 0 ? baseTm.toFixed(1) : '0',
+      minTm: minTm.toFixed(1),
+      maxTm: maxTm.toFixed(1),
+      mw: len > 0 ? Math.max(0, baseMW).toFixed(1) : '0',
+      minMW: Math.max(0, minMW).toFixed(1),
+      maxMW: Math.max(0, maxMW).toFixed(1),
     };
   };
 
@@ -711,6 +779,20 @@ export const ScientificCalculator: React.FC = () => {
             {/* Dilution Output */}
             {selectedCalcId === 'dilution' && (() => {
               const res = computeDilution();
+              if (!res.isValid) {
+                return (
+                  <div className="mt-4 p-4 bg-rose-950/50 border border-rose-800 rounded-xl space-y-2">
+                    <div className="flex items-center gap-2 text-rose-300 font-semibold text-xs">
+                      <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                      <span>Dilution Calculation Error</span>
+                    </div>
+                    <p className="text-xs text-rose-200 leading-relaxed">{res.error}</p>
+                    <div className="pt-2 border-t border-rose-900/60 text-[11px] text-rose-300">
+                      Standard formula: C1 × V1 = C2 × V2. Stock concentration C1 must be strictly higher than target concentration C2.
+                    </div>
+                  </div>
+                );
+              }
               return (
                 <div className="mt-4 space-y-4">
                   <div>
@@ -728,9 +810,12 @@ export const ScientificCalculator: React.FC = () => {
                       <span>Buffer / Diluent Volume:</span>
                       <span className="font-mono text-white">{res.bufferVol} {dilV2Unit}</span>
                     </div>
-                    <p className="text-[11px] text-slate-400 pt-1">
-                      Pipette {res.v1} {dilV2Unit} of stock and bring to final {dilV2} {dilV2Unit} with diluent.
+                    <p className="text-[11px] text-slate-400 pt-1 leading-relaxed">
+                      Pipette <strong className="text-white">{res.v1} {dilV2Unit}</strong> of stock and add <strong className="text-white">{res.bufferVol} {dilV2Unit}</strong> of buffer to reach final volume of {dilV2} {dilV2Unit}.
                     </p>
+                    <div className="mt-2 p-2.5 bg-slate-800/80 rounded border border-slate-700 text-[11px] font-mono text-cyan-300">
+                      {res.formulaExplanation}
+                    </div>
                   </div>
                 </div>
               );
@@ -834,23 +919,63 @@ export const ScientificCalculator: React.FC = () => {
                 <div className="mt-4 space-y-3">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <div className="text-xs text-slate-400">Length</div>
+                      <div className="text-xs text-slate-400">Total Length</div>
                       <div className="text-2xl font-mono font-bold text-white">{res.length} nt</div>
+                      {res.nCount > 0 && (
+                        <div className="text-[10px] text-amber-400 font-mono mt-0.5">
+                          ({res.definitiveBases} canonical + {res.nCount} ambiguous N)
+                        </div>
+                      )}
                     </div>
                     <div>
-                      <div className="text-xs text-slate-400">GC Content</div>
+                      <div className="text-xs text-slate-400">Canonical GC Content</div>
                       <div className="text-2xl font-mono font-bold text-cyan-400">{res.gcPercent} %</div>
                     </div>
                   </div>
+
+                  {res.hasAmbiguity && (
+                    <div className="p-3 bg-amber-950/60 border border-amber-800 rounded-lg text-xs space-y-1.5">
+                      <div className="flex items-center gap-1.5 text-amber-300 font-semibold text-[11px]">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        <span>Ambiguous Nucleotide Warning (N Detected)</span>
+                      </div>
+                      <p className="text-[11px] text-amber-200/90 leading-relaxed">
+                        Sequence contains {res.nCount} ambiguous base(s) (N). Because N represents any nucleotide (A/C/G/T), exact molecular weight and Tm cannot be definitively fixed. Estimated ranges are provided below based on pyrimidine (C: 289 Da) to purine (G: 329 Da) and A/T (2°C) to G/C (4°C) substitutions.
+                      </p>
+                      <div className="pt-1 text-[11px] text-amber-100 font-mono">
+                        <div>Tm Range: {res.minTm} °C to {res.maxTm} °C</div>
+                        <div>MW Range: {res.minMW} to {res.maxMW} Da</div>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="pt-3 border-t border-slate-800 space-y-2 text-xs">
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Estimated Melting Temp (Tm):</span>
-                      <span className="font-mono text-white font-semibold">{res.tmWallace} °C</span>
+                      <span className="text-slate-400">Estimated Wallace Tm:</span>
+                      <span className="font-mono text-white font-semibold">
+                        {res.hasAmbiguity ? `${res.minTm} – ${res.maxTm}` : res.tmWallace} °C
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-400">Single-Strand MW:</span>
-                      <span className="font-mono text-white font-semibold">{res.mw} Da (g/mol)</span>
+                      <span className="font-mono text-white font-semibold">
+                        {res.hasAmbiguity ? `${res.minMW} – ${res.maxMW}` : res.mw} Da (g/mol)
+                      </span>
                     </div>
+                  </div>
+
+                  {/* Wallace Rule Limitations Disclaimer */}
+                  <div className="mt-3 p-3 bg-slate-800/80 rounded-lg border border-slate-700/80 text-[11px] text-slate-300 leading-relaxed space-y-1">
+                    <div className="flex items-center gap-1.5 font-semibold text-cyan-300">
+                      <Info className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                      <span>Thermodynamic Heuristic Limitations:</span>
+                    </div>
+                    <p className="text-slate-400">
+                      The Wallace rule (Tm = 2(A+T) + 4(G+C)) is an empirical rule of thumb valid strictly for short oligonucleotides (14–20 nt) in 1 M monovalent cation (Na⁺) buffer without mismatches.
+                    </p>
+                    <p className="text-slate-400">
+                      For primers &gt;20 nt or real PCR buffers (50 mM K⁺, 1.5–2.5 mM Mg²⁺), nearest-neighbor thermodynamic calculations (SantaLucia 1998) must be employed. Actual PCR annealing temperature (Ta) is typically 3–5°C below thermodynamic Tm.
+                    </p>
                   </div>
                 </div>
               );

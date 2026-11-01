@@ -156,6 +156,15 @@ export interface Examination {
   examDate?: string;
   statusNote?: string;
   officialBulletinUrl?: string;
+  bulletinEdition?: string;
+  officialNotificationStatus?: 'CONCLUDED_2026' | 'UPCOMING_2027_PENDING' | 'ACTIVE_NOTIFICATION' | 'BIANNUAL_CYCLE';
+  outdatedOrDiscontinuedNotices?: string[];
+  speculativeDateDisclaimer?: string;
+  officialSourceUrls?: {
+    label: string;
+    url: string;
+    verifiedYear: string;
+  }[];
 }
 
 export interface LabInstrument {

@@ -658,7 +658,7 @@ export const SAMPLE_TOPIC_DETAILS: Record<string, TopicDetail> = {
       },
     },
     references: [
-      { citation: 'Kornberg A. & Baker T.A. DNA Replication. 2nd Edition, W. H. Freeman.', doiOrLink: 'https://doi.org/10.1016/S0021-9258(18)53874-7' },
+      { citation: 'Kornberg A. & Baker T.A. DNA Replication. 2nd Edition, W. H. Freeman and Company, New York, 1992. ISBN: 978-0716720034.' },
       { citation: 'Alberts B. et al. Molecular Biology of the Cell. Garland Science.', doiOrLink: 'https://www.ncbi.nlm.nih.gov/books/NBK26850/' },
     ],
   },

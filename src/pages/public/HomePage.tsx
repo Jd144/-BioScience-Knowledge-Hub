@@ -459,6 +459,11 @@ export const HomePage: React.FC = () => {
                   <h3 className="text-sm font-semibold text-white leading-snug">
                     {exam.fullName.en}
                   </h3>
+                  {exam.bulletinEdition && (
+                    <div className="mt-2 inline-block px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-950/80 text-cyan-300 border border-cyan-800/80">
+                      {exam.bulletinEdition}
+                    </div>
+                  )}
                   <p className="text-xs text-slate-300 mt-2 leading-relaxed line-clamp-3">
                     {language === 'hinglish' ? exam.overview.hinglish : exam.overview.en}
                   </p>

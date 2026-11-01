@@ -27,9 +27,9 @@ export const AboutPage: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="p-6 bg-white rounded-xl border border-slate-200">
           <ShieldCheck className="w-6 h-6 text-cyan-600 mb-3" />
-          <h2 className="text-sm font-bold text-slate-900">Zero Fabricated Information</h2>
+          <h2 className="text-sm font-bold text-slate-900">Evidence-Based Source Verification</h2>
           <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-            We never publish invented questions, fake examination dates, artificial cutoffs, or synthetic student activity statistics. Every formula, protocol, and examination pattern is traced to authentic official notifications and standard university curricula.
+            Our editorial priority is to ground academic content, examination patterns, and opportunities directly in official bulletins, university circulars, and standard peer-reviewed literature. While human oversight is continuous and ongoing audits correct ambiguities, we do not claim infallible perfection; unverified or tentative notices are explicitly flagged to preserve academic integrity.
           </p>
         </div>
 

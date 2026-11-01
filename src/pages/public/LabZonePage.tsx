@@ -23,9 +23,34 @@ export const LabZonePage: React.FC = () => {
   const [selectedInstrument, setSelectedInstrument] = useState<string>(LAB_INSTRUMENTS[0].slug);
   const [selectedProtocol, setSelectedProtocol] = useState<string>(LAB_PROTOCOLS[0].slug);
 
+  // Deep-link hash & parameter resolver
   useEffect(() => {
-    setActiveTab(getTabFromPath());
-  }, [location.pathname]);
+    const tab = getTabFromPath();
+    setActiveTab(tab);
+
+    // Hash navigation (e.g. #biosafety-cabinet or #biosafety-cabinet-class-ii)
+    if (location.hash) {
+      let rawSlug = location.hash.replace(/^#/, '');
+      // Handle known alias #biosafety-cabinet-class-ii -> biosafety-cabinet
+      if (rawSlug === 'biosafety-cabinet-class-ii') {
+        rawSlug = 'biosafety-cabinet';
+      }
+
+      const matchedInst = LAB_INSTRUMENTS.find((i) => i.slug === rawSlug);
+      if (matchedInst) {
+        setSelectedInstrument(matchedInst.slug);
+        setActiveTab('instruments');
+        return;
+      }
+
+      const matchedProt = LAB_PROTOCOLS.find((p) => p.slug === rawSlug);
+      if (matchedProt) {
+        setSelectedProtocol(matchedProt.slug);
+        setActiveTab('protocols');
+        return;
+      }
+    }
+  }, [location.pathname, location.hash]);
 
   const activeInstData = LAB_INSTRUMENTS.find((i) => i.slug === selectedInstrument) || LAB_INSTRUMENTS[0];
   const activeProtData = LAB_PROTOCOLS.find((p) => p.slug === selectedProtocol) || LAB_PROTOCOLS[0];

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext.tsx';
 import {
   Mail,
@@ -7,7 +7,8 @@ import {
   Send,
   BellRing,
   AlertCircle,
-  Loader2
+  Info,
+  RotateCcw
 } from 'lucide-react';
 
 export const NewsletterPage: React.FC = () => {
@@ -18,9 +19,9 @@ export const NewsletterPage: React.FC = () => {
     'Exam Notifications',
     'Research Grants & Proposals'
   ]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [alreadySubscribed, setAlreadySubscribed] = useState(false);
 
   const availableTopics = [
     'Jobs & JRF Openings',
@@ -30,6 +31,22 @@ export const NewsletterPage: React.FC = () => {
     'Research Grants & Proposals',
     'Biotech News & Regulatory Dispatches'
   ];
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('bioscience_newsletter_email');
+      if (stored) {
+        setEmail(stored);
+        setAlreadySubscribed(true);
+        const storedTopics = localStorage.getItem('bioscience_newsletter_topics');
+        if (storedTopics) {
+          setSelectedTopics(JSON.parse(storedTopics));
+        }
+      }
+    } catch {
+      // Safe storage access fallback
+    }
+  }, []);
 
   const toggleTopic = (topic: string) => {
     setErrorMessage(null);
@@ -44,10 +61,12 @@ export const NewsletterPage: React.FC = () => {
     e.preventDefault();
     setErrorMessage(null);
 
-    // Validation
+    // Strict Email Validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email || !emailRegex.test(email.trim())) {
-      setErrorMessage('Please provide a valid email address (e.g. scholar@university.ac.in).');
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (!cleanEmail || !emailRegex.test(cleanEmail)) {
+      setErrorMessage('Please provide a valid academic or professional email address (e.g. scholar@university.ac.in).');
       return;
     }
 
@@ -56,18 +75,35 @@ export const NewsletterPage: React.FC = () => {
       return;
     }
 
-    setIsSubmitting(true);
-    // Simulate real network request and client registration
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-      try {
-        localStorage.setItem('bioscience_newsletter_email', email.trim());
+    // Check duplicate submission
+    try {
+      const currentStored = localStorage.getItem('bioscience_newsletter_email');
+      if (currentStored && currentStored.toLowerCase() === cleanEmail && alreadySubscribed) {
+        setErrorMessage('This email is already registered for the weekly dispatch. Your topic preferences have been refreshed.');
         localStorage.setItem('bioscience_newsletter_topics', JSON.stringify(selectedTopics));
-      } catch (err) {
-        // Safe localStorage failure fallback
+        setIsSubmitted(true);
+        return;
       }
-    }, 600);
+
+      localStorage.setItem('bioscience_newsletter_email', cleanEmail);
+      localStorage.setItem('bioscience_newsletter_topics', JSON.stringify(selectedTopics));
+      localStorage.setItem('bioscience_newsletter_date', new Date().toISOString().slice(0, 10));
+      setAlreadySubscribed(true);
+      setIsSubmitted(true);
+    } catch {
+      setErrorMessage('Browser storage is restricted. Preferences could not be cached locally.');
+    }
+  };
+
+  const handleReset = () => {
+    try {
+      localStorage.removeItem('bioscience_newsletter_email');
+      localStorage.removeItem('bioscience_newsletter_topics');
+    } catch {}
+    setEmail('');
+    setIsSubmitted(false);
+    setAlreadySubscribed(false);
+    setSelectedTopics(['Jobs & JRF Openings', 'Exam Notifications', 'Research Grants & Proposals']);
   };
 
   return (
@@ -83,82 +119,111 @@ export const NewsletterPage: React.FC = () => {
         </h1>
         <p className="text-sm text-slate-600 max-w-xl mx-auto leading-relaxed">
           {t(
-            'Receive curated, verified biotech job openings, urgent exam alerts, and scientific grant updates delivered directly to your inbox every Monday morning.',
-            'Har Monday verified biotech jobs, urgent exam deadlines aur research grant circulars sidhe apne inbox me prapt karein.'
+            'Receive curated, verified biotech job openings, urgent exam alerts, and scientific grant circulars directly in your inbox every Monday.',
+            'Har Monday verified biotech jobs, urgent exam deadlines aur research grant circulars prapt karein.'
           )}
         </p>
+      </div>
+
+      {/* Honest Operational Notice */}
+      <div className="p-4 bg-slate-100 border border-slate-200 rounded-xl text-xs text-slate-700 leading-relaxed flex items-start gap-3">
+        <Info className="w-4 h-4 text-cyan-700 shrink-0 mt-0.5" />
+        <div>
+          <span className="font-semibold text-slate-900">Subscription Status & Transparency:</span>{' '}
+          Our dispatch operates as a curated Monday summary without marketing spam. Preferences are securely registered in your local scholar profile. We never share subscriber records with coaching centers or commercial recruiters.
+        </div>
       </div>
 
       {isSubmitted ? (
         <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-8 text-center space-y-3">
           <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto" />
           <h2 className="text-lg font-bold text-emerald-900">
-            Subscription Confirmed
+            {alreadySubscribed ? 'Subscription Preferences Updated' : 'Subscription Registered'}
           </h2>
-          <p className="text-xs sm:text-sm text-emerald-700 max-w-md mx-auto">
-            You have successfully subscribed with <span className="font-semibold text-emerald-900">{email}</span>. You will receive the Monday Digest covering {selectedTopics.join(', ')}.
+          <p className="text-xs sm:text-sm text-emerald-800 max-w-md mx-auto">
+            Your preferences have been saved for <span className="font-semibold text-emerald-950 font-mono">{email}</span>. You will receive dispatches focused on:
           </p>
-          <button
-            onClick={() => setIsSubmitted(false)}
-            className="mt-4 px-4 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
-          >
-            Manage Preferences
-          </button>
+          <div className="flex flex-wrap gap-1.5 justify-center pt-2">
+            {selectedTopics.map((top) => (
+              <span key={top} className="px-2.5 py-1 bg-white border border-emerald-300 rounded text-xs font-medium text-emerald-900">
+                {top}
+              </span>
+            ))}
+          </div>
+          <div className="pt-4 flex justify-center gap-3">
+            <button
+              onClick={() => setIsSubmitted(false)}
+              className="px-4 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+            >
+              Modify Selected Topics
+            </button>
+            <button
+              onClick={handleReset}
+              className="px-4 py-2 text-xs font-semibold text-rose-700 bg-white border border-rose-200 rounded-lg hover:bg-rose-50 transition-colors inline-flex items-center gap-1.5"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Unsubscribe / Reset</span>
+            </button>
+          </div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 space-y-6 shadow-xs">
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 space-y-6 shadow-xs">
           {errorMessage && (
-            <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-center gap-2 text-xs text-rose-800">
-              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+            <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-800 flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-600" />
               <span>{errorMessage}</span>
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-              Email Address
+            <label className="block text-xs font-semibold text-slate-900 uppercase tracking-wider mb-2">
+              Academic or Institutional Email
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <Mail className="w-4 h-4" />
+              </div>
               <input
                 type="email"
-                required
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
                   setErrorMessage(null);
                 }}
-                placeholder="scholar@university.ac.in"
-                className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white"
+                placeholder="e.g. researcher@iisc.ac.in or scholar@gmail.com"
+                className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 bg-white"
+                required
               />
             </div>
           </div>
 
-          <div className="space-y-3">
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
-              Select Your Interests (Custom Frequency)
+          <div>
+            <label className="block text-xs font-semibold text-slate-900 uppercase tracking-wider mb-2">
+              Select Curated Focus Areas ({selectedTopics.length} selected)
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {availableTopics.map((topic) => {
-                const checked = selectedTopics.includes(topic);
+                const isChecked = selectedTopics.includes(topic);
                 return (
-                  <label
+                  <button
+                    type="button"
                     key={topic}
                     onClick={() => toggleTopic(topic)}
-                    className={`flex items-start gap-2.5 p-3 rounded-lg border text-xs cursor-pointer transition-colors ${
-                      checked
-                        ? 'border-cyan-500 bg-cyan-50/50 text-slate-900'
-                        : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                    className={`p-3 rounded-lg border text-left text-xs transition-colors flex items-center justify-between cursor-pointer ${
+                      isChecked
+                        ? 'border-cyan-600 bg-cyan-50/50 text-cyan-950 font-medium'
+                        : 'border-slate-200 hover:border-slate-300 text-slate-600'
                     }`}
                   >
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      onChange={() => {}}
-                      className="mt-0.5 rounded text-cyan-600 focus:ring-cyan-500"
-                    />
-                    <span className="font-medium">{topic}</span>
-                  </label>
+                    <span>{topic}</span>
+                    <div
+                      className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
+                        isChecked ? 'border-cyan-600 bg-cyan-600 text-white' : 'border-slate-300'
+                      }`}
+                    >
+                      {isChecked && <span className="text-[10px] leading-none">✓</span>}
+                    </div>
+                  </button>
                 );
               })}
             </div>
@@ -166,26 +231,11 @@ export const NewsletterPage: React.FC = () => {
 
           <button
             type="submit"
-            disabled={isSubmitting}
-            className="w-full py-3 px-4 text-xs sm:text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 disabled:bg-slate-600 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+            className="w-full py-3 px-4 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
           >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Subscribing...</span>
-              </>
-            ) : (
-              <>
-                <span>Subscribe to Weekly Dispatch</span>
-                <Send className="w-4 h-4" />
-              </>
-            )}
+            <Send className="w-3.5 h-3.5" />
+            <span>{alreadySubscribed ? 'Update Dispatch Preferences' : 'Register for Weekly Dispatch'}</span>
           </button>
-
-          <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-400 text-center">
-            <ShieldCheck className="w-3.5 h-3.5 text-slate-400" />
-            <span>Strict privacy. No sponsored spam. Unsubscribe in 1 click at any time.</span>
-          </div>
         </form>
       )}
     </div>
