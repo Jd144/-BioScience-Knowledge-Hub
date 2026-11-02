@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext.tsx';
+import { useAuth } from '../../context/AuthContext.tsx';
 import { SearchModal } from './SearchModal.tsx';
 import {
   Search,
@@ -19,11 +20,16 @@ import {
   Compass,
   Download,
   Users,
-  Mail
+  Mail,
+  User,
+  LogIn,
+  LogOut,
+  ExternalLink
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { language, setLanguage } = useLanguage();
+  const { user, logout } = useAuth();
   const location = useLocation();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -47,7 +53,8 @@ export const Navbar: React.FC = () => {
   };
 
   const quickRibbonItems = [
-    { label: '⚡ Live Alerts', path: '/exams', highlight: true },
+    { label: '🎓 Exam Preparation (Mastery)', path: 'https://biosciencemasterycom.vercel.app/en/exams', isExternal: true, highlight: true },
+    { label: '⚡ Live Alerts', path: '/exams', highlight: false },
     { label: 'Govt Jobs', path: '/jobs' },
     { label: 'Summer Internships', path: '/internships' },
     { label: 'Scholarships', path: '/scholarships' },
@@ -77,8 +84,8 @@ export const Navbar: React.FC = () => {
               B
             </div>
             <div className="flex flex-col">
-              <span className="leading-tight font-extrabold text-slate-900">BioScience</span>
-              <span className="text-[10px] font-semibold text-cyan-800 tracking-wider uppercase leading-none">Knowledge Hub</span>
+              <span className="leading-tight font-extrabold text-slate-900 text-base">BioScience Hub</span>
+              <span className="text-[10px] font-semibold text-cyan-800 tracking-wider uppercase leading-none">Educational Platform</span>
             </div>
           </Link>
 
@@ -116,6 +123,14 @@ export const Navbar: React.FC = () => {
             >
               Exam Alerts
             </Link>
+            <a
+              href="https://biosciencemasterycom.vercel.app/en/exams"
+              className="hover:text-cyan-950 transition-colors whitespace-nowrap shrink-0 flex items-center gap-1.5 text-cyan-800 font-bold bg-cyan-50 hover:bg-cyan-100 px-2.5 py-1 rounded-lg border border-cyan-200/80 shadow-2xs"
+              title="Indian National Exam Preparation on BioScience Mastery"
+            >
+              <GraduationCap className="w-3.5 h-3.5 text-cyan-700" />
+              <span>Exam Preparation</span>
+            </a>
             <Link
               to="/lab-zone"
               className={`hover:text-slate-900 transition-colors whitespace-nowrap shrink-0 ${
@@ -176,6 +191,51 @@ export const Navbar: React.FC = () => {
               </button>
             </div>
 
+            {/* Official WhatsApp Channel Link */}
+            <a
+              href="https://whatsapp.com/channel/0029VbBeWMxA89MgAovtkf2j"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg border border-emerald-200/80 transition-colors"
+              title="Follow BioScience Mastery ™ on WhatsApp"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>WhatsApp</span>
+            </a>
+
+            {/* User Login / Member Portal */}
+            {user ? (
+              <div className="flex items-center gap-1.5">
+                <Link
+                  to="/dashboard"
+                  className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 text-xs font-bold text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-200 transition-colors"
+                  title="My Student Dashboard"
+                >
+                  <div className="w-5 h-5 rounded-full bg-slate-900 text-cyan-400 font-mono text-[10px] flex items-center justify-center font-bold">
+                    {user.fullName ? user.fullName.charAt(0).toUpperCase() : 'S'}
+                  </div>
+                  <span className="hidden md:inline font-mono text-xs">{user.fullName?.split(' ')[0] || 'Scholar'}</span>
+                </Link>
+                <button
+                  onClick={() => logout()}
+                  title="Sign Out"
+                  className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-slate-100 rounded-lg transition-colors"
+                  aria-label="Sign out"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors shadow-2xs"
+                title="Sign In to Student Hub"
+              >
+                <LogIn className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Log In</span>
+              </Link>
+            )}
+
             {/* Mobile Hamburger Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -190,27 +250,59 @@ export const Navbar: React.FC = () => {
         {/* Secondary Category Quick Ribbon (Horizontal Scroll Strip across all 19 sections) */}
         <div className="border-t border-slate-100 bg-slate-50/70 overflow-x-auto scrollbar-none py-2 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto flex items-center gap-2 text-[11px] font-medium text-slate-600">
-            {quickRibbonItems.map((item, idx) => (
-              <Link
-                key={idx}
-                to={item.path}
-                className={`px-2.5 py-1 rounded-md whitespace-nowrap transition-colors shrink-0 ${
-                  item.highlight
-                    ? 'bg-amber-100 text-amber-900 font-bold hover:bg-amber-200'
-                    : isActive(item.path)
-                    ? 'bg-slate-900 text-white font-semibold'
-                    : 'hover:bg-slate-200/70 text-slate-600'
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {quickRibbonItems.map((item, idx) =>
+              item.isExternal ? (
+                <a
+                  key={idx}
+                  href={item.path}
+                  className={`px-2.5 py-1 rounded-md whitespace-nowrap transition-colors shrink-0 flex items-center gap-1 ${
+                    item.highlight
+                      ? 'bg-amber-100 text-amber-950 font-bold hover:bg-amber-200 border border-amber-300/80 shadow-2xs'
+                      : 'hover:bg-slate-200/70 text-slate-600'
+                  }`}
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <Link
+                  key={idx}
+                  to={item.path}
+                  className={`px-2.5 py-1 rounded-md whitespace-nowrap transition-colors shrink-0 ${
+                    item.highlight
+                      ? 'bg-amber-100 text-amber-900 font-bold hover:bg-amber-200'
+                      : isActive(item.path)
+                      ? 'bg-slate-900 text-white font-semibold'
+                      : 'hover:bg-slate-200/70 text-slate-600'
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
           </div>
         </div>
 
         {/* Mobile Navigation Dropdown */}
         {mobileMenuOpen && (
           <div className="lg:hidden px-4 pt-3 pb-6 border-t border-slate-200 bg-white space-y-2 max-h-[80vh] overflow-y-auto">
+            {/* Prominent Cross-Platform Mastery CTA in Mobile Menu */}
+            <a
+              href="https://biosciencemasterycom.vercel.app/en/exams"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-cyan-900 to-slate-900 text-white border border-cyan-500/40 shadow-sm mb-3"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-cyan-400 text-slate-950 flex items-center justify-center font-bold text-xs">
+                  🎓
+                </div>
+                <div>
+                  <span className="text-xs font-bold block leading-tight">Exam Preparation (Mastery)</span>
+                  <span className="text-[10px] text-cyan-300">GAT-B, CSIR-NET & GATE Practice</span>
+                </div>
+              </div>
+              <span className="text-[11px] font-bold text-cyan-300">Open →</span>
+            </a>
+
             <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400 px-3 pt-1">
               Primary Knowledge Hub
             </div>
@@ -338,6 +430,69 @@ export const Navbar: React.FC = () => {
               <Mail className="w-4 h-4 text-cyan-600" />
               <span>Weekly Newsletter</span>
             </Link>
+
+            {/* Official Community Channels */}
+            <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400 px-3 pt-3">
+              Official Channels & Community
+            </div>
+            <a
+              href="https://whatsapp.com/channel/0029VbBeWMxA89MgAovtkf2j"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between px-3 py-2 text-xs font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded-lg border border-emerald-200"
+            >
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>BioScience Mastery ™ WhatsApp</span>
+              </span>
+              <ExternalLink className="w-3.5 h-3.5 text-emerald-600" />
+            </a>
+            <a
+              href="https://www.linkedin.com/company/https-bioscienceknowledge-hub.vercel.app-/"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between px-3 py-2 text-xs font-semibold text-sky-800 bg-sky-50 hover:bg-sky-100 rounded-lg border border-sky-200"
+            >
+              <span>BioScience Hub LinkedIn</span>
+              <ExternalLink className="w-3.5 h-3.5 text-sky-600" />
+            </a>
+
+            {/* User Account & Login */}
+            <div className="pt-3 border-t border-slate-100">
+              {user ? (
+                <div className="space-y-2">
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg"
+                  >
+                    <User className="w-4 h-4 text-cyan-600" />
+                    <span>My Student Dashboard ({user.fullName?.split(' ')[0] || 'Scholar'})</span>
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-50 rounded-lg"
+                  >
+                    <LogOut className="w-4 h-4 text-rose-500" />
+                    <span>Log Out</span>
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  to="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-sm"
+                >
+                  <LogIn className="w-4 h-4 text-cyan-400" />
+                  <span>Log In to Student Hub</span>
+                </Link>
+              )}
+            </div>
           </div>
         )}
       </header>

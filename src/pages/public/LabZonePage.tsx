@@ -4,6 +4,8 @@ import { useLanguage } from '../../context/LanguageContext.tsx';
 import { LAB_INSTRUMENTS } from '../../data/labInstrumentsData.ts';
 import { LAB_PROTOCOLS } from '../../data/labProtocolsData.ts';
 import { ScientificCalculator } from '../../components/lab/ScientificCalculator.tsx';
+import { InstrumentVisualizer } from '../../components/lab/InstrumentVisualizer.tsx';
+import { InstrumentDetail } from '../../components/lab/InstrumentDetail.tsx';
 import { Wrench, BookOpen, Calculator, Search, ShieldAlert, CheckCircle2, ChevronRight, FileText } from 'lucide-react';
 
 export const LabZonePage: React.FC = () => {
@@ -163,87 +165,12 @@ export const LabZonePage: React.FC = () => {
             </div>
           </div>
 
-          {/* Instrument Detail View */}
-          <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200 p-6 sm:p-8 space-y-6">
-            <div>
-              <span className="text-[11px] font-mono text-cyan-700 font-semibold bg-cyan-50 px-2 py-0.5 rounded uppercase">
-                {activeInstData.category}
-              </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-2">
-                {activeInstData.name.en}
-              </h2>
-            </div>
-
-            {/* Principle */}
-            <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 font-mono mb-1.5">
-                Scientific Principle
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-                {language === 'hinglish' ? activeInstData.principle.hinglish : activeInstData.principle.en}
-              </p>
-            </div>
-
-            {/* Components */}
-            <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 font-mono mb-2">
-                Major Hardware Components & Optics
-              </h3>
-              <ul className="text-xs text-slate-600 space-y-1.5">
-                {activeInstData.components.map((comp, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-cyan-700 shrink-0 mt-0.5" />
-                    <span>{comp}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Working Mechanism */}
-            <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 font-mono mb-2">
-                Operational Working Mechanism
-              </h3>
-              <ol className="text-xs text-slate-600 space-y-2">
-                {activeInstData.workingMechanism[language === 'hinglish' ? 'hinglish' : 'en'].map((step, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5">
-                    <span className="w-5 h-5 rounded bg-slate-100 text-slate-700 font-mono text-[11px] flex items-center justify-center shrink-0 font-bold">
-                      {idx + 1}
-                    </span>
-                    <span className="leading-relaxed">{step}</span>
-                  </li>
-                ))}
-              </ol>
-            </div>
-
-            {/* Applications & Precautions */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              <div className="p-4 bg-slate-50 rounded-lg">
-                <h4 className="text-xs font-bold text-slate-900 mb-2">Biotech Applications</h4>
-                <ul className="text-xs text-slate-600 space-y-1">
-                  {activeInstData.applications.map((app, i) => (
-                    <li key={i} className="flex items-start gap-1.5">
-                      <span className="text-cyan-700">·</span>
-                      <span>{app}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="p-4 bg-rose-50/60 border border-rose-100 rounded-lg">
-                <h4 className="text-xs font-bold text-rose-950 mb-2 flex items-center gap-1.5">
-                  <ShieldAlert className="w-3.5 h-3.5 text-rose-600" /> Critical SOP Precautions
-                </h4>
-                <ul className="text-xs text-rose-900 space-y-1">
-                  {activeInstData.precautions.map((prec, i) => (
-                    <li key={i} className="flex items-start gap-1.5">
-                      <span className="text-rose-600">·</span>
-                      <span>{prec}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+          {/* Instrument Detail View powered by InstrumentDetail component */}
+          <div className="lg:col-span-8">
+            <InstrumentDetail
+              id={selectedInstrument}
+              onSelectInstrument={(newId) => setSelectedInstrument(newId)}
+            />
           </div>
         </div>
       )}

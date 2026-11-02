@@ -12,14 +12,14 @@ export const PrivacyPolicyPage: React.FC = () => {
 
       <div className="space-y-5 text-xs sm:text-sm text-slate-700 leading-relaxed">
         <p>
-          At BioScience Knowledge Hub, we respect the privacy of students, scholars, and researchers accessing our platform. This Privacy Policy provides an accurate and transparent description of how data is handled on our public educational platform.
+          At BioScience Hub, we respect the privacy of students, scholars, and researchers accessing our platform. This Privacy Policy provides an accurate and transparent description of how data is handled on our public educational platform.
         </p>
 
         <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider font-mono pt-2">
           1. Public Access & Account-Free Architecture
         </h2>
         <p>
-          BioScience Knowledge Hub is an open, completely public educational resource. Browsing educational subjects, examination portals, laboratory instruments, and scientific calculators does not require registration, login, or personal profile creation. We do not collect or store user passwords.
+          BioScience Hub is an open, completely public educational resource. Browsing educational subjects, examination portals, laboratory instruments, and scientific calculators does not require registration, login, or personal profile creation. We do not collect or store user passwords.
         </p>
 
         <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider font-mono pt-2">
@@ -82,7 +82,7 @@ export const TermsPage: React.FC = () => {
           1. Academic Fair Use & Educational Purpose
         </h2>
         <p>
-          All educational materials, molecular mechanisms, and calculation tools provided on BioScience Knowledge Hub are designed solely for personal non-commercial educational study, academic reference, and national examination preparation.
+          All educational materials, molecular mechanisms, and calculation tools provided on BioScience Hub are designed solely for personal non-commercial educational study, academic reference, and national examination preparation.
         </p>
         <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider font-mono pt-2">
           2. Official Notices & Accuracy
@@ -142,7 +142,7 @@ export const ContactPage: React.FC = () => {
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Contact Academic Editorial Desk</h1>
         <p className="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
-          Submit curriculum feedback, errata, institution notices, or partnership inquiries to the BioScience Knowledge Hub editorial board.
+          Submit curriculum feedback, errata, institution notices, or partnership inquiries to the BioScience Hub editorial board.
         </p>
       </div>
 

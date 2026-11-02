@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext.tsx';
 import { COMPETITIVE_EXAMINATIONS } from '../../data/examsData.ts';
+import { getMasteryExamPrepUrl, BIOSCIENCE_MASTERY_URLS } from '../../data/ecosystemLinks.ts';
 import {
   ArrowLeft,
   ExternalLink,
@@ -14,6 +15,8 @@ import {
   Calendar,
   FileCheck2,
   Info,
+  GraduationCap,
+  Sparkles,
 } from 'lucide-react';
 
 export const ExamDetailPage: React.FC = () => {
@@ -93,6 +96,30 @@ export const ExamDetailPage: React.FC = () => {
         <p className="text-sm text-slate-600 mt-4 leading-relaxed max-w-4xl">
           {language === 'hinglish' ? exam.overview.hinglish : exam.overview.en}
         </p>
+
+        {/* Connected BioScience Mastery Exam Preparation Box */}
+        <div className="mt-5 p-4 rounded-xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white border border-cyan-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+          <div className="space-y-0.5 max-w-xl">
+            <div className="flex items-center gap-1.5 text-cyan-400 text-[11px] font-mono font-bold uppercase tracking-wider">
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              <span>BioScience Mastery Ecosystem</span>
+            </div>
+            <h3 className="text-sm sm:text-base font-bold text-white">
+              Targeted {exam.code} Preparation & Practice on BioScience Mastery
+            </h3>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Pair Knowledge Hub's verified academic syllabus with BioScience Mastery's focused question practice and examination revision framework.
+            </p>
+          </div>
+          <a
+            href={getMasteryExamPrepUrl(exam.code).url}
+            className="px-4 py-2 rounded-lg bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0 shadow-xs"
+            title={`Prepare for ${exam.code} on BioScience Mastery`}
+          >
+            <GraduationCap className="w-4 h-4" />
+            <span>Launch {exam.code} Preparation →</span>
+          </a>
+        </div>
 
         {/* Schedule & Cycle Ribbon */}
         <div className="mt-6 pt-5 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -280,6 +307,25 @@ export const ExamDetailPage: React.FC = () => {
               <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">{strat}</p>
             </div>
           ))}
+        </div>
+
+        {/* Mastery Practice CTA Card */}
+        <div className="mt-6 pt-5 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="space-y-0.5">
+            <span className="text-xs font-bold text-white block">
+              Ready to test your knowledge for {exam.code}?
+            </span>
+            <span className="text-[11px] text-slate-400">
+              Access the dedicated examination preparation modules on BioScience Mastery.
+            </span>
+          </div>
+          <a
+            href={getMasteryExamPrepUrl(exam.code).url}
+            className="px-4 py-2 rounded-lg bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-colors shrink-0 shadow-xs"
+          >
+            <GraduationCap className="w-4 h-4" />
+            <span>Practice {exam.code} on BioScience Mastery →</span>
+          </a>
         </div>
       </div>
     </div>

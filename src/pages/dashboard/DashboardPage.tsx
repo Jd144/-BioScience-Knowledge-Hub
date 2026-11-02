@@ -28,23 +28,15 @@ export const DashboardPage: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<'overview' | 'subjects' | 'exams' | 'bookmarks' | 'settings'>('overview');
 
-  // If student hasn't completed onboarding, direct them to complete it
-  if (user && !user.onboardingCompleted) {
-    return (
-      <div className="max-w-2xl mx-auto px-4 py-16 text-center space-y-4">
-        <h2 className="text-xl font-bold text-slate-900">Student Onboarding Incomplete</h2>
-        <p className="text-xs text-slate-600">
-          Please complete your 5-step academic profile setup to customize your examination portal.
-        </p>
-        <Link
-          to="/onboarding"
-          className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors"
-        >
-          <span>Complete Onboarding</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </Link>
-      </div>
-    );
+  // If user is not logged in, redirect to login page
+  React.useEffect(() => {
+    if (!user) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
+
+  if (!user) {
+    return null;
   }
 
   const selectedExams = COMPETITIVE_EXAMINATIONS.filter((e) =>

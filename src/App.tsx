@@ -6,6 +6,7 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext.tsx';
+import { AuthProvider } from './context/AuthContext.tsx';
 import { Navbar } from './components/common/Navbar.tsx';
 import { Footer } from './components/common/Footer.tsx';
 
@@ -36,6 +37,12 @@ const ResearchClubsPage = lazy(() => import('./pages/public/ResearchClubsPage.ts
 const NewsletterPage = lazy(() => import('./pages/public/NewsletterPage.tsx').then(m => ({ default: m.NewsletterPage })));
 const NotFoundPage = lazy(() => import('./pages/public/NotFoundPage.tsx').then(m => ({ default: m.NotFoundPage })));
 
+// Member Portal & Auth Pages
+const LoginPage = lazy(() => import('./pages/auth/LoginPage.tsx').then(m => ({ default: m.LoginPage })));
+const RegisterPage = lazy(() => import('./pages/auth/LoginPage.tsx').then(m => ({ default: m.RegisterPage })));
+const OnboardingPage = lazy(() => import('./pages/onboarding/OnboardingPage.tsx').then(m => ({ default: m.OnboardingPage })));
+const DashboardPage = lazy(() => import('./pages/dashboard/DashboardPage.tsx').then(m => ({ default: m.DashboardPage })));
+
 function PageLoadingFallback() {
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center p-8" aria-label="Loading page content">
@@ -48,85 +55,90 @@ function PageLoadingFallback() {
 export default function App() {
   return (
     <LanguageProvider>
-      <BrowserRouter>
-        <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans antialiased">
-          <Navbar />
-          <main className="flex-1">
-            <Suspense fallback={<PageLoadingFallback />}>
-              <Routes>
-                {/* 1. Home */}
-                <Route path="/" element={<HomePage />} />
+      <AuthProvider>
+        <BrowserRouter>
+          <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased">
+            <Navbar />
+            <main className="flex-1">
+              <Suspense fallback={<PageLoadingFallback />}>
+                <Routes>
+                  {/* 1. Home */}
+                  <Route path="/" element={<HomePage />} />
 
-                {/* 2. Learn (11 Core Subjects) */}
-                <Route path="/subjects" element={<SubjectsPage />} />
-                <Route path="/subjects/:slug" element={<SubjectDetailPage />} />
-                <Route path="/subjects/:slug/:topic" element={<TopicDetailPage />} />
+                  {/* 2. Learn (11 Core Subjects) */}
+                  <Route path="/subjects" element={<SubjectsPage />} />
+                  <Route path="/subjects/:slug" element={<SubjectDetailPage />} />
+                  <Route path="/subjects/:slug/:topic" element={<TopicDetailPage />} />
 
-                {/* 3. Jobs */}
-                <Route path="/jobs" element={<JobsPage />} />
-                <Route path="/jobs/:slug" element={<JobDetailPage />} />
+                  {/* 3. Jobs */}
+                  <Route path="/jobs" element={<JobsPage />} />
+                  <Route path="/jobs/:slug" element={<JobDetailPage />} />
 
-                {/* 4. Internships */}
-                <Route path="/internships" element={<InternshipsPage />} />
-                <Route path="/internships/:slug" element={<InternshipDetailPage />} />
+                  {/* 4. Internships */}
+                  <Route path="/internships" element={<InternshipsPage />} />
+                  <Route path="/internships/:slug" element={<InternshipDetailPage />} />
 
-                {/* 5. Exam Alerts (6 Competitive Portals) */}
-                <Route path="/exams" element={<ExamsPage />} />
-                <Route path="/exams/:code" element={<ExamDetailPage />} />
+                  {/* 5. Exam Alerts (6 Competitive Portals) */}
+                  <Route path="/exams" element={<ExamsPage />} />
+                  <Route path="/exams/:code" element={<ExamDetailPage />} />
 
-                {/* 6 & 7. Scholarships & Admissions */}
-                <Route path="/scholarships" element={<ScholarshipsAdmissionsPage />} />
-                <Route path="/admissions" element={<ScholarshipsAdmissionsPage />} />
+                  {/* 6 & 7. Scholarships & Admissions */}
+                  <Route path="/scholarships" element={<ScholarshipsAdmissionsPage />} />
+                  <Route path="/admissions" element={<ScholarshipsAdmissionsPage />} />
 
-                {/* 8 & 10. Research Opportunities & Proposals */}
-                <Route path="/research-opportunities" element={<ResearchProposalsPage />} />
-                <Route path="/research-proposals" element={<ResearchProposalsPage />} />
+                  {/* 8 & 10. Research Opportunities & Proposals */}
+                  <Route path="/research-opportunities" element={<ResearchProposalsPage />} />
+                  <Route path="/research-proposals" element={<ResearchProposalsPage />} />
 
-                {/* 9. Biotechnology News */}
-                <Route path="/news" element={<BiotechNewsPage />} />
+                  {/* 9. Biotechnology News */}
+                  <Route path="/news" element={<BiotechNewsPage />} />
 
-                {/* 11 & 12. Conferences, Events, Awards & Workshops */}
-                <Route path="/events" element={<EventsWorkshopsPage />} />
-                <Route path="/workshops" element={<EventsWorkshopsPage />} />
+                  {/* 11 & 12. Conferences, Events, Awards & Workshops */}
+                  <Route path="/events" element={<EventsWorkshopsPage />} />
+                  <Route path="/workshops" element={<EventsWorkshopsPage />} />
 
-                {/* 13. Career Guidance */}
-                <Route path="/career-guidance" element={<CareerGuidancePage />} />
+                  {/* 13. Career Guidance */}
+                  <Route path="/career-guidance" element={<CareerGuidancePage />} />
 
-                {/* 14. Lab Zone (Instruments, Protocols, Calculators) */}
-                <Route path="/lab-zone" element={<LabZonePage />} />
-                <Route path="/lab-zone/instruments" element={<LabZonePage />} />
-                <Route path="/lab-zone/protocols" element={<LabZonePage />} />
-                <Route path="/lab-zone/calculators" element={<LabZonePage />} />
+                  {/* 14. Lab Zone (Instruments, Protocols, Calculators) */}
+                  <Route path="/lab-zone" element={<LabZonePage />} />
+                  <Route path="/lab-zone/instruments" element={<LabZonePage />} />
+                  <Route path="/lab-zone/protocols" element={<LabZonePage />} />
+                  <Route path="/lab-zone/calculators" element={<LabZonePage />} />
 
-                {/* 15. Free Downloads */}
-                <Route path="/resources" element={<ResourcesPage />} />
-                <Route path="/downloads" element={<ResourcesPage />} />
+                  {/* 15. Free Downloads */}
+                  <Route path="/resources" element={<ResourcesPage />} />
+                  <Route path="/downloads" element={<ResourcesPage />} />
 
-                {/* 16. Research Clubs */}
-                <Route path="/research-clubs" element={<ResearchClubsPage />} />
+                  {/* 16. Research Clubs */}
+                  <Route path="/research-clubs" element={<ResearchClubsPage />} />
 
-                {/* 17. Newsletter */}
-                <Route path="/newsletter" element={<NewsletterPage />} />
+                  {/* 17. Newsletter */}
+                  <Route path="/newsletter" element={<NewsletterPage />} />
 
-                {/* 18 & 19. About & Contact */}
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-                <Route path="/terms" element={<TermsPage />} />
+                  {/* 18 & 19. About & Contact */}
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                  <Route path="/terms" element={<TermsPage />} />
 
-                {/* Deferred Auth routes safely redirected to public hub */}
-                <Route path="/auth/*" element={<Navigate to="/subjects" replace />} />
-                <Route path="/onboarding" element={<Navigate to="/subjects" replace />} />
-                <Route path="/dashboard" element={<Navigate to="/subjects" replace />} />
+                  {/* Member Portal & Student Account Authentication */}
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/auth/login" element={<LoginPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/auth/register" element={<RegisterPage />} />
+                  <Route path="/onboarding" element={<OnboardingPage />} />
+                  <Route path="/dashboard" element={<DashboardPage />} />
 
-                {/* Catch-all 404 Page */}
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-            </Suspense>
-          </main>
-          <Footer />
-        </div>
-      </BrowserRouter>
+                  {/* Catch-all 404 Page */}
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </Suspense>
+            </main>
+            <Footer />
+          </div>
+        </BrowserRouter>
+      </AuthProvider>
     </LanguageProvider>
   );
 }

@@ -13,12 +13,12 @@ export const AboutPage: React.FC = () => {
           Academic Identity & Ethics
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-          About BioScience Knowledge Hub
+          About BioScience Hub
         </h1>
         <p className="text-base text-slate-600 mt-3 leading-relaxed">
           {t(
-            'BioScience Knowledge Hub is an independent, non-commercial biotechnology academic encyclopedia and competitive examination preparation platform created to deliver uncompromising scientific rigor and dual-language comprehension to undergraduate and postgraduate scholars across India.',
-            'BioScience Knowledge Hub ek independent academic platform hai jo B.Sc., M.Sc., aur B.Tech biotechnology scholars ko authentic scientific concepts aur entrance exam preparation provide karta hai.'
+            'BioScience Hub is an independent, non-commercial biotechnology academic encyclopedia and competitive examination preparation platform created to deliver uncompromising scientific rigor and dual-language comprehension to undergraduate and postgraduate scholars across India.',
+            'BioScience Hub ek independent academic platform hai jo B.Sc., M.Sc., aur B.Tech biotechnology scholars ko authentic scientific concepts aur entrance exam preparation provide karta hai.'
           )}
         </p>
       </div>

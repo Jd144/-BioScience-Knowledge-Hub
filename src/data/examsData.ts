@@ -16,7 +16,7 @@ export const COMPETITIVE_EXAMINATIONS: Examination[] = [
     applicationWindow: 'Official 2026 registration opened 19 March 2026 and concluded April 2026 (Completed). Official 2027 schedule is not yet announced by NTA.',
     examDate: '2026 Examination was conducted on 17 May 2026 (CBT). Official 2027 test date is awaited from NTA (No speculative dates published).',
     statusNote: '2026 examination cycle concluded (Exam held 17 May 2026). Candidate admissions into participating DBT-supported M.Sc./M.Tech/M.V.Sc. institutions are finalized. The official 2027 session bulletin will be released by NTA in early 2027.',
-    speculativeDateDisclaimer: 'Zero Speculative Dates Policy: BioScience Knowledge Hub does not publish tentative or estimated exam dates. Exact examination schedules are published only after official public notifications on dbt.nta.ac.in and rcb.res.in.',
+    speculativeDateDisclaimer: 'Zero Speculative Dates Policy: BioScience Hub does not publish tentative or estimated exam dates. Exact examination schedules are published only after official public notifications on dbt.nta.ac.in and rcb.res.in.',
     officialBulletinUrl: 'https://dbt.nta.ac.in',
     outdatedOrDiscontinuedNotices: [
       'Discontinued Conducting Authority: Third-party coaching portals often state that JNU conducts GAT-B. The examination was previously named CEEB by JNU, but was permanently renamed GAT-B in 2020 and transferred to RCB/NTA.',

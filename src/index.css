@@ -3,18 +3,22 @@
 
 @layer base {
   :root {
-    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-    --font-heading: 'Manrope', system-ui, -apple-system, sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    --font-serif: "Times New Roman", Times, serif;
   }
 
-  body {
-    font-family: var(--font-sans);
+  *, ::before, ::after {
+    font-family: "Times New Roman", Times, serif !important;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading);
-    letter-spacing: -0.02em;
+  html, body {
+    font-family: "Times New Roman", Times, serif !important;
+  }
+
+  h1, h2, h3, h4, h5, h6,
+  p, a, span, button, input, select, textarea,
+  table, th, td, label, div, nav, header, footer,
+  ul, ol, li, kbd, code, pre, form {
+    font-family: "Times New Roman", Times, serif !important;
   }
 }
 

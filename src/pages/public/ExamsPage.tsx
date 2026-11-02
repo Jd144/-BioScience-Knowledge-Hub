@@ -2,7 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext.tsx';
 import { COMPETITIVE_EXAMINATIONS } from '../../data/examsData.ts';
-import { GraduationCap, ArrowRight, ExternalLink, ShieldCheck, AlertTriangle, BookOpen, Calendar } from 'lucide-react';
+import { BIOSCIENCE_MASTERY_URLS, getMasteryExamPrepUrl } from '../../data/ecosystemLinks.ts';
+import { GraduationCap, ArrowRight, ExternalLink, ShieldCheck, AlertTriangle, BookOpen, Calendar, Sparkles } from 'lucide-react';
 
 export const ExamsPage: React.FC = () => {
   const { language, t } = useLanguage();
@@ -37,8 +38,8 @@ export const ExamsPage: React.FC = () => {
             </h2>
             <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
               {t(
-                'BioScience Knowledge Hub audits every examination detail directly against official NTA, IIT, and CSIR notifications. We strictly refrain from publishing unverified rumors or guessing test schedules for upcoming 2027 sessions until official public notices are issued.',
-                'BioScience Knowledge Hub sabhi exam details ko directly official NTA, IIT aur CSIR bulletins se verify karta hai. Unofficial blogs ki tarah hum koi bhi tentative ya speculative exam dates publish nahi karte.'
+                'BioScience Hub audits every examination detail directly against official NTA, IIT, and CSIR notifications. We strictly refrain from publishing unverified rumors or guessing test schedules for upcoming 2027 sessions until official public notices are issued.',
+                'BioScience Hub sabhi exam details ko directly official NTA, IIT aur CSIR bulletins se verify karta hai. Unofficial blogs ki tarah hum koi bhi tentative ya speculative exam dates publish nahi karte.'
               )}
             </p>
           </div>
@@ -46,6 +47,32 @@ export const ExamsPage: React.FC = () => {
         <div className="text-xs text-slate-400 font-mono shrink-0 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
           6 Official Portals Verified
         </div>
+      </div>
+
+      {/* Connected Ecosystem Callout to BioScience Mastery */}
+      <div className="bg-gradient-to-r from-cyan-950 to-slate-900 border border-cyan-500/40 rounded-2xl p-6 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-md">
+        <div className="space-y-1.5 max-w-2xl">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
+            <span className="text-[11px] font-mono text-cyan-400 uppercase tracking-wider font-bold">
+              Connected Education Ecosystem
+            </span>
+          </div>
+          <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+            BioScience Mastery — Exam Preparation & Practice Portal
+          </h2>
+          <p className="text-xs text-slate-300 leading-relaxed">
+            While BioScience Hub maintains verified syllabi, official eligibility rules, and academic references, you can prepare with structured question practice, worked examples, and learning modules on BioScience Mastery.
+          </p>
+        </div>
+
+        <a
+          href={BIOSCIENCE_MASTERY_URLS.EXAMS_PORTAL}
+          className="px-5 py-2.5 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-xs flex items-center gap-2 transition-all shrink-0 shadow-xs"
+        >
+          <GraduationCap className="w-4 h-4" />
+          <span>Launch Mastery Exam Portal →</span>
+        </a>
       </div>
 
       {/* Grid of 6 Examinations */}
@@ -105,22 +132,23 @@ export const ExamsPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
-              <a
-                href={exam.officialWebsite}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[11px] text-slate-500 hover:text-slate-900 flex items-center gap-1 font-medium"
-              >
-                Official Link <ExternalLink className="w-3 h-3" />
-              </a>
+            <div className="pt-4 mt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
               <Link
                 to={`/exams/${exam.code.toLowerCase()}`}
-                className="px-3.5 py-1.5 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors flex items-center gap-1.5"
+                className="px-3 py-1.5 text-xs font-semibold text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-1.5"
               >
-                <span>View Full Portal</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <span>Syllabus & Pattern</span>
+                <ArrowRight className="w-3.5 h-3.5 text-cyan-600" />
               </Link>
+
+              <a
+                href={getMasteryExamPrepUrl(exam.code).url}
+                className="px-3 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors flex items-center gap-1.5 shadow-2xs"
+                title={`Prepare for ${exam.code} on BioScience Mastery`}
+              >
+                <GraduationCap className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Prepare on Mastery →</span>
+              </a>
             </div>
           </div>
         ))}

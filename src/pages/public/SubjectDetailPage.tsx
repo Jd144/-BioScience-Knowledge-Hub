@@ -2,7 +2,8 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext.tsx';
 import { CORE_SUBJECTS } from '../../data/subjectsData.ts';
-import { BookOpen, ArrowLeft, ArrowRight, CheckCircle2, Bookmark, ExternalLink } from 'lucide-react';
+import { BIOSCIENCE_MASTERY_URLS } from '../../data/ecosystemLinks.ts';
+import { BookOpen, ArrowLeft, ArrowRight, CheckCircle2, Bookmark, ExternalLink, GraduationCap } from 'lucide-react';
 
 export const SubjectDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -170,6 +171,32 @@ export const SubjectDetailPage: React.FC = () => {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* BioScience Mastery Practice Bridge */}
+      <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-6 text-white border border-cyan-500/30 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-sm">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+            <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-bold">
+              Cross-Platform Learning Bridge
+            </span>
+          </div>
+          <h3 className="text-base font-bold text-white">
+            Practice {subject.name.en} for National Examinations
+          </h3>
+          <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+            Apply {subject.name.en} concepts to high-yield competitive question patterns, worked solutions, and mock exam assessments on BioScience Mastery.
+          </p>
+        </div>
+
+        <a
+          href={BIOSCIENCE_MASTERY_URLS.EXAMS_PORTAL}
+          className="px-4 py-2.5 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0 shadow-xs"
+        >
+          <GraduationCap className="w-4 h-4 text-slate-950" />
+          <span>Practice on BioScience Mastery →</span>
+        </a>
       </div>
 
       {/* Academic References */}

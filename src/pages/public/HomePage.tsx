@@ -8,6 +8,7 @@ import { INTERNSHIP_OPPORTUNITIES } from '../../data/internshipsData.ts';
 import { SCHOLARSHIPS_ADMISSIONS } from '../../data/scholarshipsAdmissionsData.ts';
 import { BIOTECH_NEWS } from '../../data/newsData.ts';
 import { RESEARCH_PROPOSAL_SCHEMES, SCIENTIFIC_EVENTS_WORKSHOPS } from '../../data/researchCommunityData.ts';
+import { BIOSCIENCE_MASTERY_URLS, getMasteryExamPrepUrl } from '../../data/ecosystemLinks.ts';
 import {
   Layers,
   Atom,
@@ -76,7 +77,7 @@ export const HomePage: React.FC = () => {
 
   const faqs = [
     {
-      q: 'Which competitive examinations are covered on BioScience Knowledge Hub?',
+      q: 'Which competitive examinations are covered on BioScience Hub?',
       a: 'The platform strictly supports the 6 major Indian national examinations: GAT-B (DBT NTA), DBT-JRF / BET, GATE Biotechnology, IIT JAM Biotechnology, CUET-PG Life Sciences, and CSIR-NET Life Sciences. All syllabus details, exam patterns, and eligibility mappings are verified against official bulletins.',
     },
     {
@@ -92,8 +93,8 @@ export const HomePage: React.FC = () => {
       a: 'Yes. All 9 laboratory calculators (Molarity, Normality, Dilutions C1V1=C2V2, RPM-to-RCF, Beer-Lambert protein quantification, DNA A260/A280 purity, and Buffer preparation) are grounded in verified biophysical chemistry equations with full dimensional analysis and unit validation.',
     },
     {
-      q: 'Is any login or payment required to access educational notes or opportunity listings?',
-      a: 'No. BioScience Knowledge Hub is currently 100% public. Every subject chapter, exam syllabus guide, laboratory protocol, calculation engine, and job alert is openly accessible without requiring an account or registration.',
+      q: 'Is login or payment required to access educational notes or opportunity listings?',
+      a: 'No. BioScience Hub educational notes and opportunities are 100% free and open. We also provide an optional Student Sign In to save your personalized study preferences, college profile, and exam goals.',
     },
   ];
 
@@ -105,7 +106,7 @@ export const HomePage: React.FC = () => {
           <div className="max-w-3xl space-y-6">
             {/* Academic Tagline Kicker */}
             <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-              <span>BioScience Knowledge Hub</span>
+              <span>BioScience Hub</span>
               <span aria-hidden="true">·</span>
               <span className="text-cyan-700 font-semibold">Learn. Master. Prepare for Research.</span>
               <span aria-hidden="true">·</span>
@@ -480,24 +481,69 @@ export const HomePage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="pt-4 mt-4 border-t border-slate-700/60 flex items-center justify-between text-xs">
-                  <a
-                    href={exam.officialWebsite}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-slate-400 hover:text-cyan-400 flex items-center gap-1 text-[11px]"
-                  >
-                    Official Portal <ExternalLink className="w-3 h-3" />
-                  </a>
+                <div className="pt-4 mt-4 border-t border-slate-700/60 flex items-center justify-between text-xs gap-2">
                   <Link
                     to={`/exams/${exam.code.toLowerCase()}`}
-                    className="font-medium text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
+                    className="font-medium text-slate-300 hover:text-white flex items-center gap-1 text-[11px]"
                   >
-                    Full Syllabus <ArrowRight className="w-3 h-3" />
+                    <span>Syllabus</span>
+                    <ArrowRight className="w-3 h-3 text-cyan-400" />
                   </Link>
+
+                  <a
+                    href={getMasteryExamPrepUrl(exam.code).url}
+                    className="px-2.5 py-1 rounded-md text-[11px] font-bold text-cyan-900 bg-cyan-400 hover:bg-cyan-300 flex items-center gap-1 transition-all shadow-2xs"
+                    title={`Start ${exam.code} Exam Preparation on BioScience Mastery`}
+                  >
+                    <GraduationCap className="w-3.5 h-3.5 text-slate-900" />
+                    <span>Practice (Mastery) →</span>
+                  </a>
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* BIO SCIENCE MASTERY PROMOTIONAL & EXAM PREPARATION CTA SECTION */}
+          <div className="mt-12 bg-gradient-to-r from-slate-800 to-slate-800/90 rounded-2xl p-6 sm:p-8 border border-cyan-500/30 flex flex-col lg:flex-row items-center justify-between gap-6 shadow-xl">
+            <div className="space-y-2 max-w-2xl">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
+                <span className="text-[11px] font-mono text-cyan-400 uppercase tracking-wider font-bold">
+                  Connected Education Ecosystem
+                </span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                BioScience Mastery — Purpose-Built Exam Preparation
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                Connect your conceptual theory on BioScience Hub with targeted question analysis, structured revision frameworks, and competitive entrance preparation on BioScience Mastery.
+              </p>
+              <div className="flex flex-wrap gap-2 pt-1 text-[11px] text-slate-300 font-mono">
+                <span className="px-2 py-0.5 rounded bg-slate-900/80 border border-slate-700">✓ GAT-B Course</span>
+                <span className="px-2 py-0.5 rounded bg-slate-900/80 border border-slate-700">✓ CSIR-NET Life Sciences</span>
+                <span className="px-2 py-0.5 rounded bg-slate-900/80 border border-slate-700">✓ GATE Biotechnology</span>
+                <span className="px-2 py-0.5 rounded bg-slate-900/80 border border-slate-700">✓ DBT-JRF / BET</span>
+                <span className="px-2 py-0.5 rounded bg-slate-900/80 border border-slate-700">✓ IIT JAM & CUET-PG</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto shrink-0">
+              <a
+                href={BIOSCIENCE_MASTERY_URLS.EXAMS_PORTAL}
+                className="px-5 py-3 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-extrabold text-xs flex items-center justify-center gap-2 transition-all shadow-md group"
+              >
+                <GraduationCap className="w-4 h-4 text-slate-950" />
+                <span>Explore Exam Preparation Portal</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </a>
+
+              <a
+                href={BIOSCIENCE_MASTERY_URLS.GAT_B_COURSE}
+                className="px-4 py-3 rounded-xl bg-slate-900 hover:bg-slate-950 text-cyan-300 hover:text-white border border-slate-700 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
+              >
+                <span>View GAT-B Course →</span>
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -737,7 +783,7 @@ export const HomePage: React.FC = () => {
               )}
             </h2>
             <p className="text-sm text-slate-600 mt-3 leading-relaxed">
-              Unlike commercial portals that invent jobs, inflate recruitment numbers, or summarize concepts with inaccurate simplifications, BioScience Knowledge Hub is built on three core academic principles:
+              Unlike commercial portals that invent jobs, inflate recruitment numbers, or summarize concepts with inaccurate simplifications, BioScience Hub is built on three core academic principles:
             </p>
 
             <div className="mt-6 space-y-4">
@@ -829,6 +875,84 @@ export const HomePage: React.FC = () => {
             <span>Subscribe Free</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
+        </div>
+      </section>
+
+      {/* 11b. OFFICIAL CHANNELS & COMMUNITY (WHATSAPP & LINKEDIN) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-slate-900 rounded-2xl p-6 sm:p-8 text-white border border-slate-800 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-xs font-mono uppercase tracking-wider text-emerald-400 font-bold">
+                  Official Communication Channels
+                </span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-white mt-1">
+                Join the BioScience Mastery Community
+              </h3>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Real-time official notifications, summer internship application releases, and academic networking.
+              </p>
+            </div>
+
+            <Link
+              to="/login"
+              className="px-4 py-2 text-xs font-bold text-slate-900 bg-cyan-400 hover:bg-cyan-300 rounded-lg transition-colors flex items-center gap-1.5 self-start sm:self-auto shrink-0"
+            >
+              <span>Student Sign In / Dashboard</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* WhatsApp Card */}
+            <a
+              href="https://whatsapp.com/channel/0029VbBeWMxA89MgAovtkf2j"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-5 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-emerald-500/40 hover:border-emerald-500 flex items-center justify-between group transition-all"
+            >
+              <div className="space-y-1">
+                <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-wider font-bold block">
+                  Official WhatsApp Channel
+                </span>
+                <h4 className="text-sm font-bold text-white group-hover:text-emerald-300 transition-colors">
+                  Follow BioScience Mastery ™ on WhatsApp
+                </h4>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Instant exam date alerts, government recruitment PDFs, and curated study notes delivered to your phone.
+                </p>
+              </div>
+              <span className="shrink-0 ml-4 px-3 py-1.5 rounded-lg bg-emerald-600 group-hover:bg-emerald-500 text-white font-bold text-xs whitespace-nowrap">
+                Follow Channel →
+              </span>
+            </a>
+
+            {/* LinkedIn Card */}
+            <a
+              href="https://www.linkedin.com/company/https-bioscienceknowledge-hub.vercel.app-/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-5 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-sky-500/40 hover:border-sky-500 flex items-center justify-between group transition-all"
+            >
+              <div className="space-y-1">
+                <span className="text-[10px] font-mono text-sky-400 uppercase tracking-wider font-bold block">
+                  Official Professional Network
+                </span>
+                <h4 className="text-sm font-bold text-white group-hover:text-sky-300 transition-colors">
+                  BioScience Hub on LinkedIn
+                </h4>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Connect with biotechnology researchers, industry experts, and academic career roadmaps.
+                </p>
+              </div>
+              <span className="shrink-0 ml-4 px-3 py-1.5 rounded-lg bg-sky-600 group-hover:bg-sky-500 text-white font-bold text-xs whitespace-nowrap">
+                Follow on LinkedIn →
+              </span>
+            </a>
+          </div>
         </div>
       </section>
 

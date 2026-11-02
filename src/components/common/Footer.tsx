@@ -16,7 +16,7 @@ export const Footer: React.FC = () => {
                 B
               </div>
               <span className="text-sm font-bold text-white tracking-tight">
-                BioScience Knowledge Hub
+                BioScience Hub
               </span>
             </div>
             <p className="text-slate-400 text-xs leading-relaxed">
@@ -159,6 +159,14 @@ export const Footer: React.FC = () => {
                   Free Formula Sheets
                 </Link>
               </li>
+              <li>
+                <a
+                  href="https://biosciencemasterycom.vercel.app/en/exams"
+                  className="text-cyan-400 font-semibold hover:underline flex items-center gap-1"
+                >
+                  <span>Exam Prep (Mastery) →</span>
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -199,6 +207,11 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/login" className="text-cyan-400 font-semibold hover:underline">
+                  Student Sign In / Login →
+                </Link>
+              </li>
+              <li>
                 <Link to="/privacy-policy" className="hover:text-slate-200 transition-colors">
                   Privacy Policy & Terms
                 </Link>
@@ -207,10 +220,61 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
+        {/* Official Channels & Community Banner */}
+        <div className="mt-8 pt-6 border-t border-slate-800/80 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <a
+            href="https://whatsapp.com/channel/0029VbBeWMxA89MgAovtkf2j"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-4 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-emerald-500/30 flex items-center justify-between group transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">
+                WA
+              </div>
+              <div>
+                <span className="text-xs font-bold text-white block group-hover:text-emerald-400 transition-colors">
+                  Follow BioScience Mastery ™ on WhatsApp
+                </span>
+                <span className="text-[11px] text-slate-400">
+                  Daily verified biotechnology updates, exam alerts & vacancies
+                </span>
+              </div>
+            </div>
+            <span className="text-xs font-semibold text-emerald-400 group-hover:translate-x-1 transition-transform">
+              Join Channel →
+            </span>
+          </a>
+
+          <a
+            href="https://www.linkedin.com/company/https-bioscienceknowledge-hub.vercel.app-/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-4 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-sky-500/30 flex items-center justify-between group transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold text-sm">
+                in
+              </div>
+              <div>
+                <span className="text-xs font-bold text-white block group-hover:text-sky-400 transition-colors">
+                  BioScience Hub LinkedIn
+                </span>
+                <span className="text-[11px] text-slate-400">
+                  Professional network, academic discourse & research career alerts
+                </span>
+              </div>
+            </div>
+            <span className="text-xs font-semibold text-sky-400 group-hover:translate-x-1 transition-transform">
+              Follow on LinkedIn →
+            </span>
+          </a>
+        </div>
+
         {/* Bottom Bar */}
-        <div className="mt-8 pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+        <div className="mt-8 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
           <div>
-            © {new Date().getFullYear()} BioScience Knowledge Hub. All rights reserved.
+            © {new Date().getFullYear()} BioScience Hub. All rights reserved.
           </div>
           <div className="flex items-center gap-4">
             <span>Bilingual Edition: English & Roman Hinglish</span>

@@ -94,19 +94,77 @@ export const LoginPage: React.FC = () => {
             disabled={loading}
             className="w-full py-2.5 px-4 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
           >
-            <span>{loading ? 'Authenticating...' : 'Sign In to Student Hub'}</span>
+            <span>{loading ? 'Authenticating...' : 'Sign In with Email'}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </form>
 
-        <div className="pt-4 border-t border-slate-100 text-center text-xs text-slate-600">
+        {/* 1-Click Quick Scholar Sign-In (For Instant Testing) */}
+        <div className="relative flex items-center justify-center">
+          <div className="border-t border-slate-200 w-full" />
+          <span className="bg-white px-2 text-[10px] uppercase font-bold text-slate-400 absolute">
+            Or Instant Access
+          </span>
+        </div>
+
+        <button
+          type="button"
+          onClick={async () => {
+            setLoading(true);
+            const res = await login('scholar@biosciencehub.edu', 'demo1234');
+            setLoading(false);
+            if (res.success) {
+              navigate('/dashboard');
+            }
+          }}
+          className="w-full py-2 px-3 text-xs font-bold text-cyan-900 bg-cyan-50 hover:bg-cyan-100 border border-cyan-200 rounded-lg transition-colors flex items-center justify-center gap-2"
+        >
+          <span>⚡ 1-Click Scholar Sign-In (Test Session)</span>
+        </button>
+
+        {/* Member Benefits Preview Notice */}
+        <div className="p-3 bg-amber-50/80 rounded-xl border border-amber-200/80 text-[11px] text-amber-950 space-y-1">
+          <span className="font-bold block text-amber-900">
+            ℹ️ Member Benefits (Preview Mode):
+          </span>
+          <p className="leading-relaxed">
+            Login is active for student session persistence. Personalized syllabus bookmarks, study planner, and verified mock test reports will be unlocked in upcoming releases.
+          </p>
+        </div>
+
+        {/* Official Channels */}
+        <div className="pt-2 border-t border-slate-100 space-y-2">
+          <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block text-center">
+            Connect with Official Channels
+          </span>
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <a
+              href="https://whatsapp.com/channel/0029VbBeWMxA89MgAovtkf2j"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 font-semibold flex items-center justify-center gap-1.5 text-center text-[11px]"
+            >
+              <span>WhatsApp Channel</span>
+            </a>
+            <a
+              href="https://www.linkedin.com/company/https-bioscienceknowledge-hub.vercel.app-/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-lg bg-sky-50 hover:bg-sky-100 border border-sky-200 text-sky-800 font-semibold flex items-center justify-center gap-1.5 text-center text-[11px]"
+            >
+              <span>LinkedIn Page</span>
+            </a>
+          </div>
+        </div>
+
+        <div className="pt-2 text-center text-xs text-slate-600">
           <span>Don't have an account yet? </span>
           <Link to="/auth/register" className="text-cyan-700 font-semibold hover:underline">
             Register as a Student
           </Link>
         </div>
 
-        <div className="p-3 bg-slate-50 rounded-lg text-[11px] text-slate-500 flex items-center justify-center gap-1.5 border border-slate-100">
+        <div className="p-2.5 bg-slate-50 rounded-lg text-[11px] text-slate-500 flex items-center justify-center gap-1.5 border border-slate-100">
           <Database className="w-3.5 h-3.5 text-slate-400" />
           <span>{supabaseConfigured ? 'Secured by Supabase Auth (PostgreSQL)' : 'Local Offline-First Session Active'}</span>
         </div>
@@ -163,7 +221,7 @@ export const RegisterPage: React.FC = () => {
             {t('Student Registration', 'Create Student Account')}
           </h1>
           <p className="text-xs text-center text-slate-500 mt-1">
-            Join the BioScience Knowledge Hub for verified biotechnology education.
+            Join the BioScience Hub for verified biotechnology education.
           </p>
         </div>
 
