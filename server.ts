@@ -4,6 +4,9 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { GoogleGenAI } from '@google/genai';
 
+import { adminRouter } from './server/adminRoutes.js';
+import { db } from './server/db.js';
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -13,6 +16,26 @@ const app = express();
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 app.use(express.json());
+
+// Mount Admin API Router
+app.use('/api/admin', adminRouter);
+
+// Public Maintenance Status Check
+app.get('/api/maintenance/status', (req, res) => {
+  db.checkAndAutoExpireMaintenance();
+  const m = db.getData().maintenance;
+  res.json({
+    enabled: m.enabled,
+    title: m.title,
+    message_en: m.message_en,
+    message_hi: m.message_hi,
+    personal_message_en: m.personal_message_en,
+    personal_message_hi: m.personal_message_hi,
+    expected_reopening_iso: m.expected_reopening_iso,
+    timezone: m.timezone,
+    server_time_iso: new Date().toISOString(),
+  });
+});
 
 // Initialize Google Gen AI with Gemini 3.8 Flash
 const ai = new GoogleGenAI();

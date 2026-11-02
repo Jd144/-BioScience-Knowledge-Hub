@@ -1,0 +1,443 @@
+{
+  "adminUsers": [
+    {
+      "id": "usr-superadmin-01",
+      "email": "charanjaydeep712@gmail.com",
+      "fullName": "Jaydeep Charan",
+      "role": "superadmin",
+      "passwordHash": "",
+      "isInitialSetupPending": true,
+      "createdAt": "2026-11-02T14:04:11.677Z",
+      "failedLoginAttempts": 0
+    }
+  ],
+  "adminSessions": [],
+  "maintenance": {
+    "enabled": false,
+    "title": "We'll Be Back Soon!",
+    "message_en": "BioScience Hub is temporarily under scheduled system maintenance and database optimization to provide an enhanced academic learning experience.",
+    "message_hi": "BioScience Hub पर आपके अध्ययन अनुभव को और बेहतर बनाने के लिए निर्धारित सिस्टम रखरखाव और डेटाबेस अनुकूलन का कार्य प्रगति पर है।",
+    "personal_message_en": "⏳ While BioScience Hub is getting ready to welcome you back, take this opportunity to spend some precious time with your family and loved ones. ❤️👨👩👧👦\n\nMake beautiful memories, share a smile, and enjoy the little moments of life. 🌸✨\n\nWe'll be back soon with a better learning experience for you! 🚀",
+    "personal_message_hi": "⏳ जब तक BioScience Hub दोबारा शुरू होता है, तब तक अपना यह कीमती समय अपने परिवार और प्रियजनों के साथ बिताइए। ❤️👨👩👧👦\n\nअपनों के साथ कुछ खूबसूरत पल बिताइए, खुश रहिए और मुस्कुराते रहिए। 🌸✨\n\nहम जल्द ही आपके लिए एक बेहतर Learning Experience के साथ वापस आएंगे! 🚀",
+    "expected_reopening_iso": "2026-11-02T14:04:23.955Z",
+    "timezone": "Asia/Kolkata",
+    "last_updated_at": "2026-11-02T14:04:28.959Z",
+    "last_updated_by": "system_scheduled_auto_reopen",
+    "history": [
+      {
+        "id": "hist-1793628268959",
+        "action": "auto_reopened",
+        "timestamp": "2026-11-02T14:04:28.959Z",
+        "triggered_by": "system_auto_timer",
+        "note": "Maintenance mode automatically turned OFF as scheduled reopening time (2026-11-02T14:04:23.955Z) was reached."
+      },
+      {
+        "id": "hist-1793628268957",
+        "action": "enabled",
+        "timestamp": "2026-11-02T14:04:28.957Z",
+        "triggered_by": "charanjaydeep712@gmail.com",
+        "scheduled_reopening": "2026-11-02T14:04:23.955Z",
+        "note": "Maintenance Mode activated until 2026-11-02T14:04:23.955Z (Asia/Kolkata)."
+      },
+      {
+        "id": "hist-1793628262611",
+        "action": "disabled",
+        "timestamp": "2026-11-02T14:04:22.611Z",
+        "triggered_by": "charanjaydeep712@gmail.com",
+        "scheduled_reopening": "2026-11-02T15:04:22.603Z",
+        "note": "Maintenance Mode deactivated. Public website access fully restored."
+      },
+      {
+        "id": "hist-1793628262606",
+        "action": "enabled",
+        "timestamp": "2026-11-02T14:04:22.606Z",
+        "triggered_by": "charanjaydeep712@gmail.com",
+        "scheduled_reopening": "2026-11-02T15:04:22.603Z",
+        "note": "Maintenance Mode activated until 2026-11-02T15:04:22.603Z (Asia/Kolkata)."
+      }
+    ]
+  },
+  "auditLogs": [
+    {
+      "id": "log-1793628275136-gb9w",
+      "timestamp": "2026-11-02T14:04:35.136Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_FAILED",
+      "resource": "AUTH",
+      "details": {
+        "reason": "Incorrect password"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793628274870-uvua",
+      "timestamp": "2026-11-02T14:04:34.870Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_FAILED",
+      "resource": "AUTH",
+      "details": {
+        "reason": "Incorrect password"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793628274604-dr4k",
+      "timestamp": "2026-11-02T14:04:34.604Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_FAILED",
+      "resource": "AUTH",
+      "details": {
+        "reason": "Incorrect password"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793628274354-g7ol",
+      "timestamp": "2026-11-02T14:04:34.354Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_FAILED",
+      "resource": "AUTH",
+      "details": {
+        "reason": "Incorrect password"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793628274086-f1fm",
+      "timestamp": "2026-11-02T14:04:34.086Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_FAILED",
+      "resource": "AUTH",
+      "details": {
+        "reason": "Incorrect password"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793628268959-b94t",
+      "timestamp": "2026-11-02T14:04:28.959Z",
+      "actorEmail": "system_auto_timer",
+      "actorRole": "system",
+      "action": "MAINTENANCE_AUTO_REOPEN",
+      "resource": "MAINTENANCE",
+      "details": {
+        "message": "Maintenance mode automatically expired and public website restored."
+      }
+    },
+    {
+      "id": "log-1793628268958-gk3j",
+      "timestamp": "2026-11-02T14:04:28.958Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "MAINTENANCE_ENABLED",
+      "resource": "MAINTENANCE",
+      "details": {
+        "expected_reopening_iso": "2026-11-02T14:04:23.955Z",
+        "timezone": "Asia/Kolkata"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793628268948-je2g",
+      "timestamp": "2026-11-02T14:04:28.948Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_SUCCESSFUL",
+      "resource": "AUTH",
+      "details": {
+        "userAgent": "node"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793628262611-lgdv",
+      "timestamp": "2026-11-02T14:04:22.611Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "MAINTENANCE_DISABLED",
+      "resource": "MAINTENANCE",
+      "details": {
+        "expected_reopening_iso": "2026-11-02T15:04:22.603Z",
+        "timezone": "Asia/Kolkata"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793628262606-v6o1",
+      "timestamp": "2026-11-02T14:04:22.606Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "MAINTENANCE_ENABLED",
+      "resource": "MAINTENANCE",
+      "details": {
+        "expected_reopening_iso": "2026-11-02T15:04:22.603Z",
+        "timezone": "Asia/Kolkata"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793628262592-bxfl",
+      "timestamp": "2026-11-02T14:04:22.592Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "ADMIN_INITIAL_SETUP_COMPLETED",
+      "resource": "AUTH",
+      "details": {
+        "message": "Super admin password initialized."
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-init-01",
+      "timestamp": "2026-11-02T14:04:11.677Z",
+      "actorEmail": "system",
+      "actorRole": "system",
+      "action": "SYSTEM_INITIALIZED",
+      "resource": "DATABASE",
+      "details": {
+        "message": "BioScience Hub central database initialized."
+      }
+    }
+  ],
+  "contactSubmissions": [
+    {
+      "id": "cnt-01",
+      "name": "Prof. Ananya Sharma",
+      "email": "ananya.s@biotech-univ.ac.in",
+      "subject": "Curriculum mapping for Molecular Genetics unit",
+      "message": "The transcriptional regulation diagrams are extraordinarily clear. We have recommended BioScience Hub to our M.Sc. Biotechnology first semester cohort.",
+      "submittedAt": "2026-11-01T14:04:11.677Z",
+      "status": "read"
+    }
+  ],
+  "newsletterSubscribers": [
+    {
+      "id": "sub-01",
+      "email": "scholar.biotech@research.org",
+      "subscribedAt": "2026-10-31T14:04:11.677Z",
+      "status": "active",
+      "preferredCategories": [
+        "Competitive Exams",
+        "Research Fellowships",
+        "Lab Protocols"
+      ]
+    }
+  ],
+  "mediaFiles": [],
+  "articles": [
+    {
+      "id": "art-01",
+      "slug": "crispr-cas9-mechanisms-applications",
+      "title": "CRISPR-Cas9 Molecular Precision: Mechanistic Insight & RNP Delivery",
+      "subjectSlug": "genetic-engineering",
+      "topicSlug": "crispr-cas9",
+      "summary": "In-depth molecular analysis of Cas9 endonuclease ribonucleoprotein complex, PAM recognition (5'-NGG-3'), and double-strand break repair via NHEJ versus HDR.",
+      "content": "<h2>Molecular Structure of Cas9 Endonuclease</h2><p>Streptococcus pyogenes Cas9 (SpCas9) is a multi-domain endonuclease that associates with a chimeric single guide RNA (sgRNA). Cas9 comprises two structural lobes: the Recognition (REC) lobe and the Nuclease (NUC) lobe.</p><h3>PAM Recognition & Strand Cleavage</h3><p>Target search involves scanning genomic DNA for the 5'-NGG-3' protospacer adjacent motif (PAM) by the PAM-interacting domain (PID). Strand separation is initiated, followed by RNA-DNA hybridization.</p>",
+      "status": "published",
+      "sourceUrl": "https://doi.org/10.1126/science.1225829",
+      "verifiedBy": "charanjaydeep712@gmail.com",
+      "lastVerifiedDate": "2026-10-15",
+      "nextReviewDate": "2027-04-15",
+      "author": "BioScience Editorial Board",
+      "createdAt": "2026-10-03T14:04:11.677Z",
+      "updatedAt": "2026-10-28T14:04:11.677Z",
+      "revisions": []
+    }
+  ],
+  "opportunities": [
+    {
+      "id": "opp-01",
+      "type": "job",
+      "title": "Junior Research Fellow (JRF) - Structural Biology & Cryo-EM",
+      "organization": "Regional Centre for Biotechnology (RCB), Faridabad",
+      "description": "DST-SERB sponsored project investigating viral envelope glycoproteins using single-particle cryo-electron microscopy and biochemical reconstitution.",
+      "eligibility": "M.Sc. in Biotechnology / Biochemistry / Life Sciences with CSIR-UGC NET (JRF/LS) or valid GATE score.",
+      "qualification": "Postgraduate degree in Life Sciences with national entrance qualification.",
+      "location": "Faridabad, Haryana (NCR)",
+      "stipendOrSalary": "₹37,000 + 24% HRA per month (DST Guidelines)",
+      "openingDate": "2026-10-10",
+      "deadline": "2026-11-25",
+      "officialNotificationUrl": "https://rcb.res.in/index.php?param=newdetails/712",
+      "applicationUrl": "https://rcb.res.in/index.php?param=apply",
+      "sourceUrl": "https://rcb.res.in",
+      "verificationStatus": "verified",
+      "publicationStatus": "published",
+      "lastVerifiedDate": "2026-11-01",
+      "nextReviewDate": "2026-11-20",
+      "verifiedBy": "charanjaydeep712@gmail.com",
+      "createdAt": "2026-11-02T14:04:11.677Z",
+      "updatedAt": "2026-11-02T14:04:11.677Z"
+    },
+    {
+      "id": "opp-02",
+      "type": "internship",
+      "title": "Science Academies Summer Research Fellowship Programme (SRFP)",
+      "organization": "Indian Academy of Sciences, Bengaluru",
+      "description": "Two-month prestigious summer research fellowship under fellowship guides across national institutions (IISc, TIFR, IITs, CSIR institutes).",
+      "eligibility": "Undergraduate and postgraduate biotechnology and life sciences students with minimum 65% aggregate score.",
+      "qualification": "B.Sc. (2nd/3rd year), M.Sc. (1st year), or B.Tech (3rd year)",
+      "location": "Pan-India participating research institutes",
+      "stipendOrSalary": "Monthly fellowship ₹12,000 + round-trip travel allowance",
+      "openingDate": "2026-10-01",
+      "deadline": "2026-11-15",
+      "officialNotificationUrl": "https://webjapps.ias.ac.in/",
+      "applicationUrl": "https://webjapps.ias.ac.in/",
+      "sourceUrl": "https://webjapps.ias.ac.in/",
+      "verificationStatus": "verified",
+      "publicationStatus": "published",
+      "lastVerifiedDate": "2026-11-01",
+      "nextReviewDate": "2026-11-12",
+      "verifiedBy": "charanjaydeep712@gmail.com",
+      "createdAt": "2026-11-02T14:04:11.677Z",
+      "updatedAt": "2026-11-02T14:04:11.677Z"
+    },
+    {
+      "id": "opp-03",
+      "type": "fellowship",
+      "title": "DBT-Junior Research Fellowship (DBT-JRF / BET)",
+      "organization": "Department of Biotechnology (DBT), Govt. of India",
+      "description": "National fellowship award for doctoral research across universities and national laboratories in biotechnology and allied disciplines.",
+      "eligibility": "M.Sc. / M.Tech in Biotechnology or Life Sciences with minimum 60% marks (55% for SC/ST/PwD).",
+      "qualification": "Postgraduate qualification in Biotechnology / Life Sciences",
+      "location": "Pan-India DBT recognized institutions",
+      "stipendOrSalary": "₹37,000/month JRF + contingency grant (Category I)",
+      "openingDate": "2026-02-15",
+      "deadline": "2026-03-20",
+      "officialNotificationUrl": "https://dbt.nta.ac.in",
+      "applicationUrl": "https://dbt.nta.ac.in",
+      "sourceUrl": "https://dbt.nta.ac.in",
+      "verificationStatus": "verified",
+      "publicationStatus": "published",
+      "lastVerifiedDate": "2026-10-25",
+      "nextReviewDate": "2026-12-01",
+      "verifiedBy": "charanjaydeep712@gmail.com",
+      "createdAt": "2026-11-02T14:04:11.677Z",
+      "updatedAt": "2026-11-02T14:04:11.677Z"
+    }
+  ],
+  "examinations": [
+    {
+      "code": "GAT-B",
+      "fullName": "Graduate Aptitude Test - Biotechnology",
+      "conductingAgency": "National Testing Agency (NTA) on behalf of Regional Centre for Biotechnology (RCB)",
+      "officialPortalUrl": "https://dbt.nta.ac.in",
+      "syllabusSummary": "Section A: 10+2 level Physics, Chemistry, Mathematics, and Biology. Section B: Graduate level Biotechnology, Life Sciences, Genetics, Microbiology, and Bioinformatics.",
+      "eligibilitySummary": "Bachelor degree in Biotechnology or allied biological disciplines with minimum 60% aggregate (55% for reserved categories).",
+      "examPattern": "Computer Based Test (CBT), 180 Minutes. Section A: 60 compulsory questions. Section B: 100 questions (candidate attempts any 60).",
+      "durationMinutes": 180,
+      "markingScheme": "Section A: +1, -0.5. Section B: +3, -1.",
+      "importantDatesText": "2026 cycle concluded (Exam held 17 May 2026). Official 2027 session bulletin expected early 2027.",
+      "verificationDate": "2026-11-01",
+      "masteryDestinationUrl": "https://biosciencemasterycom.vercel.app/en/courses/gat-b",
+      "masteryActive": true,
+      "statusNote": "Admissions for 2026 participating institutions concluded. Official 2027 notification awaited.",
+      "updatedAt": "2026-11-02T14:04:11.677Z"
+    },
+    {
+      "code": "DBT-JRF",
+      "fullName": "Biotechnology Eligibility Test (BET) / DBT-JRF",
+      "conductingAgency": "Regional Centre for Biotechnology (RCB) / NTA",
+      "officialPortalUrl": "https://dbt.nta.ac.in",
+      "syllabusSummary": "Section A: General Aptitude & General Biotechnology. Section B: Specialized subjects in Agricultural, Animal, Medical, Environmental, and Industrial Biotechnology.",
+      "eligibilitySummary": "M.Sc. / M.Tech / M.V.Sc. in Biotechnology or allied subjects with 60% marks. Age limit 28 years (relaxation as per GOI rules).",
+      "examPattern": "CBT, 180 Minutes. Section A: 50 compulsory questions. Section B: 150 questions (attempt 50). Total 100 questions.",
+      "durationMinutes": 180,
+      "markingScheme": "+3 marks for correct, -1 mark for incorrect.",
+      "importantDatesText": "Annual examination cycle. 2027 notification scheduled for announcement by NTA/DBT.",
+      "verificationDate": "2026-11-01",
+      "masteryDestinationUrl": "https://biosciencemasterycom.vercel.app/en/exams",
+      "masteryActive": true,
+      "statusNote": "Category-I (top 275) awarded DBT-JRF fellowship. Category-II eligible for project employment.",
+      "updatedAt": "2026-11-02T14:04:11.677Z"
+    },
+    {
+      "code": "GATE-BT",
+      "fullName": "Graduate Aptitude Test in Engineering - Biotechnology",
+      "conductingAgency": "Indian Institutes of Technology (IITs) / IISc",
+      "officialPortalUrl": "https://gate2026.iitr.ac.in",
+      "syllabusSummary": "General Aptitude, Engineering Mathematics, Microbiology, Biochemistry, Molecular Biology & Genetics, Bioprocess Engineering, Plant & Animal Biotech, Recombinant DNA, Computational Biology.",
+      "eligibilitySummary": "Candidates in 3rd/final year or completed Bachelor degree in Engineering / Technology or M.Sc. in Science subjects.",
+      "examPattern": "CBT, 180 Minutes, 65 questions (10 General Aptitude + 55 Subject specific). Combination of MCQs, MSQs, and NATs.",
+      "durationMinutes": 180,
+      "markingScheme": "1-mark and 2-mark questions. MCQs have negative marking (1/3rd or 2/3rd). MSQs and NATs have ZERO negative marking.",
+      "importantDatesText": "Annual national examination held in February.",
+      "verificationDate": "2026-11-01",
+      "masteryDestinationUrl": "https://biosciencemasterycom.vercel.app/en/exams",
+      "masteryActive": true,
+      "statusNote": "Score card valid for 3 years for M.Tech admissions and PSU recruitment.",
+      "updatedAt": "2026-11-02T14:04:11.677Z"
+    },
+    {
+      "code": "IIT-JAM",
+      "fullName": "Joint Admission Test for Masters - Biotechnology (BT)",
+      "conductingAgency": "Organizing IIT (annual rotation)",
+      "officialPortalUrl": "https://jam2026.iitd.ac.in",
+      "syllabusSummary": "Biology (44%), Chemistry (20%), Mathematics (18%), Physics (18%) at 10+2 and undergraduate level.",
+      "eligibilitySummary": "Undergraduate degree with no minimum aggregate mark requirement (only pass required per revised IIT JAM norms).",
+      "examPattern": "CBT, 180 Minutes, 60 questions divided into Section A (MCQs), Section B (MSQs), Section C (NATs).",
+      "durationMinutes": 180,
+      "markingScheme": "Section A: Negative marking. Section B & C: No negative marking.",
+      "importantDatesText": "Annual exam conducted in February across Indian centers.",
+      "verificationDate": "2026-11-01",
+      "masteryDestinationUrl": "https://biosciencemasterycom.vercel.app/en/exams",
+      "masteryActive": true,
+      "statusNote": "Admission into M.Sc., Joint M.Sc.-Ph.D. at IITs and Integrated Ph.D. at IISc.",
+      "updatedAt": "2026-11-02T14:04:11.677Z"
+    },
+    {
+      "code": "CUET-PG",
+      "fullName": "Common University Entrance Test (Postgraduate) - Life Sciences (SCQP17)",
+      "conductingAgency": "National Testing Agency (NTA)",
+      "officialPortalUrl": "https://pgcuet.samarth.ac.in",
+      "syllabusSummary": "Microbiology, Biochemistry, Cell Biology, Genetics, Molecular Biology, Plant Physiology, Animal Physiology, Ecology, Evolution, Techniques in Biology.",
+      "eligibilitySummary": "Bachelor degree in Science with biological subjects from a recognized university.",
+      "examPattern": "CBT, 105 Minutes, 75 domain-specific questions (General Part A removed from 2024 onwards).",
+      "durationMinutes": 105,
+      "markingScheme": "+4 for correct, -1 for incorrect.",
+      "importantDatesText": "Conducted annually in March for central and participating state universities.",
+      "verificationDate": "2026-11-01",
+      "masteryDestinationUrl": "https://biosciencemasterycom.vercel.app/en/exams",
+      "masteryActive": true,
+      "statusNote": "Single entrance gateway for JNU, BHU, DU, Hyd University M.Sc. Life Sciences / Biotechnology programs.",
+      "updatedAt": "2026-11-02T14:04:11.677Z"
+    },
+    {
+      "code": "CSIR-NET",
+      "fullName": "Joint CSIR-UGC NET for JRF and Lectureship - Life Sciences",
+      "conductingAgency": "National Testing Agency (NTA) on behalf of CSIR",
+      "officialPortalUrl": "https://csirnet.nta.ac.in",
+      "syllabusSummary": "13 Comprehensive Units: Molecules, Cellular Organization, Fundamental Processes, Cell Communication, Developmental Biology, System Physiology (Plant/Animal), Inheritance Biology, Diversity of Life, Ecological Principles, Evolution, Applied Biology, Methods in Biology.",
+      "eligibilitySummary": "M.Sc. or equivalent degree in Life Sciences with 55% marks (50% for reserved categories).",
+      "examPattern": "CBT, 180 Minutes. Part A (General Aptitude, 20 Qs, attempt 15), Part B (Core Concepts, 50 Qs, attempt 35), Part C (Analytical Research, 75 Qs, attempt 25).",
+      "durationMinutes": 180,
+      "markingScheme": "Part A & B: +2, -0.5. Part C: +4, -1.",
+      "importantDatesText": "Conducted twice annually (June and December cycles).",
+      "verificationDate": "2026-11-01",
+      "masteryDestinationUrl": "https://biosciencemasterycom.vercel.app/en/exams",
+      "masteryActive": true,
+      "statusNote": "Qualifies candidates for CSIR/UGC Junior Research Fellowship and Assistant Professor eligibility across India.",
+      "updatedAt": "2026-11-02T14:04:11.677Z"
+    }
+  ],
+  "seoSettings": {
+    "websiteTitle": "BioScience Hub — Learn Biotechnology, Master Concepts, Prepare for Research",
+    "metaDescription": "Comprehensive bilingual biotechnology encyclopedia, competitive exam preparation portal (GAT-B, DBT-JRF, GATE BT, IIT JAM, CUET-PG, CSIR-NET), and interactive laboratory knowledge platform.",
+    "ogTitle": "BioScience Hub — Learn Biotechnology, Master Concepts, Prepare for Research",
+    "ogDescription": "Verified academic literature, biotechnology career vacancies, lab instrumentation, and 6 national competitive examination portals.",
+    "socialLinks": {
+      "whatsappChannel": "https://whatsapp.com/channel/0029VbBeWMxA89MgAovtkf2j",
+      "linkedin": "https://www.linkedin.com/company/https-bioscienceknowledge-hub.vercel.app-/"
+    },
+    "announcementBanner": {
+      "enabled": true,
+      "text": "Ecosystem Announcement: BioScience Hub is seamlessly integrated with BioScience Mastery for targeted national entrance examination preparation.",
+      "linkUrl": "https://biosciencemasterycom.vercel.app/en/exams"
+    },
+    "footerNotice": "Public education portal. Grounded in official gazettes, NTA/DBT bulletins, and peer-reviewed reference texts (Lehninger, Alberts, Lodish, Brock)."
+  }
+}
