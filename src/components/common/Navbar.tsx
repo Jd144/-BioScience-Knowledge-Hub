@@ -53,7 +53,7 @@ export const Navbar: React.FC = () => {
   };
 
   const quickRibbonItems = [
-    { label: '🎓 Exam Preparation (Mastery)', path: 'https://biosciencemasterycom.vercel.app/en/exams', isExternal: true, highlight: true },
+    { label: '🎓 Exam Preparation (Mastery)', path: 'https://bioscience-mastery-p-vdf1.bolt.host/en/exams', isExternal: true, highlight: true },
     { label: '⚡ Live Alerts', path: '/exams', highlight: false },
     { label: 'Govt Jobs', path: '/jobs' },
     { label: 'Summer Internships', path: '/internships' },

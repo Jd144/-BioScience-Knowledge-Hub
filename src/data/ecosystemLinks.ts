@@ -7,10 +7,10 @@
  */
 
 export const BIOSCIENCE_MASTERY_URLS = {
-  HOME: 'https://biosciencemasterycom.vercel.app/en',
-  EXAMS_PORTAL: 'https://biosciencemasterycom.vercel.app/en/exams',
-  GAT_B_COURSE: 'https://biosciencemasterycom.vercel.app/en/courses/gat-b',
-  APPROACH: 'https://biosciencemasterycom.vercel.app/en#approach',
+  HOME: 'https://bioscience-mastery-p-vdf1.bolt.host/en',
+  EXAMS_PORTAL: 'https://bioscience-mastery-p-vdf1.bolt.host/en/exams',
+  GAT_B_COURSE: 'https://bioscience-mastery-p-vdf1.bolt.host/en/courses/gat-b',
+  APPROACH: 'https://bioscience-mastery-p-vdf1.bolt.host/en#approach',
 };
 
 /**
