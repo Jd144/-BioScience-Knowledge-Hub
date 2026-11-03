@@ -24,12 +24,15 @@ import {
   User,
   LogIn,
   LogOut,
-  ExternalLink
+  ExternalLink,
+  Settings
 } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext.tsx';
 
 export const Navbar: React.FC = () => {
   const { language, setLanguage } = useLanguage();
   const { user, logout } = useAuth();
+  const { openSettings } = useTheme();
   const location = useLocation();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -72,20 +75,20 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-xs border-b border-slate-200">
+      <header className="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs border-b border-slate-200 dark:border-slate-800">
         {/* Primary Header Row */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-8">
           {/* Zone 1: Brand Wordmark (Single Text Element) */}
           <Link
             to="/"
-            className="text-base font-bold tracking-tight text-slate-900 whitespace-nowrap shrink-0 flex items-center gap-2.5"
+            className="text-base font-bold tracking-tight text-slate-900 dark:text-slate-100 whitespace-nowrap shrink-0 flex items-center gap-2.5"
           >
-            <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-cyan-400 font-mono text-sm font-bold shadow-xs">
+            <div className="w-8 h-8 rounded-lg bg-slate-900 dark:bg-cyan-950 flex items-center justify-center text-cyan-400 font-mono text-sm font-bold shadow-xs border border-cyan-800/40">
               B
             </div>
             <div className="flex flex-col">
-              <span className="leading-tight font-extrabold text-slate-900 text-base">BioScience Hub</span>
-              <span className="text-[10px] font-semibold text-cyan-800 tracking-wider uppercase leading-none">Educational Platform</span>
+              <span className="leading-tight font-extrabold text-slate-900 dark:text-white text-base">BioScience Hub</span>
+              <span className="text-[10px] font-semibold text-cyan-700 dark:text-cyan-400 tracking-wider uppercase leading-none">Educational Platform</span>
             </div>
           </Link>
 
@@ -124,8 +127,8 @@ export const Navbar: React.FC = () => {
               Exam Alerts
             </Link>
             <a
-              href="https://biosciencemasterycom.vercel.app/en/exams"
-              className="hover:text-cyan-950 transition-colors whitespace-nowrap shrink-0 flex items-center gap-1.5 text-cyan-800 font-bold bg-cyan-50 hover:bg-cyan-100 px-2.5 py-1 rounded-lg border border-cyan-200/80 shadow-2xs"
+              href="https://bioscience-mastery-p-vdf1.bolt.host/en/exams"
+              className="hover:text-cyan-950 dark:hover:text-cyan-200 transition-colors whitespace-nowrap shrink-0 flex items-center gap-1.5 text-cyan-800 dark:text-cyan-300 font-bold bg-cyan-50 dark:bg-cyan-950/40 hover:bg-cyan-100 dark:hover:bg-cyan-900/60 px-2.5 py-1 rounded-lg border border-cyan-200/80 dark:border-cyan-800 shadow-2xs"
               title="Indian National Exam Preparation on BioScience Mastery"
             >
               <GraduationCap className="w-3.5 h-3.5 text-cyan-700" />
@@ -236,10 +239,21 @@ export const Navbar: React.FC = () => {
               </Link>
             )}
 
+            {/* Prominent Settings Button with Gear Icon (Visible on Desktop and Mobile) */}
+            <button
+              onClick={openSettings}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-700 transition-colors shadow-2xs"
+              title="Website Settings & Appearance"
+              aria-label="Open website settings"
+            >
+              <Settings className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
+              <span className="hidden sm:inline">Settings</span>
+            </button>
+
             {/* Mobile Hamburger Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 text-slate-600 hover:text-slate-900 rounded-lg"
+              className="lg:hidden p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-lg"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -248,8 +262,8 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Secondary Category Quick Ribbon (Horizontal Scroll Strip across all 19 sections) */}
-        <div className="border-t border-slate-100 bg-slate-50/70 overflow-x-auto scrollbar-none py-2 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto flex items-center gap-2 text-[11px] font-medium text-slate-600">
+        <div className="border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/70 overflow-x-auto scrollbar-none py-2 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto flex items-center gap-2 text-[11px] font-medium text-slate-600 dark:text-slate-300">
             {quickRibbonItems.map((item, idx) =>
               item.isExternal ? (
                 <a
@@ -257,8 +271,8 @@ export const Navbar: React.FC = () => {
                   href={item.path}
                   className={`px-2.5 py-1 rounded-md whitespace-nowrap transition-colors shrink-0 flex items-center gap-1 ${
                     item.highlight
-                      ? 'bg-amber-100 text-amber-950 font-bold hover:bg-amber-200 border border-amber-300/80 shadow-2xs'
-                      : 'hover:bg-slate-200/70 text-slate-600'
+                      ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-950 dark:text-amber-200 font-bold hover:bg-amber-200 dark:hover:bg-amber-900 border border-amber-300/80 dark:border-amber-800 shadow-2xs'
+                      : 'hover:bg-slate-200/70 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300'
                   }`}
                 >
                   {item.label}
@@ -269,10 +283,10 @@ export const Navbar: React.FC = () => {
                   to={item.path}
                   className={`px-2.5 py-1 rounded-md whitespace-nowrap transition-colors shrink-0 ${
                     item.highlight
-                      ? 'bg-amber-100 text-amber-900 font-bold hover:bg-amber-200'
+                      ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-200 font-bold hover:bg-amber-200 dark:hover:bg-amber-900'
                       : isActive(item.path)
-                      ? 'bg-slate-900 text-white font-semibold'
-                      : 'hover:bg-slate-200/70 text-slate-600'
+                      ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-semibold'
+                      : 'hover:bg-slate-200/70 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300'
                   }`}
                 >
                   {item.label}
@@ -284,10 +298,10 @@ export const Navbar: React.FC = () => {
 
         {/* Mobile Navigation Dropdown */}
         {mobileMenuOpen && (
-          <div className="lg:hidden px-4 pt-3 pb-6 border-t border-slate-200 bg-white space-y-2 max-h-[80vh] overflow-y-auto">
+          <div className="lg:hidden px-4 pt-3 pb-6 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-2 max-h-[80vh] overflow-y-auto">
             {/* Prominent Cross-Platform Mastery CTA in Mobile Menu */}
             <a
-              href="https://biosciencemasterycom.vercel.app/en/exams"
+              href="https://bioscience-mastery-p-vdf1.bolt.host/en/exams"
               onClick={() => setMobileMenuOpen(false)}
               className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-cyan-900 to-slate-900 text-white border border-cyan-500/40 shadow-sm mb-3"
             >

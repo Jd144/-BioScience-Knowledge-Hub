@@ -10,11 +10,11 @@ export const AdminEcosystemPage: React.FC = () => {
     home: BIOSCIENCE_MASTERY_URLS.HOME,
     examsPortal: BIOSCIENCE_MASTERY_URLS.EXAMS_PORTAL,
     gatBCourse: BIOSCIENCE_MASTERY_URLS.GAT_B_COURSE,
-    dbtJrfDestination: 'https://biosciencemasterycom.vercel.app/en/exams',
-    gateBtDestination: 'https://biosciencemasterycom.vercel.app/en/exams',
-    jamDestination: 'https://biosciencemasterycom.vercel.app/en/exams',
-    cuetDestination: 'https://biosciencemasterycom.vercel.app/en/exams',
-    netDestination: 'https://biosciencemasterycom.vercel.app/en/exams',
+    dbtJrfDestination: BIOSCIENCE_MASTERY_URLS.EXAMS_PORTAL,
+    gateBtDestination: BIOSCIENCE_MASTERY_URLS.EXAMS_PORTAL,
+    jamDestination: BIOSCIENCE_MASTERY_URLS.EXAMS_PORTAL,
+    cuetDestination: BIOSCIENCE_MASTERY_URLS.EXAMS_PORTAL,
+    netDestination: BIOSCIENCE_MASTERY_URLS.EXAMS_PORTAL,
   });
 
   const [activeFlags, setActiveFlags] = useState({

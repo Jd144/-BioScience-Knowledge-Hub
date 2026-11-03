@@ -333,7 +333,7 @@
       "markingScheme": "Section A: +1, -0.5. Section B: +3, -1.",
       "importantDatesText": "2026 cycle concluded (Exam held 17 May 2026). Official 2027 session bulletin expected early 2027.",
       "verificationDate": "2026-11-01",
-      "masteryDestinationUrl": "https://biosciencemasterycom.vercel.app/en/courses/gat-b",
+      "masteryDestinationUrl": "https://bioscience-mastery-p-vdf1.bolt.host/en/courses/gat-b",
       "masteryActive": true,
       "statusNote": "Admissions for 2026 participating institutions concluded. Official 2027 notification awaited.",
       "updatedAt": "2026-11-02T14:04:11.677Z"
@@ -350,7 +350,7 @@
       "markingScheme": "+3 marks for correct, -1 mark for incorrect.",
       "importantDatesText": "Annual examination cycle. 2027 notification scheduled for announcement by NTA/DBT.",
       "verificationDate": "2026-11-01",
-      "masteryDestinationUrl": "https://biosciencemasterycom.vercel.app/en/exams",
+      "masteryDestinationUrl": "https://bioscience-mastery-p-vdf1.bolt.host/en/exams",
       "masteryActive": true,
       "statusNote": "Category-I (top 275) awarded DBT-JRF fellowship. Category-II eligible for project employment.",
       "updatedAt": "2026-11-02T14:04:11.677Z"
@@ -367,7 +367,7 @@
       "markingScheme": "1-mark and 2-mark questions. MCQs have negative marking (1/3rd or 2/3rd). MSQs and NATs have ZERO negative marking.",
       "importantDatesText": "Annual national examination held in February.",
       "verificationDate": "2026-11-01",
-      "masteryDestinationUrl": "https://biosciencemasterycom.vercel.app/en/exams",
+      "masteryDestinationUrl": "https://bioscience-mastery-p-vdf1.bolt.host/en/exams",
       "masteryActive": true,
       "statusNote": "Score card valid for 3 years for M.Tech admissions and PSU recruitment.",
       "updatedAt": "2026-11-02T14:04:11.677Z"
@@ -384,7 +384,7 @@
       "markingScheme": "Section A: Negative marking. Section B & C: No negative marking.",
       "importantDatesText": "Annual exam conducted in February across Indian centers.",
       "verificationDate": "2026-11-01",
-      "masteryDestinationUrl": "https://biosciencemasterycom.vercel.app/en/exams",
+      "masteryDestinationUrl": "https://bioscience-mastery-p-vdf1.bolt.host/en/exams",
       "masteryActive": true,
       "statusNote": "Admission into M.Sc., Joint M.Sc.-Ph.D. at IITs and Integrated Ph.D. at IISc.",
       "updatedAt": "2026-11-02T14:04:11.677Z"
@@ -401,7 +401,7 @@
       "markingScheme": "+4 for correct, -1 for incorrect.",
       "importantDatesText": "Conducted annually in March for central and participating state universities.",
       "verificationDate": "2026-11-01",
-      "masteryDestinationUrl": "https://biosciencemasterycom.vercel.app/en/exams",
+      "masteryDestinationUrl": "https://bioscience-mastery-p-vdf1.bolt.host/en/exams",
       "masteryActive": true,
       "statusNote": "Single entrance gateway for JNU, BHU, DU, Hyd University M.Sc. Life Sciences / Biotechnology programs.",
       "updatedAt": "2026-11-02T14:04:11.677Z"
@@ -418,7 +418,7 @@
       "markingScheme": "Part A & B: +2, -0.5. Part C: +4, -1.",
       "importantDatesText": "Conducted twice annually (June and December cycles).",
       "verificationDate": "2026-11-01",
-      "masteryDestinationUrl": "https://biosciencemasterycom.vercel.app/en/exams",
+      "masteryDestinationUrl": "https://bioscience-mastery-p-vdf1.bolt.host/en/exams",
       "masteryActive": true,
       "statusNote": "Qualifies candidates for CSIR/UGC Junior Research Fellowship and Assistant Professor eligibility across India.",
       "updatedAt": "2026-11-02T14:04:11.677Z"
@@ -436,7 +436,7 @@
     "announcementBanner": {
       "enabled": true,
       "text": "Ecosystem Announcement: BioScience Hub is seamlessly integrated with BioScience Mastery for targeted national entrance examination preparation.",
-      "linkUrl": "https://biosciencemasterycom.vercel.app/en/exams"
+      "linkUrl": "https://bioscience-mastery-p-vdf1.bolt.host/en/exams"
     },
     "footerNotice": "Public education portal. Grounded in official gazettes, NTA/DBT bulletins, and peer-reviewed reference texts (Lehninger, Alberts, Lodish, Brock)."
   }

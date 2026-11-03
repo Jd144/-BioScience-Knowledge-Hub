@@ -9,6 +9,12 @@ export interface MaintenanceData {
   personal_message_hi: string;
   expected_reopening_iso: string;
   timezone: string;
+  mini_games?: {
+    memory_match: boolean;
+    number_puzzle: boolean;
+    quick_math: boolean;
+    word_scramble: boolean;
+  };
   server_time_iso: string;
 }
 

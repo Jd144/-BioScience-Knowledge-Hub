@@ -161,7 +161,7 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <a
-                  href="https://biosciencemasterycom.vercel.app/en/exams"
+                  href="https://bioscience-mastery-p-vdf1.bolt.host/en/exams"
                   className="text-cyan-400 font-semibold hover:underline flex items-center gap-1"
                 >
                   <span>Exam Prep (Mastery) →</span>

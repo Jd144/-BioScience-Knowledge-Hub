@@ -33,8 +33,36 @@ app.get('/api/maintenance/status', (req, res) => {
     personal_message_hi: m.personal_message_hi,
     expected_reopening_iso: m.expected_reopening_iso,
     timezone: m.timezone,
+    mini_games: m.mini_games || {
+      memory_match: true,
+      number_puzzle: true,
+      quick_math: true,
+      word_scramble: true,
+    },
     server_time_iso: new Date().toISOString(),
   });
+});
+
+// Public Active Website Popups Endpoint
+app.get('/api/popups/active', (req, res) => {
+  const store = db.getData();
+  const allPopups = store.popups || [];
+  const now = new Date();
+
+  const active = allPopups.filter((p) => {
+    if (!p.enabled) return false;
+    if (p.startDateTime) {
+      const start = new Date(p.startDateTime);
+      if (now < start) return false;
+    }
+    if (p.expiryDateTime) {
+      const expiry = new Date(p.expiryDateTime);
+      if (now > expiry) return false;
+    }
+    return true;
+  });
+
+  res.json(active);
 });
 
 // Initialize Google Gen AI with Gemini 3.8 Flash

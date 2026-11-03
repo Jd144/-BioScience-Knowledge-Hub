@@ -490,6 +490,12 @@ adminRouter.post('/maintenance', requireAdminAuth, requireRoles(['superadmin', '
   if (personal_message_hi) m.personal_message_hi = personal_message_hi;
   if (expected_reopening_iso) m.expected_reopening_iso = expected_reopening_iso;
   if (timezone) m.timezone = timezone;
+  if (req.body.mini_games) {
+    m.mini_games = {
+      ...(m.mini_games || { memory_match: true, number_puzzle: true, quick_math: true, word_scramble: true }),
+      ...req.body.mini_games,
+    };
+  }
 
   m.last_updated_at = new Date().toISOString();
   m.last_updated_by = req.adminUser!.email;
@@ -1005,4 +1011,127 @@ adminRouter.post('/seo', requireAdminAuth, requireRoles(['superadmin', 'editor']
 // -----------------------------------------------------------------------------
 adminRouter.get('/audit-logs', requireAdminAuth, requireRoles(['superadmin']), (req: Request, res: Response) => {
   res.json(db.getData().auditLogs);
+});
+
+// -----------------------------------------------------------------------------
+// 11. WEBSITE POPUP & ANNOUNCEMENT MANAGER
+// -----------------------------------------------------------------------------
+adminRouter.get('/popups', requireAdminAuth, (req: Request, res: Response) => {
+  const store = db.getData();
+  res.json(store.popups || []);
+});
+
+adminRouter.post('/popups', requireAdminAuth, requireRoles(['superadmin', 'editor']), (req: AuthenticatedRequest, res: Response) => {
+  const store = db.getData();
+  const {
+    title,
+    message,
+    imageUrl,
+    bgColor = '#ffffff',
+    textColor = '#0f172a',
+    position = 'center_modal',
+    size = 'medium',
+    borderRadius = 'rounded-2xl',
+    startDateTime,
+    expiryDateTime,
+    displayDuration = 0,
+    frequency = 'once_per_session',
+    enabled = true,
+    showCancelButton = true,
+    cancelButtonText = 'Dismiss',
+    buttons = [],
+  } = req.body;
+
+  if (!title || !message) {
+    return res.status(400).json({ error: 'Title and message are required.' });
+  }
+
+  const newPopup = {
+    id: `pop-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+    title: String(title).trim(),
+    message: String(message).trim(),
+    imageUrl: imageUrl ? String(imageUrl).trim() : undefined,
+    bgColor: String(bgColor),
+    textColor: String(textColor),
+    position,
+    size,
+    borderRadius,
+    startDateTime: startDateTime || undefined,
+    expiryDateTime: expiryDateTime || undefined,
+    displayDuration: Number(displayDuration) || 0,
+    frequency,
+    enabled: Boolean(enabled),
+    showCancelButton: Boolean(showCancelButton),
+    cancelButtonText: String(cancelButtonText || 'Dismiss'),
+    buttons: Array.isArray(buttons) ? buttons : [],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  store.popups = store.popups || [];
+  store.popups.unshift(newPopup);
+  db.addAuditLog(req.adminUser!.email, req.adminUser!.role, 'POPUP_CREATED', 'POPUP', { popupId: newPopup.id, title });
+  db.save();
+
+  res.status(201).json({ success: true, popup: newPopup });
+});
+
+adminRouter.put('/popups/:id', requireAdminAuth, requireRoles(['superadmin', 'editor']), (req: AuthenticatedRequest, res: Response) => {
+  const { id } = req.params;
+  const store = db.getData();
+  store.popups = store.popups || [];
+  const idx = store.popups.findIndex((p) => p.id === id);
+
+  if (idx === -1) {
+    return res.status(400).json({ error: 'Popup not found' });
+  }
+
+  const existing = store.popups[idx];
+  const updated = {
+    ...existing,
+    ...req.body,
+    id: existing.id,
+    updatedAt: new Date().toISOString(),
+  };
+
+  store.popups[idx] = updated;
+  db.addAuditLog(req.adminUser!.email, req.adminUser!.role, 'POPUP_UPDATED', 'POPUP', { popupId: id, title: updated.title });
+  db.save();
+
+  res.json({ success: true, popup: updated });
+});
+
+adminRouter.delete('/popups/:id', requireAdminAuth, requireRoles(['superadmin']), (req: AuthenticatedRequest, res: Response) => {
+  const { id } = req.params;
+  const store = db.getData();
+  store.popups = store.popups || [];
+  const beforeLen = store.popups.length;
+  store.popups = store.popups.filter((p) => p.id !== id);
+
+  if (store.popups.length === beforeLen) {
+    return res.status(404).json({ error: 'Popup not found' });
+  }
+
+  db.addAuditLog(req.adminUser!.email, req.adminUser!.role, 'POPUP_DELETED', 'POPUP', { popupId: id });
+  db.save();
+
+  res.json({ success: true });
+});
+
+adminRouter.post('/popups/:id/toggle', requireAdminAuth, requireRoles(['superadmin', 'editor']), (req: AuthenticatedRequest, res: Response) => {
+  const { id } = req.params;
+  const store = db.getData();
+  store.popups = store.popups || [];
+  const popup = store.popups.find((p) => p.id === id);
+
+  if (!popup) {
+    return res.status(404).json({ error: 'Popup not found' });
+  }
+
+  popup.enabled = !popup.enabled;
+  popup.updatedAt = new Date().toISOString();
+  db.addAuditLog(req.adminUser!.email, req.adminUser!.role, 'POPUP_STATUS_TOGGLED', 'POPUP', { popupId: id, enabled: popup.enabled });
+  db.save();
+
+  res.json({ success: true, enabled: popup.enabled });
 });

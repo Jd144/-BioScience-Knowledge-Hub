@@ -51,6 +51,12 @@ export interface MaintenanceConfig {
   personal_message_hi: string;
   expected_reopening_iso: string;
   timezone: string; // default: 'Asia/Kolkata'
+  mini_games?: {
+    memory_match: boolean;
+    number_puzzle: boolean;
+    quick_math: boolean;
+    word_scramble: boolean;
+  };
   last_updated_at: string;
   last_updated_by: string;
   history: {
@@ -192,6 +198,38 @@ export interface SeoSettings {
   footerNotice: string;
 }
 
+export interface PopupButton {
+  id: string;
+  label: string;
+  url: string;
+  color: string;
+  style: 'solid' | 'outline' | 'ghost';
+  openInNewTab: boolean;
+  enabled: boolean;
+}
+
+export interface WebsitePopup {
+  id: string;
+  title: string;
+  message: string;
+  imageUrl?: string;
+  bgColor: string; // e.g. '#ffffff' or dark
+  textColor: string; // e.g. '#0f172a'
+  position: 'center_modal' | 'toast_bottom_right' | 'toast_bottom_left' | 'top_banner' | 'bottom_banner';
+  size: 'small' | 'medium' | 'large' | 'full';
+  borderRadius: 'none' | 'rounded-lg' | 'rounded-xl' | 'rounded-2xl';
+  startDateTime?: string;
+  expiryDateTime?: string;
+  displayDuration: number; // 0 = manual, or seconds 5, 10, 15, 30
+  frequency: 'once_per_session' | 'once_per_visitor' | 'every_page';
+  enabled: boolean;
+  showCancelButton: boolean;
+  cancelButtonText?: string;
+  buttons: PopupButton[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface DataStore {
   adminUsers: AdminUser[];
   adminSessions: AdminSession[];
@@ -204,6 +242,7 @@ export interface DataStore {
   opportunities: OpportunityItem[];
   examinations: ExaminationConfig[];
   seoSettings: SeoSettings;
+  popups: WebsitePopup[];
 }
 
 // Initial Super Admin credentials
@@ -242,10 +281,17 @@ function createDefaultStore(): DataStore {
       personal_message_hi: "⏳ जब तक BioScience Hub दोबारा शुरू होता है, तब तक अपना यह कीमती समय अपने परिवार और प्रियजनों के साथ बिताइए। ❤️👨👩👧👦\n\nअपनों के साथ कुछ खूबसूरत पल बिताइए, खुश रहिए और मुस्कुराते रहिए। 🌸✨\n\nहम जल्द ही आपके लिए एक बेहतर Learning Experience के साथ वापस आएंगे! 🚀",
       expected_reopening_iso: twoHoursLater,
       timezone: 'Asia/Kolkata',
+      mini_games: {
+        memory_match: true,
+        number_puzzle: true,
+        quick_math: true,
+        word_scramble: true,
+      },
       last_updated_at: new Date().toISOString(),
       last_updated_by: 'system',
       history: [],
     },
+    popups: [],
     auditLogs: [
       {
         id: 'log-init-01',
@@ -382,7 +428,7 @@ function createDefaultStore(): DataStore {
         markingScheme: 'Section A: +1, -0.5. Section B: +3, -1.',
         importantDatesText: '2026 cycle concluded (Exam held 17 May 2026). Official 2027 session bulletin expected early 2027.',
         verificationDate: '2026-11-01',
-        masteryDestinationUrl: 'https://biosciencemasterycom.vercel.app/en/courses/gat-b',
+        masteryDestinationUrl: 'https://bioscience-mastery-p-vdf1.bolt.host/en/courses/gat-b',
         masteryActive: true,
         statusNote: 'Admissions for 2026 participating institutions concluded. Official 2027 notification awaited.',
         updatedAt: new Date().toISOString(),
@@ -399,7 +445,7 @@ function createDefaultStore(): DataStore {
         markingScheme: '+3 marks for correct, -1 mark for incorrect.',
         importantDatesText: 'Annual examination cycle. 2027 notification scheduled for announcement by NTA/DBT.',
         verificationDate: '2026-11-01',
-        masteryDestinationUrl: 'https://biosciencemasterycom.vercel.app/en/exams',
+        masteryDestinationUrl: 'https://bioscience-mastery-p-vdf1.bolt.host/en/exams',
         masteryActive: true,
         statusNote: 'Category-I (top 275) awarded DBT-JRF fellowship. Category-II eligible for project employment.',
         updatedAt: new Date().toISOString(),
@@ -416,7 +462,7 @@ function createDefaultStore(): DataStore {
         markingScheme: '1-mark and 2-mark questions. MCQs have negative marking (1/3rd or 2/3rd). MSQs and NATs have ZERO negative marking.',
         importantDatesText: 'Annual national examination held in February.',
         verificationDate: '2026-11-01',
-        masteryDestinationUrl: 'https://biosciencemasterycom.vercel.app/en/exams',
+        masteryDestinationUrl: 'https://bioscience-mastery-p-vdf1.bolt.host/en/exams',
         masteryActive: true,
         statusNote: 'Score card valid for 3 years for M.Tech admissions and PSU recruitment.',
         updatedAt: new Date().toISOString(),
@@ -433,7 +479,7 @@ function createDefaultStore(): DataStore {
         markingScheme: 'Section A: Negative marking. Section B & C: No negative marking.',
         importantDatesText: 'Annual exam conducted in February across Indian centers.',
         verificationDate: '2026-11-01',
-        masteryDestinationUrl: 'https://biosciencemasterycom.vercel.app/en/exams',
+        masteryDestinationUrl: 'https://bioscience-mastery-p-vdf1.bolt.host/en/exams',
         masteryActive: true,
         statusNote: 'Admission into M.Sc., Joint M.Sc.-Ph.D. at IITs and Integrated Ph.D. at IISc.',
         updatedAt: new Date().toISOString(),
@@ -450,7 +496,7 @@ function createDefaultStore(): DataStore {
         markingScheme: '+4 for correct, -1 for incorrect.',
         importantDatesText: 'Conducted annually in March for central and participating state universities.',
         verificationDate: '2026-11-01',
-        masteryDestinationUrl: 'https://biosciencemasterycom.vercel.app/en/exams',
+        masteryDestinationUrl: 'https://bioscience-mastery-p-vdf1.bolt.host/en/exams',
         masteryActive: true,
         statusNote: 'Single entrance gateway for JNU, BHU, DU, Hyd University M.Sc. Life Sciences / Biotechnology programs.',
         updatedAt: new Date().toISOString(),
@@ -467,7 +513,7 @@ function createDefaultStore(): DataStore {
         markingScheme: 'Part A & B: +2, -0.5. Part C: +4, -1.',
         importantDatesText: 'Conducted twice annually (June and December cycles).',
         verificationDate: '2026-11-01',
-        masteryDestinationUrl: 'https://biosciencemasterycom.vercel.app/en/exams',
+        masteryDestinationUrl: 'https://bioscience-mastery-p-vdf1.bolt.host/en/exams',
         masteryActive: true,
         statusNote: 'Qualifies candidates for CSIR/UGC Junior Research Fellowship and Assistant Professor eligibility across India.',
         updatedAt: new Date().toISOString(),
@@ -485,7 +531,7 @@ function createDefaultStore(): DataStore {
       announcementBanner: {
         enabled: true,
         text: 'Ecosystem Announcement: BioScience Hub is seamlessly integrated with BioScience Mastery for targeted national entrance examination preparation.',
-        linkUrl: 'https://biosciencemasterycom.vercel.app/en/exams',
+        linkUrl: 'https://bioscience-mastery-p-vdf1.bolt.host/en/exams',
       },
       footerNotice: 'Public education portal. Grounded in official gazettes, NTA/DBT bulletins, and peer-reviewed reference texts (Lehninger, Alberts, Lodish, Brock).',
     },
@@ -513,7 +559,15 @@ class Database {
           maintenance: {
             ...defaults.maintenance,
             ...(parsed.maintenance || {}),
+            mini_games: {
+              memory_match: true,
+              number_puzzle: true,
+              quick_math: true,
+              word_scramble: true,
+              ...((parsed.maintenance && parsed.maintenance.mini_games) || {}),
+            },
           },
+          popups: Array.isArray(parsed.popups) ? parsed.popups : [],
           seoSettings: {
             ...defaults.seoSettings,
             ...(parsed.seoSettings || {}),

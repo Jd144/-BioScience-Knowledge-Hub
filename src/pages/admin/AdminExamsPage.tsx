@@ -260,7 +260,7 @@ export const AdminExamsPage: React.FC = () => {
                 type="url"
                 value={selectedExam.masteryDestinationUrl || ''}
                 onChange={(e) => setSelectedExam({ ...selectedExam, masteryDestinationUrl: e.target.value })}
-                placeholder="https://biosciencemasterycom.vercel.app/..."
+                placeholder="https://bioscience-mastery-p-vdf1.bolt.host/..."
                 className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-cyan-300 font-mono text-xs"
               />
             </div>

@@ -9,8 +9,11 @@ import { LanguageProvider } from './context/LanguageContext.tsx';
 import { AuthProvider } from './context/AuthContext.tsx';
 import { AdminAuthProvider } from './context/AdminAuthContext.tsx';
 import { MaintenanceProvider, useMaintenance } from './context/MaintenanceContext.tsx';
+import { ThemeProvider } from './context/ThemeContext.tsx';
 import { Navbar } from './components/common/Navbar.tsx';
 import { Footer } from './components/common/Footer.tsx';
+import { PublicSettingsModal } from './components/common/PublicSettingsModal.tsx';
+import { WebsitePopupRenderer } from './components/common/WebsitePopupRenderer.tsx';
 import { AdminProtectedRoute } from './components/admin/AdminProtectedRoute.tsx';
 
 // Route-level code splitting via dynamic imports
@@ -54,6 +57,7 @@ const AdminLoginPage = lazy(() => import('./pages/admin/AdminLoginPage.tsx').the
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout.tsx').then(m => ({ default: m.AdminLayout })));
 const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage.tsx').then(m => ({ default: m.AdminDashboardPage })));
 const AdminMaintenancePage = lazy(() => import('./pages/admin/AdminMaintenancePage.tsx').then(m => ({ default: m.AdminMaintenancePage })));
+const AdminPopupsPage = lazy(() => import('./pages/admin/AdminPopupsPage.tsx').then(m => ({ default: m.AdminPopupsPage })));
 const AdminSubjectsTopicsPage = lazy(() => import('./pages/admin/AdminSubjectsTopicsPage.tsx').then(m => ({ default: m.AdminSubjectsTopicsPage })));
 const AdminArticlesPage = lazy(() => import('./pages/admin/AdminArticlesPage.tsx').then(m => ({ default: m.AdminArticlesPage })));
 const AdminExamsPage = lazy(() => import('./pages/admin/AdminExamsPage.tsx').then(m => ({ default: m.AdminExamsPage })));
@@ -64,6 +68,7 @@ const AdminMediaPage = lazy(() => import('./pages/admin/AdminMediaPage.tsx').the
 const AdminEcosystemPage = lazy(() => import('./pages/admin/AdminEcosystemPage.tsx').then(m => ({ default: m.AdminEcosystemPage })));
 const AdminContactNewsletterPage = lazy(() => import('./pages/admin/AdminContactNewsletterPage.tsx').then(m => ({ default: m.AdminContactNewsletterPage })));
 const AdminSeoSettingsPage = lazy(() => import('./pages/admin/AdminSeoSettingsPage.tsx').then(m => ({ default: m.AdminSeoSettingsPage })));
+const AdminSettingsPage = lazy(() => import('./pages/admin/AdminSettingsPage.tsx').then(m => ({ default: m.AdminSettingsPage })));
 const AdminUsersAuditPage = lazy(() => import('./pages/admin/AdminUsersAuditPage.tsx').then(m => ({ default: m.AdminUsersAuditPage })));
 
 function PageLoadingFallback() {
@@ -106,6 +111,7 @@ function AppContent() {
           >
             <Route index element={<AdminDashboardPage />} />
             <Route path="maintenance" element={<AdminMaintenancePage />} />
+            <Route path="popups" element={<AdminPopupsPage />} />
             <Route path="subjects" element={<AdminSubjectsTopicsPage />} />
             <Route path="articles" element={<AdminArticlesPage />} />
             <Route path="exams" element={<AdminExamsPage />} />
@@ -116,6 +122,7 @@ function AppContent() {
             <Route path="ecosystem" element={<AdminEcosystemPage />} />
             <Route path="contacts" element={<AdminContactNewsletterPage />} />
             <Route path="seo" element={<AdminSeoSettingsPage />} />
+            <Route path="settings" element={<AdminSettingsPage />} />
             <Route path="users" element={<AdminUsersAuditPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/admin" replace />} />
@@ -126,7 +133,9 @@ function AppContent() {
 
   // Standard Public Website Layout
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased font-serif">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased font-serif transition-colors">
+      <WebsitePopupRenderer />
+      <PublicSettingsModal />
       <Navbar />
       <main className="flex-1">
         <Suspense fallback={<PageLoadingFallback />}>
@@ -211,16 +220,18 @@ function AppContent() {
 
 export default function App() {
   return (
-    <LanguageProvider>
-      <AuthProvider>
-        <AdminAuthProvider>
-          <MaintenanceProvider>
-            <BrowserRouter>
-              <AppContent />
-            </BrowserRouter>
-          </MaintenanceProvider>
-        </AdminAuthProvider>
-      </AuthProvider>
-    </LanguageProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <AdminAuthProvider>
+            <MaintenanceProvider>
+              <BrowserRouter>
+                <AppContent />
+              </BrowserRouter>
+            </MaintenanceProvider>
+          </AdminAuthProvider>
+        </AuthProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   );
 }
