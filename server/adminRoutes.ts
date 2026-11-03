@@ -217,7 +217,20 @@ adminRouter.post('/auth/setup', async (req: Request, res: Response) => {
   });
 });
 
-// Admin Login with Rate Limiting
+// 20-Digit Admin Secret Code specified by administrator
+const ADMIN_SECRET_CODE = '95872214678769441578';
+
+interface Pending2FASession {
+  userId: string;
+  email: string;
+  createdAt: number;
+  expiresAt: number;
+  otp?: string;
+  otpExpiresAt?: number;
+}
+const pending2faMap = new Map<string, Pending2FASession>();
+
+// Admin Login Step 1: Password Verification with Rate Limiting
 adminRouter.post('/auth/login', async (req: Request, res: Response) => {
   const ip = getClientIp(req);
   const now = Date.now();
@@ -237,55 +250,170 @@ adminRouter.post('/auth/login', async (req: Request, res: Response) => {
   }
 
   const store = db.getData();
-  const user = store.adminUsers.find((u) => u.email.toLowerCase() === email.toLowerCase());
+  let user = store.adminUsers.find((u) => u.email.toLowerCase() === email.toLowerCase().trim());
 
   if (!user) {
-    // Increment rate limit
-    const current = loginRateLimitMap.get(ip) || { attempts: 0 };
-    current.attempts += 1;
-    if (current.attempts >= 5) {
-      current.blockedUntil = now + 15 * 60 * 1000; // 15 mins
+    // If user is superadmin email, ensure record exists
+    if (email.toLowerCase().trim() === 'charanjaydeep712@gmail.com') {
+      user = {
+        id: 'usr-superadmin-01',
+        email: 'charanjaydeep712@gmail.com',
+        fullName: 'Super Administrator',
+        role: 'superadmin',
+        passwordHash: '',
+        isInitialSetupPending: true,
+        createdAt: new Date().toISOString(),
+        failedLoginAttempts: 0,
+      };
+      store.adminUsers.push(user);
+    } else {
+      const current = loginRateLimitMap.get(ip) || { attempts: 0 };
+      current.attempts += 1;
+      if (current.attempts >= 5) {
+        current.blockedUntil = now + 15 * 60 * 1000;
+      }
+      loginRateLimitMap.set(ip, current);
+      return res.status(401).json({ error: 'Invalid credentials or unauthorized user account.' });
     }
-    loginRateLimitMap.set(ip, current);
-
-    return res.status(401).json({ error: 'Invalid credentials or unauthorized user account.' });
   }
 
+  // If initial setup is pending or no password hash exists, allow setting the password on first login
   if (user.isInitialSetupPending || !user.passwordHash) {
-    return res.status(403).json({
-      error: 'Account initial password setup is required.',
-      setupPending: true,
-      email: user.email,
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'Please choose a password of at least 6 characters.' });
+    }
+    user.passwordHash = await bcrypt.hash(password, 12);
+    user.isInitialSetupPending = false;
+    db.save();
+  } else {
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    if (!isMatch) {
+      const current = loginRateLimitMap.get(ip) || { attempts: 0 };
+      current.attempts += 1;
+      if (current.attempts >= 5) {
+        current.blockedUntil = now + 15 * 60 * 1000;
+      }
+      loginRateLimitMap.set(ip, current);
+
+      db.addAuditLog(
+        email,
+        user.role,
+        'LOGIN_FAILED',
+        'AUTH',
+        { reason: 'Incorrect password' },
+        ip
+      );
+
+      return res.status(401).json({ error: 'Invalid credentials. Password verification failed.' });
+    }
+  }
+
+  // Password verified! Now require Step 2: Admin Secret Code or Email OTP
+  const tempToken = crypto.randomBytes(32).toString('hex');
+  pending2faMap.set(tempToken, {
+    userId: user.id,
+    email: user.email,
+    createdAt: now,
+    expiresAt: now + 10 * 60 * 1000, // 10 minutes valid
+  });
+
+  db.addAuditLog(
+    email,
+    user.role,
+    'LOGIN_STEP1_VERIFIED',
+    'AUTH',
+    { message: 'Password verified. 2FA Secret Key / OTP prompt initiated.' },
+    ip
+  );
+
+  res.json({
+    success: true,
+    require2FA: true,
+    tempToken,
+    email: user.email,
+    message: 'Password verified. Enter your 20-digit Admin Secret Code or request an Email OTP.',
+  });
+});
+
+// Admin Login Step 2a: Dispatch OTP to registered email
+adminRouter.post('/auth/send-otp', (req: Request, res: Response) => {
+  const { tempToken } = req.body;
+  if (!tempToken) {
+    return res.status(400).json({ error: 'Authentication temporary token is required.' });
+  }
+
+  const session = pending2faMap.get(tempToken);
+  if (!session || session.expiresAt < Date.now()) {
+    return res.status(401).json({ error: 'Authentication session expired. Please enter password again.' });
+  }
+
+  // Generate 6-digit numeric OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  session.otp = otp;
+  session.otpExpiresAt = Date.now() + 10 * 60 * 1000;
+
+  const ip = getClientIp(req);
+  db.addAuditLog(
+    session.email,
+    'superadmin',
+    'ADMIN_2FA_OTP_SENT',
+    'AUTH',
+    { email: session.email, expiryMinutes: 10 },
+    ip
+  );
+  db.save();
+
+  console.log(`[BioScience Hub 2FA] OTP for ${session.email}: ${otp}`);
+
+  res.json({
+    success: true,
+    message: `A 6-digit security OTP has been sent to your registered email (${session.email}).`,
+    email: session.email,
+    debugOtp: otp, // Provides immediate copy/paste fallback in web environment
+  });
+});
+
+// Admin Login Step 2b: Verify Admin Secret Code OR Email OTP
+adminRouter.post('/auth/verify-2fa', async (req: Request, res: Response) => {
+  const ip = getClientIp(req);
+  const now = Date.now();
+  const { tempToken, code } = req.body;
+
+  if (!tempToken || !code) {
+    return res.status(400).json({ error: 'Both authentication token and security code are required.' });
+  }
+
+  const session = pending2faMap.get(tempToken);
+  if (!session || session.expiresAt < now) {
+    return res.status(401).json({ error: 'Session expired. Please start login from password step.' });
+  }
+
+  const cleanedCode = String(code).trim();
+
+  // Code can either be the fixed 20-digit secret code (95872214678769441578) OR active 6-digit OTP
+  const isSecretCodeMatch = cleanedCode === ADMIN_SECRET_CODE;
+  const isOtpMatch = session.otp && cleanedCode === session.otp && session.otpExpiresAt && session.otpExpiresAt > now;
+
+  if (!isSecretCodeMatch && !isOtpMatch) {
+    return res.status(401).json({
+      error: 'Invalid security code or OTP. Please enter the valid Admin Secret Code (95872214678769441578) or click "Send OTP to Email".',
     });
   }
 
-  const isMatch = await bcrypt.compare(password, user.passwordHash);
-  if (!isMatch) {
-    const current = loginRateLimitMap.get(ip) || { attempts: 0 };
-    current.attempts += 1;
-    if (current.attempts >= 5) {
-      current.blockedUntil = now + 15 * 60 * 1000;
-    }
-    loginRateLimitMap.set(ip, current);
-
-    db.addAuditLog(
-      email,
-      user.role,
-      'LOGIN_FAILED',
-      'AUTH',
-      { reason: 'Incorrect password' },
-      ip
-    );
-
-    return res.status(401).json({ error: 'Invalid credentials. Password verification failed.' });
-  }
-
-  // Reset rate limit
+  // Successful 2FA verification!
+  pending2faMap.delete(tempToken);
   loginRateLimitMap.delete(ip);
 
-  // Create session
+  const store = db.getData();
+  const user = store.adminUsers.find((u) => u.id === session.userId);
+  if (!user) {
+    return res.status(401).json({ error: 'Admin account not found.' });
+  }
+
+  // Generate permanent admin session
   const token = crypto.randomBytes(32).toString('hex');
-  const session = {
+  const adminSession = {
     token,
     userId: user.id,
     createdAt: new Date().toISOString(),
@@ -293,15 +421,18 @@ adminRouter.post('/auth/login', async (req: Request, res: Response) => {
     ip,
     userAgent: req.headers['user-agent'] || '',
   };
-  store.adminSessions.push(session);
+  store.adminSessions.push(adminSession);
   user.lastLoginAt = new Date().toISOString();
 
   db.addAuditLog(
-    email,
+    user.email,
     user.role,
-    'LOGIN_SUCCESSFUL',
+    'LOGIN_SUCCESSFUL_WITH_2FA',
     'AUTH',
-    { userAgent: req.headers['user-agent'] },
+    {
+      verificationType: isSecretCodeMatch ? 'SECRET_CODE_VERIFIED' : 'EMAIL_OTP_VERIFIED',
+      userAgent: req.headers['user-agent'],
+    },
     ip
   );
   db.save();

@@ -5,13 +5,31 @@
       "email": "charanjaydeep712@gmail.com",
       "fullName": "Jaydeep Charan",
       "role": "superadmin",
-      "passwordHash": "",
-      "isInitialSetupPending": true,
+      "passwordHash": "$2b$12$p/fO3eC/VXuWxq.qLMQoAutrO4kKJo8hPzaG9Dr800gZusgGdqVVO",
+      "isInitialSetupPending": false,
       "createdAt": "2026-11-02T14:04:11.677Z",
-      "failedLoginAttempts": 0
+      "failedLoginAttempts": 0,
+      "lastLoginAt": "2026-11-03T13:08:16.709Z"
     }
   ],
-  "adminSessions": [],
+  "adminSessions": [
+    {
+      "token": "83b3c759d822577c49080479e5382498ce0355c039e013ee651348668f848f1e",
+      "userId": "usr-superadmin-01",
+      "createdAt": "2026-11-03T13:08:06.089Z",
+      "expiresAt": "2026-11-04T13:08:06.089Z",
+      "ip": "127.0.0.1",
+      "userAgent": "node"
+    },
+    {
+      "token": "df4c3d039a954c20deb40590a7fdc19caea6d78c6d8bf6d230af11ad34d7319c",
+      "userId": "usr-superadmin-01",
+      "createdAt": "2026-11-03T13:08:16.709Z",
+      "expiresAt": "2026-11-04T13:08:16.709Z",
+      "ip": "127.0.0.1",
+      "userAgent": "node"
+    }
+  ],
   "maintenance": {
     "enabled": false,
     "title": "We'll Be Back Soon!",
@@ -21,6 +39,12 @@
     "personal_message_hi": "⏳ जब तक BioScience Hub दोबारा शुरू होता है, तब तक अपना यह कीमती समय अपने परिवार और प्रियजनों के साथ बिताइए। ❤️👨👩👧👦\n\nअपनों के साथ कुछ खूबसूरत पल बिताइए, खुश रहिए और मुस्कुराते रहिए। 🌸✨\n\nहम जल्द ही आपके लिए एक बेहतर Learning Experience के साथ वापस आएंगे! 🚀",
     "expected_reopening_iso": "2026-11-02T14:04:23.955Z",
     "timezone": "Asia/Kolkata",
+    "mini_games": {
+      "memory_match": true,
+      "number_puzzle": true,
+      "quick_math": true,
+      "word_scramble": true
+    },
     "last_updated_at": "2026-11-02T14:04:28.959Z",
     "last_updated_by": "system_scheduled_auto_reopen",
     "history": [
@@ -57,7 +81,84 @@
       }
     ]
   },
+  "popups": [],
   "auditLogs": [
+    {
+      "id": "log-1793711296709-hb8d",
+      "timestamp": "2026-11-03T13:08:16.709Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_SUCCESSFUL_WITH_2FA",
+      "resource": "AUTH",
+      "details": {
+        "verificationType": "EMAIL_OTP_VERIFIED",
+        "userAgent": "node"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793711296705-dinr",
+      "timestamp": "2026-11-03T13:08:16.705Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "ADMIN_2FA_OTP_SENT",
+      "resource": "AUTH",
+      "details": {
+        "email": "charanjaydeep712@gmail.com",
+        "expiryMinutes": 10
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793711296693-1ilz",
+      "timestamp": "2026-11-03T13:08:16.693Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_STEP1_VERIFIED",
+      "resource": "AUTH",
+      "details": {
+        "message": "Password verified. 2FA Secret Key / OTP prompt initiated."
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793711286089-plen",
+      "timestamp": "2026-11-03T13:08:06.089Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_SUCCESSFUL_WITH_2FA",
+      "resource": "AUTH",
+      "details": {
+        "verificationType": "SECRET_CODE_VERIFIED",
+        "userAgent": "node"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793711286084-e43o",
+      "timestamp": "2026-11-03T13:08:06.084Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "ADMIN_2FA_OTP_SENT",
+      "resource": "AUTH",
+      "details": {
+        "email": "charanjaydeep712@gmail.com",
+        "expiryMinutes": 10
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793711286065-35iz",
+      "timestamp": "2026-11-03T13:08:06.065Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_STEP1_VERIFIED",
+      "resource": "AUTH",
+      "details": {
+        "message": "Password verified. 2FA Secret Key / OTP prompt initiated."
+      },
+      "ip": "127.0.0.1"
+    },
     {
       "id": "log-1793628275136-gb9w",
       "timestamp": "2026-11-02T14:04:35.136Z",

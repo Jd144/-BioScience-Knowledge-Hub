@@ -133,11 +133,11 @@ function AppContent() {
 
   // Standard Public Website Layout
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased font-serif transition-colors">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased font-serif transition-colors overflow-x-hidden max-w-full w-full">
       <WebsitePopupRenderer />
       <PublicSettingsModal />
       <Navbar />
-      <main className="flex-1">
+      <main className="flex-1 overflow-x-hidden max-w-full w-full">
         <Suspense fallback={<PageLoadingFallback />}>
           <Routes>
             {/* 1. Home */}

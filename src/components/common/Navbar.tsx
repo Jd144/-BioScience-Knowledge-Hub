@@ -77,51 +77,51 @@ export const Navbar: React.FC = () => {
     <>
       <header className="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs border-b border-slate-200 dark:border-slate-800">
         {/* Primary Header Row */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4 lg:gap-8 min-w-0">
           {/* Zone 1: Brand Wordmark (Single Text Element) */}
           <Link
             to="/"
-            className="text-base font-bold tracking-tight text-slate-900 dark:text-slate-100 whitespace-nowrap shrink-0 flex items-center gap-2.5"
+            className="text-sm sm:text-base font-bold tracking-tight text-slate-900 dark:text-slate-100 whitespace-nowrap shrink-0 flex items-center gap-2"
           >
-            <div className="w-8 h-8 rounded-lg bg-slate-900 dark:bg-cyan-950 flex items-center justify-center text-cyan-400 font-mono text-sm font-bold shadow-xs border border-cyan-800/40">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-900 dark:bg-cyan-950 flex items-center justify-center text-cyan-400 font-mono text-xs sm:text-sm font-bold shadow-xs border border-cyan-800/40">
               B
             </div>
             <div className="flex flex-col">
-              <span className="leading-tight font-extrabold text-slate-900 dark:text-white text-base">BioScience Hub</span>
-              <span className="text-[10px] font-semibold text-cyan-700 dark:text-cyan-400 tracking-wider uppercase leading-none">Educational Platform</span>
+              <span className="leading-tight font-extrabold text-slate-900 dark:text-white text-sm sm:text-base">BioScience Hub</span>
+              <span className="text-[9px] sm:text-[10px] font-semibold text-cyan-700 dark:text-cyan-400 tracking-wider uppercase leading-none hidden xs:inline">Educational Platform</span>
             </div>
           </Link>
 
           {/* Zone 2: 6 Core Single-Line Navigation Pillars */}
-          <nav className="hidden lg:flex items-center gap-6 text-xs sm:text-sm font-medium text-slate-600">
+          <nav className="hidden lg:flex items-center gap-6 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
             <Link
               to="/subjects"
-              className={`hover:text-slate-900 transition-colors whitespace-nowrap shrink-0 ${
-                isActive('/subjects') ? 'text-slate-900 font-bold border-b-2 border-cyan-600 pb-0.5' : ''
+              className={`hover:text-slate-900 dark:hover:text-white transition-colors whitespace-nowrap shrink-0 ${
+                isActive('/subjects') ? 'text-slate-900 dark:text-white font-bold border-b-2 border-cyan-600 pb-0.5' : ''
               }`}
             >
               Learn
             </Link>
             <Link
               to="/jobs"
-              className={`hover:text-slate-900 transition-colors whitespace-nowrap shrink-0 ${
-                isActive('/jobs') ? 'text-slate-900 font-bold border-b-2 border-cyan-600 pb-0.5' : ''
+              className={`hover:text-slate-900 dark:hover:text-white transition-colors whitespace-nowrap shrink-0 ${
+                isActive('/jobs') ? 'text-slate-900 dark:text-white font-bold border-b-2 border-cyan-600 pb-0.5' : ''
               }`}
             >
               Jobs
             </Link>
             <Link
               to="/internships"
-              className={`hover:text-slate-900 transition-colors whitespace-nowrap shrink-0 ${
-                isActive('/internships') ? 'text-slate-900 font-bold border-b-2 border-cyan-600 pb-0.5' : ''
+              className={`hover:text-slate-900 dark:hover:text-white transition-colors whitespace-nowrap shrink-0 ${
+                isActive('/internships') ? 'text-slate-900 dark:text-white font-bold border-b-2 border-cyan-600 pb-0.5' : ''
               }`}
             >
               Internships
             </Link>
             <Link
               to="/exams"
-              className={`hover:text-slate-900 transition-colors whitespace-nowrap shrink-0 ${
-                isActive('/exams') ? 'text-slate-900 font-bold border-b-2 border-cyan-600 pb-0.5' : ''
+              className={`hover:text-slate-900 dark:hover:text-white transition-colors whitespace-nowrap shrink-0 ${
+                isActive('/exams') ? 'text-slate-900 dark:text-white font-bold border-b-2 border-cyan-600 pb-0.5' : ''
               }`}
             >
               Exam Alerts
@@ -131,51 +131,51 @@ export const Navbar: React.FC = () => {
               className="hover:text-cyan-950 dark:hover:text-cyan-200 transition-colors whitespace-nowrap shrink-0 flex items-center gap-1.5 text-cyan-800 dark:text-cyan-300 font-bold bg-cyan-50 dark:bg-cyan-950/40 hover:bg-cyan-100 dark:hover:bg-cyan-900/60 px-2.5 py-1 rounded-lg border border-cyan-200/80 dark:border-cyan-800 shadow-2xs"
               title="Indian National Exam Preparation on BioScience Mastery"
             >
-              <GraduationCap className="w-3.5 h-3.5 text-cyan-700" />
+              <GraduationCap className="w-3.5 h-3.5 text-cyan-700 dark:text-cyan-400" />
               <span>Exam Preparation</span>
             </a>
             <Link
               to="/lab-zone"
-              className={`hover:text-slate-900 transition-colors whitespace-nowrap shrink-0 ${
-                isActive('/lab-zone') ? 'text-slate-900 font-bold border-b-2 border-cyan-600 pb-0.5' : ''
+              className={`hover:text-slate-900 dark:hover:text-white transition-colors whitespace-nowrap shrink-0 ${
+                isActive('/lab-zone') ? 'text-slate-900 dark:text-white font-bold border-b-2 border-cyan-600 pb-0.5' : ''
               }`}
             >
               Lab Zone
             </Link>
             <Link
               to="/news"
-              className={`hover:text-slate-900 transition-colors whitespace-nowrap shrink-0 ${
-                isActive('/news') ? 'text-slate-900 font-bold border-b-2 border-cyan-600 pb-0.5' : ''
+              className={`hover:text-slate-900 dark:hover:text-white transition-colors whitespace-nowrap shrink-0 ${
+                isActive('/news') ? 'text-slate-900 dark:text-white font-bold border-b-2 border-cyan-600 pb-0.5' : ''
               }`}
             >
               Biotech News
             </Link>
           </nav>
 
-          {/* Zone 3: Clean Search and Bilingual Language Controls */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          {/* Zone 3: Clean Search, Bilingual Language Controls & Settings */}
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             {/* Global Search Button */}
             <button
               onClick={() => setIsSearchOpen(true)}
               aria-label="Search knowledge hub"
-              className="px-3 py-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors flex items-center gap-2 text-xs border border-slate-200"
+              className="p-2 sm:px-3 sm:py-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors flex items-center gap-2 text-xs border border-slate-200 dark:border-slate-700"
               title="Search database (Ctrl+K)"
             >
               <Search className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Search</span>
-              <kbd className="hidden xl:inline-block px-1 py-0.2 text-[10px] font-mono text-slate-400 bg-slate-100 rounded border border-slate-200">
+              <kbd className="hidden xl:inline-block px-1 py-0.2 text-[10px] font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">
                 ⌘K
               </kbd>
             </button>
 
-            {/* Language Switcher Button */}
-            <div className="flex items-center bg-slate-100 p-0.5 rounded-lg text-xs font-medium">
+            {/* Language Switcher Button (hidden on mobile, visible on md+) */}
+            <div className="hidden md:flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-700">
               <button
                 onClick={() => setLanguage('en')}
                 className={`px-2.5 py-1 rounded-md transition-colors ${
                   language === 'en'
-                    ? 'bg-white text-slate-900 shadow-2xs font-semibold'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs font-semibold'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
                 title="English"
               >
@@ -185,8 +185,8 @@ export const Navbar: React.FC = () => {
                 onClick={() => setLanguage('hinglish')}
                 className={`px-2.5 py-1 rounded-md transition-colors ${
                   language === 'hinglish'
-                    ? 'bg-white text-slate-900 shadow-2xs font-semibold'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs font-semibold'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
                 title="Roman Hinglish"
               >
@@ -199,7 +199,7 @@ export const Navbar: React.FC = () => {
               href="https://whatsapp.com/channel/0029VbBeWMxA89MgAovtkf2j"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg border border-emerald-200/80 transition-colors"
+              className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-300 rounded-lg border border-emerald-200/80 dark:border-emerald-800 transition-colors"
               title="Follow BioScience Mastery ™ on WhatsApp"
             >
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -208,13 +208,13 @@ export const Navbar: React.FC = () => {
 
             {/* User Login / Member Portal */}
             {user ? (
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1">
                 <Link
                   to="/dashboard"
-                  className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 text-xs font-bold text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-200 transition-colors"
+                  className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 text-xs font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-700 transition-colors"
                   title="My Student Dashboard"
                 >
-                  <div className="w-5 h-5 rounded-full bg-slate-900 text-cyan-400 font-mono text-[10px] flex items-center justify-center font-bold">
+                  <div className="w-5 h-5 rounded-full bg-slate-900 dark:bg-slate-700 text-cyan-400 font-mono text-[10px] flex items-center justify-center font-bold">
                     {user.fullName ? user.fullName.charAt(0).toUpperCase() : 'S'}
                   </div>
                   <span className="hidden md:inline font-mono text-xs">{user.fullName?.split(' ')[0] || 'Scholar'}</span>
@@ -222,7 +222,7 @@ export const Navbar: React.FC = () => {
                 <button
                   onClick={() => logout()}
                   title="Sign Out"
-                  className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                   aria-label="Sign out"
                 >
                   <LogOut className="w-3.5 h-3.5" />
@@ -231,22 +231,22 @@ export const Navbar: React.FC = () => {
             ) : (
               <Link
                 to="/login"
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors shadow-2xs"
+                className="flex items-center gap-1 px-2 sm:px-3 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors shadow-2xs border border-slate-800 dark:border-slate-700"
                 title="Sign In to Student Hub"
               >
                 <LogIn className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Log In</span>
+                <span className="hidden sm:inline">Log In</span>
               </Link>
             )}
 
-            {/* Prominent Settings Button with Gear Icon (Visible on Desktop and Mobile) */}
+            {/* Prominent Settings Button with Gear Icon (Always visible) */}
             <button
               onClick={openSettings}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-700 transition-colors shadow-2xs"
+              className="flex items-center gap-1.5 p-2 sm:px-2.5 sm:py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-700 transition-colors shadow-2xs"
               title="Website Settings & Appearance"
               aria-label="Open website settings"
             >
-              <Settings className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
+              <Settings className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
               <span className="hidden sm:inline">Settings</span>
             </button>
 
@@ -473,14 +473,51 @@ export const Navbar: React.FC = () => {
               <ExternalLink className="w-3.5 h-3.5 text-sky-600" />
             </a>
 
+            {/* Mobile Language Selector & Settings */}
+            <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2">
+              <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-700">
+                <button
+                  onClick={() => setLanguage('en')}
+                  className={`px-3 py-1 rounded-md transition-colors ${
+                    language === 'en'
+                      ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs font-semibold'
+                      : 'text-slate-600 dark:text-slate-400'
+                  }`}
+                >
+                  English
+                </button>
+                <button
+                  onClick={() => setLanguage('hinglish')}
+                  className={`px-3 py-1 rounded-md transition-colors ${
+                    language === 'hinglish'
+                      ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs font-semibold'
+                      : 'text-slate-600 dark:text-slate-400'
+                  }`}
+                >
+                  Hinglish
+                </button>
+              </div>
+
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openSettings();
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-700"
+              >
+                <Settings className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
+                <span>Settings</span>
+              </button>
+            </div>
+
             {/* User Account & Login */}
-            <div className="pt-3 border-t border-slate-100">
+            <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
               {user ? (
                 <div className="space-y-2">
                   <Link
                     to="/dashboard"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg"
+                    className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg"
                   >
                     <User className="w-4 h-4 text-cyan-600" />
                     <span>My Student Dashboard ({user.fullName?.split(' ')[0] || 'Scholar'})</span>
@@ -490,7 +527,7 @@ export const Navbar: React.FC = () => {
                       logout();
                       setMobileMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-50 rounded-lg"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg"
                   >
                     <LogOut className="w-4 h-4 text-rose-500" />
                     <span>Log Out</span>
@@ -500,9 +537,9 @@ export const Navbar: React.FC = () => {
                 <Link
                   to="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-sm"
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 dark:bg-cyan-600 dark:hover:bg-cyan-500 rounded-lg shadow-sm"
                 >
-                  <LogIn className="w-4 h-4 text-cyan-400" />
+                  <LogIn className="w-4 h-4 text-cyan-400 dark:text-white" />
                   <span>Log In to Student Hub</span>
                 </Link>
               )}

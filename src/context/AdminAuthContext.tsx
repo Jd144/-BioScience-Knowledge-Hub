@@ -12,7 +12,9 @@ interface AdminAuthContextType {
   adminUser: AdminUser | null;
   token: string | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; setupPending?: boolean }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; require2FA?: boolean; tempToken?: string; email?: string; error?: string; setupPending?: boolean; message?: string }>;
+  verify2FA: (tempToken: string, code: string) => Promise<{ success: boolean; error?: string }>;
+  sendOtp: (tempToken: string) => Promise<{ success: boolean; message?: string; debugOtp?: string; error?: string }>;
   setup: (password: string, fullName?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -68,7 +70,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     fetchCurrentUser(token);
   }, [fetchCurrentUser, token]);
 
-  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string; setupPending?: boolean }> => {
+  const login = async (email: string, password: string): Promise<{ success: boolean; require2FA?: boolean; tempToken?: string; email?: string; error?: string; setupPending?: boolean; message?: string }> => {
     try {
       const res = await fetch('/api/admin/auth/login', {
         method: 'POST',
@@ -86,6 +88,17 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         };
       }
 
+      // If Step 2 2FA is required (Admin Secret Code / OTP)
+      if (data.require2FA) {
+        return {
+          success: true,
+          require2FA: true,
+          tempToken: data.tempToken,
+          email: data.email,
+          message: data.message,
+        };
+      }
+
       if (data.token && data.user) {
         localStorage.setItem(TOKEN_KEY, data.token);
         setToken(data.token);
@@ -96,6 +109,48 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       return { success: false, error: 'Authentication payload was missing required token.' };
     } catch (e: any) {
       return { success: false, error: e.message || 'Network error during admin login.' };
+    }
+  };
+
+  const sendOtp = async (tempToken: string): Promise<{ success: boolean; message?: string; debugOtp?: string; error?: string }> => {
+    try {
+      const res = await fetch('/api/admin/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tempToken }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Failed to dispatch OTP.' };
+      }
+      return { success: true, message: data.message, debugOtp: data.debugOtp };
+    } catch (e: any) {
+      return { success: false, error: e.message || 'Network error while requesting OTP.' };
+    }
+  };
+
+  const verify2FA = async (tempToken: string, code: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const res = await fetch('/api/admin/auth/verify-2fa', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tempToken, code }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        return { success: false, error: data.error || 'Invalid secret key or OTP code.' };
+      }
+
+      if (data.token && data.user) {
+        localStorage.setItem(TOKEN_KEY, data.token);
+        setToken(data.token);
+        setAdminUser(data.user);
+        return { success: true };
+      }
+
+      return { success: false, error: 'Authentication payload was missing required session.' };
+    } catch (e: any) {
+      return { success: false, error: e.message || 'Network error during 2FA verification.' };
     }
   };
 
@@ -157,6 +212,8 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         token,
         loading,
         login,
+        verify2FA,
+        sendOtp,
         setup,
         logout,
         refreshUser: () => fetchCurrentUser(token),

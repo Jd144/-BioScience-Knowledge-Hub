@@ -8,10 +8,32 @@
 
   *, ::before, ::after {
     font-family: "Times New Roman", Times, serif !important;
+    box-sizing: border-box;
   }
 
-  html, body {
+  html {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    width: 100% !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    width: 100% !important;
+    margin: 0;
+    padding: 0;
     font-family: "Times New Roman", Times, serif !important;
+    position: relative;
+  }
+
+  #root {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    min-height: 100vh;
   }
 
   h1, h2, h3, h4, h5, h6,
