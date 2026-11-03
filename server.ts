@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { GoogleGenAI } from '@google/genai';
 
 import { adminRouter } from './server/adminRoutes.js';
+import { aiRouter } from './server/aiRoutes.js';
 import { db } from './server/db.js';
 
 dotenv.config();
@@ -17,7 +18,8 @@ const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 app.use(express.json());
 
-// Mount Admin API Router
+// Mount Admin API Routers
+app.use('/api/admin/ai', aiRouter);
 app.use('/api/admin', adminRouter);
 
 // Public Maintenance Status Check

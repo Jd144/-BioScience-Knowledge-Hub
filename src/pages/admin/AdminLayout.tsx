@@ -29,7 +29,8 @@ import {
   Bell,
   Sun,
   Moon,
-  Settings
+  Settings,
+  BrainCircuit
 } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext.tsx';
 import { useMaintenance } from '../../context/MaintenanceContext.tsx';
@@ -48,6 +49,13 @@ export const AdminLayout: React.FC = () => {
       label: 'Dashboard',
       icon: LayoutDashboard,
       exact: true,
+    },
+    {
+      to: '/admin/ai',
+      label: 'Autonomous AI Center',
+      icon: BrainCircuit,
+      badge: '₹0 BUDGET',
+      badgeColor: 'bg-emerald-600 text-white',
     },
     {
       to: '/admin/maintenance',

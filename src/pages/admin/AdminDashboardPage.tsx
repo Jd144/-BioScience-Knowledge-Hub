@@ -24,7 +24,8 @@ import {
   FileCheck,
   RefreshCw,
   Bell,
-  Settings
+  Settings,
+  BrainCircuit
 } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext.tsx';
 import { useMaintenance } from '../../context/MaintenanceContext.tsx';
@@ -73,7 +74,15 @@ export const AdminDashboardPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <Link
+            to="/admin/ai"
+            className="px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 border bg-cyan-50 dark:bg-cyan-950/40 border-cyan-200 dark:border-cyan-800 text-cyan-900 dark:text-cyan-300 shadow-2xs hover:bg-cyan-100 transition-all"
+          >
+            <BrainCircuit className="w-4 h-4 text-cyan-700 dark:text-cyan-400" />
+            <span>Autonomous AI Center</span>
+          </Link>
+
           <button
             onClick={() => fetchStats()}
             className="px-3 py-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs flex items-center gap-1.5 transition-colors shadow-2xs font-semibold"

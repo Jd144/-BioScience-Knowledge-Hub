@@ -230,6 +230,150 @@ export interface WebsitePopup {
   updatedAt: string;
 }
 
+// -----------------------------------------------------------------------------
+// AUTONOMOUS AI SYSTEM INTERFACES
+// -----------------------------------------------------------------------------
+
+export type AiProviderId = 'gemini' | 'groq' | 'openrouter' | 'ollama_gemma' | 'ollama_qwen';
+export type AiOperatingMode = 'research_only' | 'review_mode' | 'controlled_autonomous';
+
+export interface AiProviderConfig {
+  enabled: boolean;
+  model: string;
+  priorityOrder: number;
+  lastTestedAt?: string;
+  isOperational?: boolean;
+  statusNote?: string;
+  inCooldownUntil?: number;
+  consecutiveErrors?: number;
+}
+
+export interface AiConfig {
+  operatingMode: AiOperatingMode; // 'research_only' (default) | 'review_mode' | 'controlled_autonomous'
+  activeProvider: AiProviderId; // 'gemini' (default)
+  providerPriorities: AiProviderId[];
+  providerSettings: Record<AiProviderId, AiProviderConfig>;
+  monthlyBudgetINR: number; // strictly 0 (Zero Paid Fallback Policy)
+  monthlyUsageRequests: number;
+  monthlyTokensUsed: number;
+  lastUsageResetMonth: string;
+  tavilyEnabled: boolean;
+  ollamaBaseUrl: string; // default: 'http://localhost:11434'
+  autoScheduleEnabled: boolean;
+  dailyCheckHourUtc: number; // default: 3 (8:30 AM IST)
+  maxItemsPerResearchRun: number; // default: 8
+}
+
+export type VerificationStatus =
+  | 'Verified Official'
+  | 'Official Source Found – Further Review Needed'
+  | 'Unverified'
+  | 'Conflicting Information'
+  | 'Expired'
+  | 'Withdrawn'
+  | 'Source Unavailable';
+
+export interface ResearchRecord {
+  id: string;
+  title: string;
+  category: 'job' | 'internship' | 'scholarship' | 'admission' | 'research' | 'fellowship' | 'conference' | 'exam' | 'news' | 'scientific';
+  institution: string;
+  originalSourceUrl: string;
+  notificationUrlOrPdf: string;
+  publicationDate?: string;
+  applicationOpeningDate?: string;
+  applicationDeadline?: string; // YYYY-MM-DD
+  eligibility?: string;
+  stipendOrFunding?: string;
+  location?: string;
+  duration?: string;
+  officialApplicationLink?: string;
+  lastCheckedAt: string;
+  lastUpdatedAt: string;
+  verificationStatus: VerificationStatus;
+  evidenceNotes: string;
+  sourceMetadata: Record<string, any>;
+  discoveredByProvider: string;
+  isPublishedToLive: boolean;
+  liveEntityId?: string;
+}
+
+export interface ExamChangeProposal {
+  id: string;
+  examCode: 'GAT-B' | 'DBT-JRF' | 'GATE-BT' | 'IIT-JAM' | 'CUET-PG' | 'CSIR-NET';
+  examName: string;
+  field: string;
+  currentValue: string;
+  proposedValue: string;
+  officialSourceUrl: string;
+  evidence: string;
+  status: 'pending_review' | 'approved' | 'rejected';
+  detectedAt: string;
+  reviewedBy?: string;
+  reviewedAt?: string;
+}
+
+export interface ContentProposal {
+  id: string;
+  targetSection: 'opportunities' | 'articles' | 'exams' | 'news' | 'lab_zone' | 'subjects';
+  title: string;
+  summary: string;
+  currentContent?: string;
+  proposedContent: string;
+  diffSummary: string;
+  sourceUrl: string;
+  verificationStatus: VerificationStatus;
+  status: 'draft' | 'pending_review' | 'approved_and_published' | 'rejected' | 'rolled_back';
+  createdAt: string;
+  updatedAt: string;
+  publishedAt?: string;
+  publishedBy?: string;
+  previousSnapshot?: string;
+}
+
+export interface WeeklyDispatchDraft {
+  id: string;
+  weekNumber: number;
+  year: number;
+  title: string;
+  publishedAt?: string;
+  status: 'draft' | 'ready_for_review' | 'published';
+  summaryText: string;
+  highlights: {
+    jobs: { id: string; title: string; organization: string; deadline: string; url: string }[];
+    internships: { id: string; title: string; organization: string; deadline: string; url: string }[];
+    fellowships: { id: string; title: string; organization: string; deadline: string; url: string }[];
+    exams: { code: string; title: string; update: string; url: string }[];
+    news: { headline: string; summary: string; source: string }[];
+  };
+  fullDraftHtml: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AiActivityLog {
+  id: string;
+  timestamp: string;
+  providerUsed: string;
+  action: string;
+  taskType: string;
+  sourcesChecked: string[];
+  recordsFound: number;
+  status: 'success' | 'warning' | 'failed' | 'paused';
+  details?: any;
+  costINR: number; // Always 0
+}
+
+export interface TaskCheckpoint {
+  id: string;
+  taskType: string;
+  lastStep: string;
+  savedAt: string;
+  state: any;
+  status: 'idle' | 'running' | 'paused' | 'failed' | 'completed';
+  error?: string;
+}
+
 export interface DataStore {
   adminUsers: AdminUser[];
   adminSessions: AdminSession[];
@@ -243,6 +387,13 @@ export interface DataStore {
   examinations: ExaminationConfig[];
   seoSettings: SeoSettings;
   popups: WebsitePopup[];
+  aiConfig: AiConfig;
+  aiResearchQueue: ResearchRecord[];
+  aiExamProposals: ExamChangeProposal[];
+  aiContentProposals: ContentProposal[];
+  aiWeeklyDispatches: WeeklyDispatchDraft[];
+  aiActivityLogs: AiActivityLog[];
+  aiTaskCheckpoints: TaskCheckpoint[];
 }
 
 // Initial Super Admin credentials
@@ -535,6 +686,71 @@ function createDefaultStore(): DataStore {
       },
       footerNotice: 'Public education portal. Grounded in official gazettes, NTA/DBT bulletins, and peer-reviewed reference texts (Lehninger, Alberts, Lodish, Brock).',
     },
+    aiConfig: {
+      operatingMode: 'research_only', // Default to research-only mode as required
+      activeProvider: 'gemini',
+      providerPriorities: ['gemini', 'groq', 'openrouter', 'ollama_gemma', 'ollama_qwen'],
+      providerSettings: {
+        gemini: {
+          enabled: true,
+          model: 'gemini-3.8-flash',
+          priorityOrder: 1,
+          statusNote: 'Primary cloud AI (Google GenAI Free Tier)',
+        },
+        groq: {
+          enabled: true,
+          model: 'llama-3.3-70b-versatile',
+          priorityOrder: 2,
+          statusNote: 'Secondary fast inference provider',
+        },
+        openrouter: {
+          enabled: true,
+          model: 'meta-llama/llama-3.3-70b-instruct:free',
+          priorityOrder: 3,
+          statusNote: 'Third provider, strictly free models only',
+        },
+        ollama_gemma: {
+          enabled: true,
+          model: 'gemma3:4b',
+          priorityOrder: 4,
+          statusNote: 'Local offline LLM (Google Gemma 3 4B)',
+        },
+        ollama_qwen: {
+          enabled: true,
+          model: 'qwen2.5:1.5b',
+          priorityOrder: 5,
+          statusNote: 'Local offline lightweight LLM (Qwen 2.5 1.5B)',
+        },
+      },
+      monthlyBudgetINR: 0, // Enforce strictly ₹0 budget, zero paid fallback
+      monthlyUsageRequests: 0,
+      monthlyTokensUsed: 0,
+      lastUsageResetMonth: new Date().toISOString().substring(0, 7),
+      tavilyEnabled: false,
+      ollamaBaseUrl: process.env.OLLAMA_BASE_URL || 'http://localhost:11434',
+      autoScheduleEnabled: true,
+      dailyCheckHourUtc: 3,
+      maxItemsPerResearchRun: 8,
+    },
+    aiResearchQueue: [],
+    aiExamProposals: [],
+    aiContentProposals: [],
+    aiWeeklyDispatches: [],
+    aiActivityLogs: [
+      {
+        id: 'log-ai-init',
+        timestamp: new Date().toISOString(),
+        providerUsed: 'system',
+        action: 'AI_SYSTEM_INITIALIZED',
+        taskType: 'INIT',
+        sourcesChecked: ['DBT', 'DST', 'CSIR', 'ICMR', 'NTA', 'IITs'],
+        recordsFound: 0,
+        status: 'success',
+        details: { message: 'Autonomous AI Engine initialized in Research Mode with ₹0 budget policy.' },
+        costINR: 0,
+      },
+    ],
+    aiTaskCheckpoints: [],
   };
 }
 
@@ -544,6 +760,7 @@ class Database {
 
   constructor() {
     this.data = this.load();
+    this.resetMonthlyAiUsageIfNewMonth();
   }
 
   private load(): DataStore {
@@ -572,6 +789,20 @@ class Database {
             ...defaults.seoSettings,
             ...(parsed.seoSettings || {}),
           },
+          aiConfig: {
+            ...defaults.aiConfig,
+            ...(parsed.aiConfig || {}),
+            providerSettings: {
+              ...defaults.aiConfig.providerSettings,
+              ...((parsed.aiConfig && parsed.aiConfig.providerSettings) || {}),
+            },
+          },
+          aiResearchQueue: Array.isArray(parsed.aiResearchQueue) ? parsed.aiResearchQueue : [],
+          aiExamProposals: Array.isArray(parsed.aiExamProposals) ? parsed.aiExamProposals : [],
+          aiContentProposals: Array.isArray(parsed.aiContentProposals) ? parsed.aiContentProposals : [],
+          aiWeeklyDispatches: Array.isArray(parsed.aiWeeklyDispatches) ? parsed.aiWeeklyDispatches : [],
+          aiActivityLogs: Array.isArray(parsed.aiActivityLogs) ? parsed.aiActivityLogs : defaults.aiActivityLogs,
+          aiTaskCheckpoints: Array.isArray(parsed.aiTaskCheckpoints) ? parsed.aiTaskCheckpoints : [],
         };
       }
     } catch (e) {
@@ -658,6 +889,53 @@ class Database {
     if (this.data.auditLogs.length > 1000) {
       this.data.auditLogs = this.data.auditLogs.slice(0, 1000);
     }
+    this.save();
+  }
+
+  // AI Activity Logging Helper
+  public addAiActivityLog(
+    providerUsed: string,
+    action: string,
+    taskType: string,
+    sourcesChecked: string[] = [],
+    recordsFound: number = 0,
+    status: 'success' | 'warning' | 'failed' | 'paused' = 'success',
+    details?: any
+  ): void {
+    const log: AiActivityLog = {
+      id: 'ai-log-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6),
+      timestamp: new Date().toISOString(),
+      providerUsed,
+      action,
+      taskType,
+      sourcesChecked,
+      recordsFound,
+      status,
+      details,
+      costINR: 0, // Zero paid fallback policy enforced
+    };
+    this.data.aiActivityLogs.unshift(log);
+    if (this.data.aiActivityLogs.length > 500) {
+      this.data.aiActivityLogs = this.data.aiActivityLogs.slice(0, 500);
+    }
+    this.save();
+  }
+
+  // Monthly usage tracker (resets on 1st of every month)
+  public resetMonthlyAiUsageIfNewMonth(): void {
+    const currentMonth = new Date().toISOString().substring(0, 7);
+    if (this.data.aiConfig.lastUsageResetMonth !== currentMonth) {
+      this.data.aiConfig.monthlyUsageRequests = 0;
+      this.data.aiConfig.monthlyTokensUsed = 0;
+      this.data.aiConfig.lastUsageResetMonth = currentMonth;
+      this.save();
+    }
+  }
+
+  public incrementAiUsage(tokens: number = 0): void {
+    this.resetMonthlyAiUsageIfNewMonth();
+    this.data.aiConfig.monthlyUsageRequests += 1;
+    this.data.aiConfig.monthlyTokensUsed += tokens;
     this.save();
   }
 }

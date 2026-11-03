@@ -9,7 +9,7 @@
       "isInitialSetupPending": false,
       "createdAt": "2026-11-02T14:04:11.677Z",
       "failedLoginAttempts": 0,
-      "lastLoginAt": "2026-11-03T13:08:16.709Z"
+      "lastLoginAt": "2026-11-03T14:27:09.921Z"
     }
   ],
   "adminSessions": [
@@ -26,6 +26,14 @@
       "userId": "usr-superadmin-01",
       "createdAt": "2026-11-03T13:08:16.709Z",
       "expiresAt": "2026-11-04T13:08:16.709Z",
+      "ip": "127.0.0.1",
+      "userAgent": "node"
+    },
+    {
+      "token": "da41fd963d6dda84aed1931685aa99cca2ff9413cd24781a9475942b7f9515d2",
+      "userId": "usr-superadmin-01",
+      "createdAt": "2026-11-03T14:27:09.921Z",
+      "expiresAt": "2026-11-04T14:27:09.921Z",
       "ip": "127.0.0.1",
       "userAgent": "node"
     }
@@ -83,6 +91,31 @@
   },
   "popups": [],
   "auditLogs": [
+    {
+      "id": "log-1793716029921-lea0",
+      "timestamp": "2026-11-03T14:27:09.921Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_SUCCESSFUL_WITH_2FA",
+      "resource": "AUTH",
+      "details": {
+        "verificationType": "SECRET_CODE_VERIFIED",
+        "userAgent": "node"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793716029906-rtyh",
+      "timestamp": "2026-11-03T14:27:09.906Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_STEP1_VERIFIED",
+      "resource": "AUTH",
+      "details": {
+        "message": "Password verified. 2FA Secret Key / OTP prompt initiated."
+      },
+      "ip": "127.0.0.1"
+    },
     {
       "id": "log-1793711296709-hb8d",
       "timestamp": "2026-11-03T13:08:16.709Z",
@@ -540,5 +573,190 @@
       "linkUrl": "https://bioscience-mastery-p-vdf1.bolt.host/en/exams"
     },
     "footerNotice": "Public education portal. Grounded in official gazettes, NTA/DBT bulletins, and peer-reviewed reference texts (Lehninger, Alberts, Lodish, Brock)."
-  }
+  },
+  "aiConfig": {
+    "operatingMode": "research_only",
+    "activeProvider": "gemini",
+    "providerPriorities": [
+      "gemini",
+      "groq",
+      "openrouter",
+      "ollama_gemma",
+      "ollama_qwen"
+    ],
+    "providerSettings": {
+      "gemini": {
+        "enabled": true,
+        "model": "gemini-3.8-flash",
+        "priorityOrder": 1,
+        "statusNote": "{\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}",
+        "isOperational": false,
+        "lastTestedAt": "2026-11-03T14:27:11.276Z"
+      },
+      "groq": {
+        "enabled": true,
+        "model": "llama-3.3-70b-versatile",
+        "priorityOrder": 2,
+        "statusNote": "GROQ_API_KEY is not set in environment.",
+        "isOperational": false,
+        "lastTestedAt": "2026-11-03T14:27:11.276Z"
+      },
+      "openrouter": {
+        "enabled": true,
+        "model": "meta-llama/llama-3.3-70b-instruct:free",
+        "priorityOrder": 3,
+        "statusNote": "OPENROUTER_API_KEY is not set in environment.",
+        "isOperational": false,
+        "lastTestedAt": "2026-11-03T14:27:11.276Z"
+      },
+      "ollama_gemma": {
+        "enabled": true,
+        "model": "gemma3:4b",
+        "priorityOrder": 4,
+        "statusNote": "Local Ollama is offline or unreachable at http://localhost:11434. (Expected if running in cloud container or local daemon is stopped).",
+        "isOperational": false,
+        "lastTestedAt": "2026-11-03T14:27:11.276Z"
+      },
+      "ollama_qwen": {
+        "enabled": true,
+        "model": "qwen2.5:1.5b",
+        "priorityOrder": 5,
+        "statusNote": "Local Ollama is offline or unreachable at http://localhost:11434. (Expected if running in cloud container or local daemon is stopped).",
+        "isOperational": false,
+        "lastTestedAt": "2026-11-03T14:27:11.276Z"
+      }
+    },
+    "monthlyBudgetINR": 0,
+    "monthlyUsageRequests": 0,
+    "monthlyTokensUsed": 0,
+    "lastUsageResetMonth": "2026-11",
+    "tavilyEnabled": false,
+    "ollamaBaseUrl": "http://localhost:11434",
+    "autoScheduleEnabled": true,
+    "dailyCheckHourUtc": 3,
+    "maxItemsPerResearchRun": 8
+  },
+  "aiResearchQueue": [],
+  "aiExamProposals": [],
+  "aiContentProposals": [],
+  "aiWeeklyDispatches": [
+    {
+      "id": "dispatch-1793716031280",
+      "weekNumber": 45,
+      "year": 2026,
+      "title": "BioScience Weekly Dispatch — Issue #45 (2026)",
+      "status": "draft",
+      "summaryText": "Weekly curated digest of verified biotechnology vacancies, fellowships, summer internships, and national examination schedules.",
+      "highlights": {
+        "jobs": [
+          {
+            "id": "opp-01",
+            "title": "Junior Research Fellow (JRF) - Structural Biology & Cryo-EM",
+            "organization": "Regional Centre for Biotechnology (RCB), Faridabad",
+            "deadline": "2026-11-25",
+            "url": "https://rcb.res.in/index.php?param=apply"
+          }
+        ],
+        "internships": [
+          {
+            "id": "opp-02",
+            "title": "Science Academies Summer Research Fellowship Programme (SRFP)",
+            "organization": "Indian Academy of Sciences, Bengaluru",
+            "deadline": "2026-11-15",
+            "url": "https://webjapps.ias.ac.in/"
+          }
+        ],
+        "fellowships": [
+          {
+            "id": "opp-03",
+            "title": "DBT-Junior Research Fellowship (DBT-JRF / BET)",
+            "organization": "Department of Biotechnology (DBT), Govt. of India",
+            "deadline": "2026-03-20",
+            "url": "https://dbt.nta.ac.in"
+          }
+        ],
+        "exams": [
+          {
+            "code": "GAT-B",
+            "title": "Graduate Aptitude Test - Biotechnology",
+            "update": "2026 cycle concluded (Exam held 17 May 2026). Official 2027 session bulletin expected early 2027.",
+            "url": "https://dbt.nta.ac.in"
+          },
+          {
+            "code": "DBT-JRF",
+            "title": "Biotechnology Eligibility Test (BET) / DBT-JRF",
+            "update": "Annual examination cycle. 2027 notification scheduled for announcement by NTA/DBT.",
+            "url": "https://dbt.nta.ac.in"
+          },
+          {
+            "code": "GATE-BT",
+            "title": "Graduate Aptitude Test in Engineering - Biotechnology",
+            "update": "Annual national examination held in February.",
+            "url": "https://gate2026.iitr.ac.in"
+          },
+          {
+            "code": "IIT-JAM",
+            "title": "Joint Admission Test for Masters - Biotechnology (BT)",
+            "update": "Annual exam conducted in February across Indian centers.",
+            "url": "https://jam2026.iitd.ac.in"
+          }
+        ],
+        "news": [
+          {
+            "headline": "DBT-BIRAC Biotechnology Research Initiative Updates",
+            "summary": "Department of Biotechnology issues updated guidelines for translational biomedical fellowships.",
+            "source": "dbtindia.gov.in"
+          },
+          {
+            "headline": "National Entrance Portal Calendar Sync",
+            "summary": "Synchronized examination milestones for GAT-B, CSIR-NET, and GATE-BT sessions.",
+            "source": "nta.ac.in"
+          }
+        ]
+      },
+      "fullDraftHtml": "<div style=\"font-family: 'Times New Roman', Times, serif; color: #1e293b; max-width: 650px; margin: 0 auto; line-height: 1.6;\">\n  <div style=\"border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 20px;\">\n    <h1 style=\"margin: 0; font-size: 24px; color: #0f172a;\">BioScience Weekly Dispatch — Issue #45 (2026)</h1>\n    <p style=\"margin: 4px 0 0; font-size: 13px; color: #64748b;\">BioScience Hub Official Academic Intelligence & Opportunity Digest</p>\n  </div>\n\n  <p style=\"font-size: 14px; margin-bottom: 20px;\">Weekly curated digest of verified biotechnology vacancies, fellowships, summer internships, and national examination schedules.</p>\n\n  <h2 style=\"font-size: 16px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; color: #0f172a;\">1. Verified Research & Job Vacancies</h2>\n  <ul>\n    <li><strong>Junior Research Fellow (JRF) - Structural Biology & Cryo-EM</strong> — Regional Centre for Biotechnology (RCB), Faridabad (Deadline: 2026-11-25) <a href=\"https://rcb.res.in/index.php?param=apply\" target=\"_blank\">Official Link</a></li>\n  </ul>\n\n  <h2 style=\"font-size: 16px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; color: #0f172a;\">2. Fellowships & Internships</h2>\n  <ul>\n    <li><strong>Science Academies Summer Research Fellowship Programme (SRFP)</strong> — Indian Academy of Sciences, Bengaluru (Deadline: 2026-11-15) <a href=\"https://webjapps.ias.ac.in/\" target=\"_blank\">Apply</a></li><li><strong>DBT-Junior Research Fellowship (DBT-JRF / BET)</strong> — Department of Biotechnology (DBT), Govt. of India (Deadline: 2026-03-20) <a href=\"https://dbt.nta.ac.in\" target=\"_blank\">Apply</a></li>\n  </ul>\n\n  <h2 style=\"font-size: 16px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; color: #0f172a;\">3. National Competitive Examinations Update</h2>\n  <ul>\n    <li><strong>GAT-B (Graduate Aptitude Test - Biotechnology)</strong>: 2026 cycle concluded (Exam held 17 May 2026). Official 2027 session bulletin expected early 2027.</li><li><strong>DBT-JRF (Biotechnology Eligibility Test (BET) / DBT-JRF)</strong>: Annual examination cycle. 2027 notification scheduled for announcement by NTA/DBT.</li><li><strong>GATE-BT (Graduate Aptitude Test in Engineering - Biotechnology)</strong>: Annual national examination held in February.</li><li><strong>IIT-JAM (Joint Admission Test for Masters - Biotechnology (BT))</strong>: Annual exam conducted in February across Indian centers.</li>\n  </ul>\n\n  <div style=\"margin-top: 30px; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; font-size: 11px; color: #64748b;\">\n    Grounded strictly in official gazettes and agency bulletins (DBT, DST, CSIR, NTA). Distributed via BioScience Hub.\n  </div>\n</div>",
+      "createdAt": "2026-11-03T14:27:11.280Z",
+      "updatedAt": "2026-11-03T14:27:11.280Z"
+    }
+  ],
+  "aiActivityLogs": [
+    {
+      "id": "ai-log-1793716031280-ztyi",
+      "timestamp": "2026-11-03T14:27:11.280Z",
+      "providerUsed": "system",
+      "action": "WEEKLY_DISPATCH_DRAFT_CREATED",
+      "taskType": "NEWSLETTER_DIGEST",
+      "sourcesChecked": [],
+      "recordsFound": 2,
+      "status": "success",
+      "details": {
+        "draftId": "dispatch-1793716031280",
+        "weekNumber": 45,
+        "year": 2026
+      },
+      "costINR": 0
+    },
+    {
+      "id": "log-ai-init",
+      "timestamp": "2026-11-03T14:26:59.840Z",
+      "providerUsed": "system",
+      "action": "AI_SYSTEM_INITIALIZED",
+      "taskType": "INIT",
+      "sourcesChecked": [
+        "DBT",
+        "DST",
+        "CSIR",
+        "ICMR",
+        "NTA",
+        "IITs"
+      ],
+      "recordsFound": 0,
+      "status": "success",
+      "details": {
+        "message": "Autonomous AI Engine initialized in Research Mode with ₹0 budget policy."
+      },
+      "costINR": 0
+    }
+  ],
+  "aiTaskCheckpoints": []
 }

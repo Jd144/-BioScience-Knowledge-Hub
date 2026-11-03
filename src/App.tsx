@@ -56,6 +56,7 @@ const DashboardPage = lazy(() => import('./pages/dashboard/DashboardPage.tsx').t
 const AdminLoginPage = lazy(() => import('./pages/admin/AdminLoginPage.tsx').then(m => ({ default: m.AdminLoginPage })));
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout.tsx').then(m => ({ default: m.AdminLayout })));
 const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage.tsx').then(m => ({ default: m.AdminDashboardPage })));
+const AdminAiControlCenterPage = lazy(() => import('./pages/admin/AdminAiControlCenterPage.tsx').then(m => ({ default: m.AdminAiControlCenterPage })));
 const AdminMaintenancePage = lazy(() => import('./pages/admin/AdminMaintenancePage.tsx').then(m => ({ default: m.AdminMaintenancePage })));
 const AdminPopupsPage = lazy(() => import('./pages/admin/AdminPopupsPage.tsx').then(m => ({ default: m.AdminPopupsPage })));
 const AdminSubjectsTopicsPage = lazy(() => import('./pages/admin/AdminSubjectsTopicsPage.tsx').then(m => ({ default: m.AdminSubjectsTopicsPage })));
@@ -110,6 +111,7 @@ function AppContent() {
             }
           >
             <Route index element={<AdminDashboardPage />} />
+            <Route path="ai" element={<AdminAiControlCenterPage />} />
             <Route path="maintenance" element={<AdminMaintenancePage />} />
             <Route path="popups" element={<AdminPopupsPage />} />
             <Route path="subjects" element={<AdminSubjectsTopicsPage />} />
