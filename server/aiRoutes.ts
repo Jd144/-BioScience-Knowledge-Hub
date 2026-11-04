@@ -188,6 +188,32 @@ aiRouter.post('/research/publish/:id', async (req: AuthenticatedRequest, res: Re
 });
 
 /**
+ * 7b. Batch Publish All 'Verified Official' Records
+ */
+aiRouter.post('/research/publish-all-verified', async (req: AuthenticatedRequest, res: Response) => {
+  const store = db.getData();
+  const eligible = store.aiResearchQueue.filter(
+    (r) => r.verificationStatus === 'Verified Official' && !r.isPublishedToLive
+  );
+
+  const publishedItems = [];
+  for (const item of eligible) {
+    try {
+      const pub = await verificationEngine.publishToLive(item.id, req.adminUser?.email || 'admin');
+      publishedItems.push(pub);
+    } catch (e: any) {
+      console.warn(`Failed to auto-publish ${item.id}:`, e.message);
+    }
+  }
+
+  res.json({
+    success: true,
+    publishedCount: publishedItems.length,
+    opportunities: publishedItems,
+  });
+});
+
+/**
  * 8. Reject / Delete Research Item
  */
 aiRouter.delete('/research/:id', (req: AuthenticatedRequest, res: Response) => {

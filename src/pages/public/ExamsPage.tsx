@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext.tsx';
 import { COMPETITIVE_EXAMINATIONS } from '../../data/examsData.ts';
@@ -7,6 +7,31 @@ import { GraduationCap, ArrowRight, ExternalLink, ShieldCheck, AlertTriangle, Bo
 
 export const ExamsPage: React.FC = () => {
   const { language, t } = useLanguage();
+  const [liveExams, setLiveExams] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/public/exams')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.examinations && Array.isArray(data.examinations)) {
+          setLiveExams(data.examinations);
+        }
+      })
+      .catch((e) => console.warn('Could not load live exam config:', e));
+  }, []);
+
+  const mergedExams = useMemo(() => {
+    return COMPETITIVE_EXAMINATIONS.map((exam) => {
+      const live = liveExams.find((l) => l.code === exam.code);
+      if (!live) return exam;
+      return {
+        ...exam,
+        officialWebsite: live.officialPortalUrl || exam.officialWebsite,
+        statusNote: live.statusNote || live.importantDatesText || exam.statusNote,
+        bulletinEdition: live.verificationDate ? `Verified ${live.verificationDate}` : exam.bulletinEdition,
+      };
+    });
+  }, [liveExams]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
@@ -77,7 +102,7 @@ export const ExamsPage: React.FC = () => {
 
       {/* Grid of 6 Examinations */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {COMPETITIVE_EXAMINATIONS.map((exam) => (
+        {mergedExams.map((exam) => (
           <div
             key={exam.code}
             className="bg-white rounded-xl border border-slate-200 p-6 flex flex-col justify-between hover:shadow-sm transition-shadow"

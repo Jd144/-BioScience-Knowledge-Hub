@@ -57,7 +57,25 @@ export const NewsletterPage: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [publishedDispatches, setPublishedDispatches] = useState<any[]>([]);
+  const [selectedDispatch, setSelectedDispatch] = useState<any | null>(null);
+
+  // Fetch published weekly dispatches from backend
+  useEffect(() => {
+    fetch('/api/public/dispatches')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.dispatches && Array.isArray(data.dispatches)) {
+          setPublishedDispatches(data.dispatches);
+          if (data.dispatches.length > 0) {
+            setSelectedDispatch(data.dispatches[0]);
+          }
+        }
+      })
+      .catch((e) => console.warn('Could not load published dispatches:', e));
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
 
@@ -75,13 +93,16 @@ export const NewsletterPage: React.FC = () => {
       return;
     }
 
-    // Check duplicate submission
     try {
-      const currentStored = localStorage.getItem('bioscience_newsletter_email');
-      if (currentStored && currentStored.toLowerCase() === cleanEmail && alreadySubscribed) {
-        setErrorMessage('This email is already registered for the weekly dispatch. Your topic preferences have been refreshed.');
-        localStorage.setItem('bioscience_newsletter_topics', JSON.stringify(selectedTopics));
-        setIsSubmitted(true);
+      // Send to server backend
+      const res = await fetch('/api/public/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: cleanEmail, preferredCategories: selectedTopics }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setErrorMessage(data.error || 'Failed to register subscription.');
         return;
       }
 
@@ -91,7 +112,11 @@ export const NewsletterPage: React.FC = () => {
       setAlreadySubscribed(true);
       setIsSubmitted(true);
     } catch {
-      setErrorMessage('Browser storage is restricted. Preferences could not be cached locally.');
+      // Fallback cache locally if network hiccups
+      localStorage.setItem('bioscience_newsletter_email', cleanEmail);
+      localStorage.setItem('bioscience_newsletter_topics', JSON.stringify(selectedTopics));
+      setAlreadySubscribed(true);
+      setIsSubmitted(true);
     }
   };
 
@@ -237,6 +262,77 @@ export const NewsletterPage: React.FC = () => {
             <span>{alreadySubscribed ? 'Update Dispatch Preferences' : 'Register for Weekly Dispatch'}</span>
           </button>
         </form>
+      )}
+
+      {/* Published Weekly Opportunity Dispatches Archive */}
+      {publishedDispatches.length > 0 && (
+        <div className="pt-8 border-t border-slate-200 space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-[11px] font-mono text-cyan-800 uppercase tracking-wider font-semibold">
+                Autonomous AI Weekly Editions
+              </div>
+              <h2 className="text-xl font-bold text-slate-900 tracking-tight">
+                Published Opportunity Dispatches
+              </h2>
+            </div>
+            <span className="text-xs text-slate-500 font-mono">
+              {publishedDispatches.length} {publishedDispatches.length === 1 ? 'Edition' : 'Editions'} Available
+            </span>
+          </div>
+
+          <div className="space-y-4">
+            {publishedDispatches.map((dispatch) => (
+              <div
+                key={dispatch.id}
+                className="bg-white border border-slate-200 rounded-xl p-5 hover:border-slate-300 transition-all shadow-xs space-y-3"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-100 text-cyan-900 border border-cyan-200">
+                      Week {dispatch.weekNumber}, {dispatch.year}
+                    </span>
+                    <span className="text-xs text-slate-500">
+                      Published {dispatch.publishedAt ? new Date(dispatch.publishedAt).toLocaleDateString() : 'Recently'}
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 flex items-center gap-1 w-fit">
+                    <ShieldCheck className="w-3 h-3" /> Official Curated
+                  </span>
+                </div>
+
+                <h3 className="text-base font-bold text-slate-900">
+                  {dispatch.title}
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  {dispatch.summaryText}
+                </p>
+
+                {/* Highlights preview */}
+                {dispatch.highlights && (
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-100 text-[11px]">
+                    <div className="bg-slate-50 rounded p-2">
+                      <span className="text-slate-500 block text-[10px]">Jobs Verified</span>
+                      <strong className="text-slate-900 font-mono text-xs">{dispatch.highlights.jobs?.length || 0}</strong>
+                    </div>
+                    <div className="bg-slate-50 rounded p-2">
+                      <span className="text-slate-500 block text-[10px]">Internships</span>
+                      <strong className="text-slate-900 font-mono text-xs">{dispatch.highlights.internships?.length || 0}</strong>
+                    </div>
+                    <div className="bg-slate-50 rounded p-2">
+                      <span className="text-slate-500 block text-[10px]">Fellowships</span>
+                      <strong className="text-slate-900 font-mono text-xs">{dispatch.highlights.fellowships?.length || 0}</strong>
+                    </div>
+                    <div className="bg-slate-50 rounded p-2">
+                      <span className="text-slate-500 block text-[10px]">Exams Audited</span>
+                      <strong className="text-slate-900 font-mono text-xs">{dispatch.highlights.exams?.length || 0}</strong>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

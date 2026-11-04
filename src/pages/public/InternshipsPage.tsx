@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext.tsx';
 import { INTERNSHIP_OPPORTUNITIES } from '../../data/internshipsData.ts';
@@ -12,7 +12,8 @@ import {
   Clock,
   Award,
   ArrowRight,
-  AlertTriangle
+  AlertTriangle,
+  Sparkles
 } from 'lucide-react';
 
 export const InternshipsPage: React.FC = () => {
@@ -20,10 +21,54 @@ export const InternshipsPage: React.FC = () => {
   const [selectedType, setSelectedType] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'OPEN' | 'EXPIRED' | 'UNVERIFIED'>('ALL');
+  const [liveDbInternships, setLiveDbInternships] = useState<any[]>([]);
+
+  // Fetch live opportunities published by the Autonomous AI engine & Admin CMS
+  useEffect(() => {
+    fetch('/api/public/opportunities?type=internship')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.opportunities && Array.isArray(data.opportunities)) {
+          // Map to internship interface shape
+          const mapped = data.opportunities.map((opp: any) => ({
+            id: opp.id,
+            title: opp.title,
+            slug: opp.slug,
+            institution: opp.organization,
+            internshipType: 'Government National',
+            duration: '2 - 3 Months',
+            stipendAmount: opp.salaryOrStipend,
+            eligibility: opp.eligibility,
+            deadline: opp.applicationDeadline,
+            officialLink: opp.officialNotificationUrl,
+            applicationOpeningDate: opp.applicationOpeningDate,
+            officialApplicationUrl: opp.officialApplicationUrl,
+            sourceCitation: opp.sourceCitation,
+            lastVerifiedDate: opp.lastVerifiedDate,
+            applicationStatus: opp.applicationStatus,
+            verificationStatus: opp.verificationStatus,
+            archivedStatus: opp.archivedStatus,
+            overview: opp.jobDescription,
+            isAiResearched: opp.isAiResearched,
+          }));
+          setLiveDbInternships(mapped);
+        }
+      })
+      .catch((e) => console.warn('Could not load live database internships:', e));
+  }, []);
+
+  const combinedInternships = useMemo(() => {
+    const map = new Map<string, any>();
+    liveDbInternships.forEach((item) => map.set(item.id, item));
+    INTERNSHIP_OPPORTUNITIES.forEach((item) => {
+      if (!map.has(item.id)) map.set(item.id, item);
+    });
+    return Array.from(map.values());
+  }, [liveDbInternships]);
 
   const types = ['All', 'Government National', 'IIT/IISc/IISER', 'University Research', 'Biotech Industry'];
 
-  const filteredInternships = INTERNSHIP_OPPORTUNITIES.filter((item) => {
+  const filteredInternships = combinedInternships.filter((item) => {
     const matchesType = selectedType === 'All' || item.internshipType === selectedType;
     const matchesStatus =
       statusFilter === 'ALL'
@@ -40,13 +85,13 @@ export const InternshipsPage: React.FC = () => {
       item.title.toLowerCase().includes(q) ||
       item.institution.toLowerCase().includes(q) ||
       item.eligibility.toLowerCase().includes(q) ||
-      item.overview.toLowerCase().includes(q);
+      (item.overview && item.overview.toLowerCase().includes(q));
     return matchesType && matchesStatus && matchesSearch;
   });
 
-  const activeCount = INTERNSHIP_OPPORTUNITIES.filter(i => i.applicationStatus === 'OPEN').length;
-  const expiredCount = INTERNSHIP_OPPORTUNITIES.filter(i => i.applicationStatus === 'EXPIRED' || i.archivedStatus).length;
-  const unverifiedCount = INTERNSHIP_OPPORTUNITIES.filter(i => i.applicationStatus === 'UNVERIFIED').length;
+  const activeCount = combinedInternships.filter((i) => i.applicationStatus === 'OPEN').length;
+  const expiredCount = combinedInternships.filter((i) => i.applicationStatus === 'EXPIRED' || i.archivedStatus).length;
+  const unverifiedCount = combinedInternships.filter((i) => i.applicationStatus === 'UNVERIFIED').length;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
@@ -189,6 +234,12 @@ export const InternshipsPage: React.FC = () => {
                           <span className="flex items-center gap-1 text-[11px] text-emerald-700 font-medium">
                             <ShieldCheck className="w-3 h-3" />
                             Verified
+                          </span>
+                        )}
+                        {intern.isAiResearched && (
+                          <span className="flex items-center gap-1 text-cyan-700 bg-cyan-50 border border-cyan-200 px-1.5 py-0.5 rounded text-[10px] font-mono">
+                            <Sparkles className="w-3 h-3 text-cyan-600" />
+                            AI
                           </span>
                         )}
                       </div>

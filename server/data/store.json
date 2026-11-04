@@ -5,11 +5,11 @@
       "email": "charanjaydeep712@gmail.com",
       "fullName": "Jaydeep Charan",
       "role": "superadmin",
-      "passwordHash": "$2b$12$p/fO3eC/VXuWxq.qLMQoAutrO4kKJo8hPzaG9Dr800gZusgGdqVVO",
+      "passwordHash": "$2b$12$tDR7k90Y0BQPYIQdYkT92u0mfnsH79I3XmbgwIGUCebFRgbH1MiBK",
       "isInitialSetupPending": false,
       "createdAt": "2026-11-02T14:04:11.677Z",
       "failedLoginAttempts": 0,
-      "lastLoginAt": "2026-11-03T14:27:09.921Z"
+      "lastLoginAt": "2026-11-04T09:59:46.999Z"
     }
   ],
   "adminSessions": [
@@ -34,6 +34,30 @@
       "userId": "usr-superadmin-01",
       "createdAt": "2026-11-03T14:27:09.921Z",
       "expiresAt": "2026-11-04T14:27:09.921Z",
+      "ip": "127.0.0.1",
+      "userAgent": "node"
+    },
+    {
+      "token": "11b08c4a18963657f3e326f6f351f9078559e7b12958b12100591567484ec268",
+      "userId": "usr-superadmin-01",
+      "createdAt": "2026-11-04T08:32:01.935Z",
+      "expiresAt": "2026-11-05T08:32:01.935Z",
+      "ip": "127.0.0.1",
+      "userAgent": "node"
+    },
+    {
+      "token": "8e3c8a8533769895ea56a935c73cbcb78460b3a8940ca2b89529652f93f7a88b",
+      "userId": "usr-superadmin-01",
+      "createdAt": "2026-11-04T09:59:35.188Z",
+      "expiresAt": "2026-11-05T09:59:35.188Z",
+      "ip": "127.0.0.1",
+      "userAgent": "node"
+    },
+    {
+      "token": "325d72cc275936e2e58bdbf5511d87ba4cd25bc2fd28674f240efc7442753a7c",
+      "userId": "usr-superadmin-01",
+      "createdAt": "2026-11-04T09:59:46.999Z",
+      "expiresAt": "2026-11-05T09:59:46.999Z",
       "ip": "127.0.0.1",
       "userAgent": "node"
     }
@@ -91,6 +115,118 @@
   },
   "popups": [],
   "auditLogs": [
+    {
+      "id": "log-1793786386999-s53p",
+      "timestamp": "2026-11-04T09:59:46.999Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_SUCCESSFUL_WITH_2FA",
+      "resource": "AUTH",
+      "details": {
+        "verificationType": "SECRET_CODE_VERIFIED",
+        "userAgent": "node"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793786386988-1i8r",
+      "timestamp": "2026-11-04T09:59:46.988Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_STEP1_VERIFIED",
+      "resource": "AUTH",
+      "details": {
+        "message": "Password verified. 2FA Secret Key / OTP prompt initiated."
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793786375188-eurp",
+      "timestamp": "2026-11-04T09:59:35.188Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_SUCCESSFUL_WITH_2FA",
+      "resource": "AUTH",
+      "details": {
+        "verificationType": "SECRET_CODE_VERIFIED",
+        "userAgent": "node"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793786375183-9yez",
+      "timestamp": "2026-11-04T09:59:35.183Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_STEP1_VERIFIED",
+      "resource": "AUTH",
+      "details": {
+        "message": "Password verified. 2FA Secret Key / OTP prompt initiated."
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793781122415-454o",
+      "timestamp": "2026-11-04T08:32:02.415Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "PASSWORD_RESET_SUCCESSFUL",
+      "resource": "AUTH",
+      "details": {
+        "method": "EMAIL_OTP"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793781121940-szs5",
+      "timestamp": "2026-11-04T08:32:01.940Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "PASSWORD_RESET_REQUESTED",
+      "resource": "AUTH",
+      "details": {
+        "email": "charanjaydeep712@gmail.com",
+        "expiryMinutes": 15
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793781121936-vvyh",
+      "timestamp": "2026-11-04T08:32:01.936Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_SUCCESSFUL_WITH_2FA",
+      "resource": "AUTH",
+      "details": {
+        "verificationType": "SECRET_CODE_VERIFIED",
+        "userAgent": "node"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793781121918-8o4c",
+      "timestamp": "2026-11-04T08:32:01.918Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_STEP1_VERIFIED",
+      "resource": "AUTH",
+      "details": {
+        "message": "Password verified. 2FA Secret Key / OTP prompt initiated."
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793781075756-p3gu",
+      "timestamp": "2026-11-04T08:31:15.756Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_FAILED",
+      "resource": "AUTH",
+      "details": {
+        "reason": "Incorrect password"
+      },
+      "ip": "127.0.0.1"
+    },
     {
       "id": "log-1793716029921-lea0",
       "timestamp": "2026-11-03T14:27:09.921Z",
@@ -359,6 +495,16 @@
         "Competitive Exams",
         "Research Fellowships",
         "Lab Protocols"
+      ]
+    },
+    {
+      "id": "sub-1793786374690",
+      "email": "student.biotech@university.ac.in",
+      "subscribedAt": "2026-11-04T09:59:34.690Z",
+      "status": "active",
+      "preferredCategories": [
+        "Jobs",
+        "Exams"
       ]
     }
   ],
@@ -645,7 +791,8 @@
       "weekNumber": 45,
       "year": 2026,
       "title": "BioScience Weekly Dispatch — Issue #45 (2026)",
-      "status": "draft",
+      "status": "published",
+      "publishedAt": "2026-11-04T08:00:00.000Z",
       "summaryText": "Weekly curated digest of verified biotechnology vacancies, fellowships, summer internships, and national examination schedules.",
       "highlights": {
         "jobs": [
@@ -720,6 +867,22 @@
     }
   ],
   "aiActivityLogs": [
+    {
+      "id": "ai-log-1793786387004-reje",
+      "timestamp": "2026-11-04T09:59:47.004Z",
+      "providerUsed": "system",
+      "action": "RESEARCH_CYCLE_STARTED",
+      "taskType": "DISCOVERY",
+      "sourcesChecked": [],
+      "recordsFound": 0,
+      "status": "success",
+      "details": {
+        "queryTopic": "Project Associate genomics vacancy",
+        "category": "job",
+        "operatingMode": "research_only"
+      },
+      "costINR": 0
+    },
     {
       "id": "ai-log-1793716031280-ztyi",
       "timestamp": "2026-11-03T14:27:11.280Z",

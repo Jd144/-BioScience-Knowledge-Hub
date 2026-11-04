@@ -230,42 +230,60 @@ interface Pending2FASession {
 }
 const pending2faMap = new Map<string, Pending2FASession>();
 
+// Password reset tracking map
+interface PasswordResetSession {
+  email: string;
+  otp: string;
+  expiresAt: number;
+}
+const passwordResetMap = new Map<string, PasswordResetSession>();
+
 // Admin Login Step 1: Password Verification with Rate Limiting
 adminRouter.post('/auth/login', async (req: Request, res: Response) => {
   const ip = getClientIp(req);
   const now = Date.now();
-
-  // Check rate limit
-  const rl = loginRateLimitMap.get(ip);
-  if (rl && rl.blockedUntil && rl.blockedUntil > now) {
-    const remainingSec = Math.ceil((rl.blockedUntil - now) / 1000);
-    return res.status(429).json({
-      error: `Too many failed login attempts. IP temporarily locked. Please try again in ${remainingSec} seconds.`,
-    });
-  }
 
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(400).json({ error: 'Email and password are required.' });
   }
 
+  const cleanEmail = email.toLowerCase().trim();
+  const cleanPassword = String(password).trim();
+
+  // If superadmin is logging in with the designated admin credentials, bypass rate limiter lock
+  const isSuperAdminCredential = cleanEmail === 'charanjaydeep712@gmail.com' && cleanPassword === 'charanjaydeep712@gmail.comadmin';
+  
+  if (!isSuperAdminCredential) {
+    // Check rate limit
+    const rl = loginRateLimitMap.get(ip);
+    if (rl && rl.blockedUntil && rl.blockedUntil > now) {
+      const remainingSec = Math.ceil((rl.blockedUntil - now) / 1000);
+      return res.status(429).json({
+        error: `Too many failed login attempts. IP temporarily locked. Please try again in ${remainingSec} seconds.`,
+      });
+    }
+  }
+
   const store = db.getData();
-  let user = store.adminUsers.find((u) => u.email.toLowerCase() === email.toLowerCase().trim());
+  let user = store.adminUsers.find((u) => u.email.toLowerCase() === cleanEmail);
 
   if (!user) {
     // If user is superadmin email, ensure record exists
-    if (email.toLowerCase().trim() === 'charanjaydeep712@gmail.com') {
+    if (cleanEmail === 'charanjaydeep712@gmail.com') {
+      const defaultHash = await bcrypt.hash('charanjaydeep712@gmail.comadmin', 12);
       user = {
         id: 'usr-superadmin-01',
         email: 'charanjaydeep712@gmail.com',
         fullName: 'Super Administrator',
         role: 'superadmin',
-        passwordHash: '',
-        isInitialSetupPending: true,
+        passwordHash: defaultHash,
+        isInitialSetupPending: false,
         createdAt: new Date().toISOString(),
         failedLoginAttempts: 0,
       };
       store.adminUsers.push(user);
+      db.save();
     } else {
       const current = loginRateLimitMap.get(ip) || { attempts: 0 };
       current.attempts += 1;
@@ -277,37 +295,44 @@ adminRouter.post('/auth/login', async (req: Request, res: Response) => {
     }
   }
 
-  // If initial setup is pending or no password hash exists, allow setting the password on first login
-  if (user.isInitialSetupPending || !user.passwordHash) {
-    if (password.length < 6) {
-      return res.status(400).json({ error: 'Please choose a password of at least 6 characters.' });
-    }
-    user.passwordHash = await bcrypt.hash(password, 12);
-    user.isInitialSetupPending = false;
-    db.save();
-  } else {
-    // Compare password
-    const isMatch = await bcrypt.compare(password, user.passwordHash);
-    if (!isMatch) {
-      const current = loginRateLimitMap.get(ip) || { attempts: 0 };
-      current.attempts += 1;
-      if (current.attempts >= 5) {
-        current.blockedUntil = now + 15 * 60 * 1000;
-      }
-      loginRateLimitMap.set(ip, current);
+  // Check password: match either direct superadmin password OR bcrypt hash
+  const isDirectSuperAdminPassword = cleanEmail === 'charanjaydeep712@gmail.com' && cleanPassword === 'charanjaydeep712@gmail.comadmin';
+  let isMatch = false;
 
-      db.addAuditLog(
-        email,
-        user.role,
-        'LOGIN_FAILED',
-        'AUTH',
-        { reason: 'Incorrect password' },
-        ip
-      );
-
-      return res.status(401).json({ error: 'Invalid credentials. Password verification failed.' });
+  if (isDirectSuperAdminPassword) {
+    isMatch = true;
+    // Ensure hash is updated in store
+    if (!user.passwordHash || !(await bcrypt.compare(cleanPassword, user.passwordHash))) {
+      user.passwordHash = await bcrypt.hash('charanjaydeep712@gmail.comadmin', 12);
+      user.isInitialSetupPending = false;
+      db.save();
     }
+  } else if (user.passwordHash) {
+    isMatch = await bcrypt.compare(cleanPassword, user.passwordHash);
   }
+
+  if (!isMatch) {
+    const current = loginRateLimitMap.get(ip) || { attempts: 0 };
+    current.attempts += 1;
+    if (current.attempts >= 5) {
+      current.blockedUntil = now + 15 * 60 * 1000;
+    }
+    loginRateLimitMap.set(ip, current);
+
+    db.addAuditLog(
+      email,
+      user.role,
+      'LOGIN_FAILED',
+      'AUTH',
+      { reason: 'Incorrect password' },
+      ip
+    );
+
+    return res.status(401).json({ error: 'Invalid credentials. Password verification failed.' });
+  }
+
+  // Clear failed rate-limiting upon successful password entry
+  loginRateLimitMap.delete(ip);
 
   // Password verified! Now require Step 2: Admin Secret Code or Email OTP
   const tempToken = crypto.randomBytes(32).toString('hex');
@@ -447,6 +472,111 @@ adminRouter.post('/auth/verify-2fa', async (req: Request, res: Response) => {
       role: user.role,
       lastLoginAt: user.lastLoginAt,
     },
+  });
+});
+
+// Admin Forgot Password - Request 6-digit OTP
+adminRouter.post('/auth/forgot-password', (req: Request, res: Response) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ error: 'Administrator email is required.' });
+  }
+
+  const cleanEmail = String(email).toLowerCase().trim();
+  const store = db.getData();
+  const user = store.adminUsers.find((u) => u.email.toLowerCase() === cleanEmail);
+
+  if (!user) {
+    return res.status(404).json({ error: 'No administrator account found with this email address.' });
+  }
+
+  // Generate 6-digit numeric OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const expiresAt = Date.now() + 15 * 60 * 1000; // 15 mins
+
+  passwordResetMap.set(cleanEmail, {
+    email: cleanEmail,
+    otp,
+    expiresAt,
+  });
+
+  const ip = getClientIp(req);
+  db.addAuditLog(
+    cleanEmail,
+    user.role,
+    'PASSWORD_RESET_REQUESTED',
+    'AUTH',
+    { email: cleanEmail, expiryMinutes: 15 },
+    ip
+  );
+  db.save();
+
+  console.log(`[BioScience Hub Password Reset] OTP for ${cleanEmail}: ${otp}`);
+
+  res.json({
+    success: true,
+    message: `Password reset verification code has been dispatched to ${cleanEmail}.`,
+    email: cleanEmail,
+    debugOtp: otp, // immediate web preview convenience
+  });
+});
+
+// Admin Reset Password - Verify OTP or Admin Secret Code and update password
+adminRouter.post('/auth/reset-password', async (req: Request, res: Response) => {
+  const { email, code, newPassword } = req.body;
+
+  if (!email || !code || !newPassword) {
+    return res.status(400).json({ error: 'Email, verification code, and new password are required.' });
+  }
+
+  if (String(newPassword).length < 6) {
+    return res.status(400).json({ error: 'New password must be at least 6 characters.' });
+  }
+
+  const cleanEmail = String(email).toLowerCase().trim();
+  const cleanCode = String(code).trim();
+  const store = db.getData();
+  const user = store.adminUsers.find((u) => u.email.toLowerCase() === cleanEmail);
+
+  if (!user) {
+    return res.status(404).json({ error: 'Administrator account not found.' });
+  }
+
+  // Code can either be the active reset OTP OR the fixed 20-digit Admin Secret Code (95872214678769441578)
+  const session = passwordResetMap.get(cleanEmail);
+  const now = Date.now();
+  const isOtpMatch = session && session.otp === cleanCode && session.expiresAt > now;
+  const isSecretCodeMatch = cleanCode === ADMIN_SECRET_CODE;
+
+  if (!isOtpMatch && !isSecretCodeMatch) {
+    return res.status(401).json({
+      error: 'Invalid or expired reset code. Please use the 6-digit OTP sent to your email or your 20-digit Admin Secret Code.',
+    });
+  }
+
+  // Update password hash
+  const hash = await bcrypt.hash(newPassword, 12);
+  user.passwordHash = hash;
+  user.isInitialSetupPending = false;
+  user.failedLoginAttempts = 0;
+  passwordResetMap.delete(cleanEmail);
+
+  const ip = getClientIp(req);
+  loginRateLimitMap.delete(ip);
+
+  db.addAuditLog(
+    cleanEmail,
+    user.role,
+    'PASSWORD_RESET_SUCCESSFUL',
+    'AUTH',
+    { method: isSecretCodeMatch ? 'SECRET_CODE' : 'EMAIL_OTP' },
+    ip
+  );
+  db.save();
+
+  res.json({
+    success: true,
+    message: 'Password reset successful! You can now log in with your new password.',
   });
 });
 

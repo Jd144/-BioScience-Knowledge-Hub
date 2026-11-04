@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext.tsx';
 import { BIOTECH_JOBS } from '../../data/jobsData.ts';
@@ -14,7 +14,8 @@ import {
   DollarSign,
   ArrowRight,
   AlertTriangle,
-  Clock
+  Clock,
+  Sparkles
 } from 'lucide-react';
 
 export const JobsPage: React.FC = () => {
@@ -23,11 +24,38 @@ export const JobsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [experienceFilter, setExperienceFilter] = useState<string>('All');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'OPEN' | 'EXPIRED'>('ALL');
+  const [liveDbJobs, setLiveDbJobs] = useState<any[]>([]);
+
+  // Fetch live opportunities published by the Autonomous AI engine & Admin CMS
+  useEffect(() => {
+    fetch('/api/public/opportunities?type=job')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.opportunities && Array.isArray(data.opportunities)) {
+          setLiveDbJobs(data.opportunities);
+        }
+      })
+      .catch((e) => console.warn('Could not load live database jobs:', e));
+  }, []);
+
+  // Merge static catalog with live published opportunities (live takes precedence)
+  const combinedJobs = useMemo(() => {
+    const map = new Map<string, any>();
+    // Live published items first
+    liveDbJobs.forEach((job) => map.set(job.id, job));
+    // Base static items
+    BIOTECH_JOBS.forEach((job) => {
+      if (!map.has(job.id)) {
+        map.set(job.id, job);
+      }
+    });
+    return Array.from(map.values());
+  }, [liveDbJobs]);
 
   const categories = ['All', 'Government', 'Industry', 'JRF/SRF', 'Freshers', 'Bioinformatics', 'QC/QA'];
   const experienceLevels = ['All', 'Entry Level / Freshers', '1-3 Years', '3-5 Years'];
 
-  const filteredJobs = BIOTECH_JOBS.filter((job) => {
+  const filteredJobs = combinedJobs.filter((job) => {
     const matchesCategory = selectedCategory === 'All' || job.category === selectedCategory;
     const matchesExp = experienceFilter === 'All' || job.experienceLevel === experienceFilter;
     const matchesStatus =
@@ -47,8 +75,8 @@ export const JobsPage: React.FC = () => {
     return matchesCategory && matchesExp && matchesStatus && matchesSearch;
   });
 
-  const activeCount = BIOTECH_JOBS.filter(j => j.applicationStatus === 'OPEN').length;
-  const expiredCount = BIOTECH_JOBS.filter(j => j.applicationStatus === 'EXPIRED' || j.archivedStatus).length;
+  const activeCount = combinedJobs.filter((j) => j.applicationStatus === 'OPEN').length;
+  const expiredCount = combinedJobs.filter((j) => j.applicationStatus === 'EXPIRED' || j.archivedStatus).length;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
@@ -195,6 +223,12 @@ export const JobsPage: React.FC = () => {
                           <ShieldCheck className="w-3 h-3" />
                           Verified
                         </span>
+                        {job.isAiResearched && (
+                          <span className="flex items-center gap-1 text-cyan-700 bg-cyan-50 border border-cyan-200 px-1.5 py-0.5 rounded text-[10px] font-mono">
+                            <Sparkles className="w-3 h-3 text-cyan-600" />
+                            Autonomous AI Research
+                          </span>
+                        )}
                       </div>
 
                       <h2 className="text-base font-bold text-slate-900 tracking-tight">

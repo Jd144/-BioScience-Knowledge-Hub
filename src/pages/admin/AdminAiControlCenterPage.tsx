@@ -325,6 +325,26 @@ export const AdminAiControlCenterPage: React.FC = () => {
     }
   };
 
+  // Batch Publish All Verified Records to Live Site
+  const handlePublishAllVerified = async () => {
+    try {
+      const res = await fetch('/api/admin/ai/research/publish-all-verified', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setActionSuccess(`Successfully published ${data.publishedCount} verified opportunities to the live website!`);
+        fetchResearchQueue();
+        fetchStatus();
+      } else {
+        setActionError(data.error || 'Batch publish failed.');
+      }
+    } catch (e: any) {
+      setActionError(e.message || 'Error publishing verified items.');
+    }
+  };
+
   // Reject / Remove Record
   const handleRejectRecord = async (id: string) => {
     if (!confirm('Are you sure you want to reject and remove this research lead?')) return;
@@ -864,7 +884,7 @@ export const AdminAiControlCenterPage: React.FC = () => {
               />
             </div>
 
-            <div className="flex items-center gap-2 w-full sm:w-auto text-xs">
+            <div className="flex items-center gap-2 w-full sm:w-auto text-xs flex-wrap sm:flex-nowrap">
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
@@ -876,6 +896,20 @@ export const AdminAiControlCenterPage: React.FC = () => {
                 <option value="Expired">Expired</option>
                 <option value="Unverified">Unverified</option>
               </select>
+
+              <button
+                onClick={handlePublishAllVerified}
+                disabled={researchItems.filter((r) => r.verificationStatus === 'Verified Official' && !r.isPublishedToLive).length === 0}
+                className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-40 whitespace-nowrap"
+                title="Promote all verified official opportunities to the live website"
+              >
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>
+                  Publish All Verified (
+                  {researchItems.filter((r) => r.verificationStatus === 'Verified Official' && !r.isPublishedToLive).length}
+                  )
+                </span>
+              </button>
             </div>
           </div>
 
