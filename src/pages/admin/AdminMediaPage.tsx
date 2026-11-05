@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FolderOpen, Upload, Trash2, FileText, Image as ImageIcon, ExternalLink, Copy, Check } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext.tsx';
+import { safeFetchJson } from '../../utils/safeApi.ts';
 
 export const AdminMediaPage: React.FC = () => {
   const { token } = useAdminAuth();
@@ -14,20 +15,12 @@ export const AdminMediaPage: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const fetchFiles = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch('/api/admin/cms/media', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const json = await res.json();
-        setFiles(json);
-      }
-    } catch (e) {
-      console.warn('Failed to fetch media files:', e);
-    } finally {
-      setLoading(false);
+    setLoading(true);
+    const res = await safeFetchJson<any[]>('/api/admin/cms/media');
+    if (res.ok && res.data) {
+      setFiles(res.data);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -47,25 +40,22 @@ export const AdminMediaPage: React.FC = () => {
     formData.append('category', selectedCategory);
     formData.append('description', description);
 
-    try {
-      const res = await fetch('/api/admin/cms/media', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
+    const res = await safeFetchJson<{ success: boolean; file: any }>('/api/admin/cms/media', {
+      method: 'POST',
+      body: formData,
+    });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'File upload failed.');
-
-      setSuccessMsg(`File "${fileList[0].name}" uploaded successfully.`);
-      setDescription('');
-      e.target.value = '';
-      fetchFiles();
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Error uploading file.');
-    } finally {
+    if (!res.ok) {
+      setErrorMsg(res.error || 'File upload failed.');
       setUploading(false);
+      return;
     }
+
+    setSuccessMsg(`File "${fileList[0].name}" uploaded successfully.`);
+    setDescription('');
+    e.target.value = '';
+    fetchFiles();
+    setUploading(false);
   };
 
   const handleDelete = async (id: string, name: string) => {

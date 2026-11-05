@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import bcrypt from 'bcryptjs';
+import { DEFAULT_11_SUBJECTS } from './data/defaultSubjects.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -230,6 +231,52 @@ export interface WebsitePopup {
   updatedAt: string;
 }
 
+export interface TopicItem {
+  id: string;
+  slug: string;
+  title: { en: string; hinglish: string };
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  readTimeMin: number;
+  orderIndex: number;
+  isPublished: boolean;
+  contentEn?: string;
+  contentHinglish?: string;
+  keyPoints?: string[];
+  references?: string[];
+}
+
+export interface ChapterItem {
+  id: string;
+  chapterNumber: number;
+  title: { en: string; hinglish: string };
+  topics: TopicItem[];
+}
+
+export interface UnitItem {
+  id: string;
+  unitNumber: number;
+  title: { en: string; hinglish: string };
+  chapters: ChapterItem[];
+}
+
+export interface SubjectItem {
+  id: string;
+  slug: string;
+  name: { en: string; hinglish: string };
+  description: { en: string; hinglish: string };
+  icon: string;
+  unitsCount: number;
+  topicsCount: number;
+  orderIndex: number;
+  isPublished: boolean;
+  overview: { en: string; hinglish: string };
+  learningObjectives: { en: string[]; hinglish: string[] };
+  keyFormulas?: { name: string; formula: string; description: { en: string; hinglish: string } }[];
+  references: { citation: string; type: string; year?: number }[];
+  units: UnitItem[];
+  updatedAt?: string;
+}
+
 // -----------------------------------------------------------------------------
 // AUTONOMOUS AI SYSTEM INTERFACES
 // -----------------------------------------------------------------------------
@@ -387,6 +434,7 @@ export interface DataStore {
   examinations: ExaminationConfig[];
   seoSettings: SeoSettings;
   popups: WebsitePopup[];
+  subjects: SubjectItem[];
   aiConfig: AiConfig;
   aiResearchQueue: ResearchRecord[];
   aiExamProposals: ExamChangeProposal[];
@@ -443,6 +491,7 @@ function createDefaultStore(): DataStore {
       history: [],
     },
     popups: [],
+    subjects: DEFAULT_11_SUBJECTS,
     auditLogs: [
       {
         id: 'log-init-01',
@@ -785,6 +834,7 @@ class Database {
             },
           },
           popups: Array.isArray(parsed.popups) ? parsed.popups : [],
+          subjects: Array.isArray(parsed.subjects) && parsed.subjects.length > 0 ? parsed.subjects : defaults.subjects,
           seoSettings: {
             ...defaults.seoSettings,
             ...(parsed.seoSettings || {}),

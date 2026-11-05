@@ -111,6 +111,27 @@ app.post('/api/gemini-search-grounding', async (req, res) => {
   }
 });
 
+// Explicit JSON 404 Handler for Unmatched API Endpoints
+app.all('/api/*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    error: `API endpoint not found: ${req.method} ${req.originalUrl}`,
+  });
+});
+
+// Global Express Error Handler for API routes (guarantees valid JSON responses)
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (req.originalUrl.startsWith('/api')) {
+    console.error(`[API Error] ${req.method} ${req.originalUrl}:`, err);
+    const statusCode = typeof err.status === 'number' && err.status >= 400 && err.status < 600 ? err.status : 500;
+    return res.status(statusCode).json({
+      success: false,
+      error: err?.message || 'A server error occurred while processing the request',
+    });
+  }
+  next(err);
+});
+
 // Mount Vite middleware in development or serve static in production
 async function startServer() {
   if (process.env.NODE_ENV !== 'production') {

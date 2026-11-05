@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { useMaintenance } from '../../context/MaintenanceContext.tsx';
 import { useAdminAuth } from '../../context/AdminAuthContext.tsx';
+import { safeFetchJson } from '../../utils/safeApi.ts';
 
 export const AdminMaintenancePage: React.FC = () => {
   const { data, refresh } = useMaintenance();
@@ -89,16 +90,9 @@ export const AdminMaintenancePage: React.FC = () => {
 
   // Load history
   const fetchFullConfig = async () => {
-    try {
-      const res = await fetch('/api/admin/maintenance', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const json = await res.json();
-        setHistoryList(json.history || []);
-      }
-    } catch (e) {
-      console.warn('Failed to fetch maintenance history:', e);
+    const res = await safeFetchJson<{ history?: any[] }>('/api/admin/maintenance');
+    if (res.ok && res.data) {
+      setHistoryList(res.data.history || []);
     }
   };
 
@@ -138,12 +132,8 @@ export const AdminMaintenancePage: React.FC = () => {
         expectedIso = new Date(`${reopeningDate}T${reopeningTime}:00`).toISOString();
       }
 
-      const res = await fetch('/api/admin/maintenance', {
+      const res = await safeFetchJson<{ success: boolean; error?: string }>('/api/admin/maintenance', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify({
           enabled: isModeEnabled,
           title,
@@ -157,9 +147,8 @@ export const AdminMaintenancePage: React.FC = () => {
         }),
       });
 
-      const resData = await res.json();
       if (!res.ok) {
-        throw new Error(resData.error || 'Failed to update maintenance configuration.');
+        throw new Error(res.error || 'Failed to update maintenance configuration.');
       }
 
       setEnabled(isModeEnabled);

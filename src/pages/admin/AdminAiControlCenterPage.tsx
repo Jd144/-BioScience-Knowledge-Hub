@@ -34,6 +34,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext.tsx';
+import { safeFetchJson } from '../../utils/safeApi.ts';
 
 interface ProviderHealth {
   provider: string;
@@ -231,24 +232,17 @@ export const AdminAiControlCenterPage: React.FC = () => {
     setPingingProviders(true);
     setActionError(null);
     setActionSuccess(null);
-    try {
-      const res = await fetch('/api/admin/ai/health-check', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setProviderHealth(data.report || []);
-        setActionSuccess('Provider health check completed successfully.');
-        fetchStatus();
-      } else {
-        setActionError(data.error || 'Health check failed.');
-      }
-    } catch (e: any) {
-      setActionError(e.message || 'Error pinging providers.');
-    } finally {
-      setPingingProviders(false);
+    const res = await safeFetchJson<{ success: boolean; report: ProviderHealth[] }>('/api/admin/ai/health-check', {
+      method: 'POST',
+    });
+    if (res.ok && res.data) {
+      setProviderHealth(res.data.report || []);
+      setActionSuccess('Provider health check completed successfully.');
+      fetchStatus();
+    } else {
+      setActionError(res.error || 'Health check failed.');
     }
+    setPingingProviders(false);
   };
 
   // Run Research Cycle

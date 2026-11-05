@@ -123,3 +123,30 @@ publicRouter.post('/newsletter/subscribe', (req: Request, res: Response) => {
     message: 'Successfully subscribed to BioScience Hub Weekly Dispatch!',
   });
 });
+
+/**
+ * GET /api/public/subjects
+ * Returns all active academic subjects with curriculum overview
+ */
+publicRouter.get('/subjects', (req: Request, res: Response) => {
+  const store = db.getData();
+  const active = (store.subjects || []).filter((s) => s.isPublished !== false);
+  res.json({
+    total: active.length,
+    subjects: active,
+  });
+});
+
+/**
+ * GET /api/public/subjects/:slug
+ * Returns specific subject with its units, chapters, and topics
+ */
+publicRouter.get('/subjects/:slug', (req: Request, res: Response) => {
+  const store = db.getData();
+  const sub = (store.subjects || []).find((s) => s.slug === req.params.slug || s.id === req.params.slug);
+  if (!sub) {
+    return res.status(404).json({ error: 'Subject not found' });
+  }
+  res.json(sub);
+});
+

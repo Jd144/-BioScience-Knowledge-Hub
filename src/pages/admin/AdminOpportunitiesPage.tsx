@@ -18,6 +18,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext.tsx';
+import { safeFetchJson } from '../../utils/safeApi.ts';
 
 export const AdminOpportunitiesPage: React.FC = () => {
   const { token } = useAdminAuth();
@@ -34,20 +35,12 @@ export const AdminOpportunitiesPage: React.FC = () => {
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   const fetchOpportunities = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch('/api/admin/cms/opportunities', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const json = await res.json();
-        setOpportunities(json);
-      }
-    } catch (e) {
-      console.warn('Failed to load opportunities:', e);
-    } finally {
-      setLoading(false);
+    setLoading(true);
+    const res = await safeFetchJson<any[]>('/api/admin/cms/opportunities');
+    if (res.ok && res.data) {
+      setOpportunities(res.data);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -65,28 +58,20 @@ export const AdminOpportunitiesPage: React.FC = () => {
       : `/api/admin/cms/opportunities/${editingItem.id}`;
     const method = isNew ? 'POST' : 'PUT';
 
-    try {
-      const res = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(editingItem),
-      });
+    const res = await safeFetchJson<{ success: boolean; opportunity: any }>(url, {
+      method,
+      body: JSON.stringify(editingItem),
+    });
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to save opportunity.');
-      }
-
-      setSuccessMsg(isNew ? 'New opportunity added.' : 'Opportunity updated.');
-      setIsCreating(false);
-      setEditingItem(null);
-      fetchOpportunities();
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Operation failed.');
+    if (!res.ok) {
+      setErrorMsg(res.error || 'Failed to save opportunity.');
+      return;
     }
+
+    setSuccessMsg(isNew ? 'New opportunity added.' : 'Opportunity updated.');
+    setIsCreating(false);
+    setEditingItem(null);
+    fetchOpportunities();
   };
 
   const handleDelete = async (id: string, title: string) => {

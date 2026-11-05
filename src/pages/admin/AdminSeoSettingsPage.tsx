@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sliders, Save, CheckCircle2, Globe, Share2 } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext.tsx';
+import { safeFetchJson } from '../../utils/safeApi.ts';
 
 export const AdminSeoSettingsPage: React.FC = () => {
   const { token } = useAdminAuth();
@@ -19,34 +20,25 @@ export const AdminSeoSettingsPage: React.FC = () => {
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('/api/admin/seo', { headers: { Authorization: `Bearer ${token}` } })
-      .then((res) => res.json())
-      .then((data) => {
-        setSettings(data);
-        setLoading(false);
-      })
-      .catch((e) => console.warn(e));
+    safeFetchJson('/api/admin/seo').then((res) => {
+      if (res.ok && res.data) {
+        setSettings(res.data);
+      }
+      setLoading(false);
+    });
   }, [token]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSuccessMsg(null);
 
-    try {
-      const res = await fetch('/api/admin/seo', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(settings),
-      });
+    const res = await safeFetchJson('/api/admin/seo', {
+      method: 'POST',
+      body: JSON.stringify(settings),
+    });
 
-      if (res.ok) {
-        setSuccessMsg('SEO metadata, announcement banner, and social links saved.');
-      }
-    } catch (e) {
-      console.error(e);
+    if (res.ok) {
+      setSuccessMsg('SEO metadata, announcement banner, and social links saved.');
     }
   };
 

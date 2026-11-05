@@ -116,7 +116,7 @@ export const AdminLoginPage: React.FC = () => {
           setTempToken(res.tempToken);
           setTargetEmail(res.email || email);
           setStep(2);
-          setSuccessMessage('Credentials verified. Enter Admin Secret Key (95872214678769441578) or request Email OTP.');
+          setSuccessMessage('Credentials verified. Please enter your 20-digit Admin Secret Key or request an Email OTP.');
         } else if (res.success) {
           const from = (location.state as any)?.from?.pathname || '/admin';
           navigate(from, { replace: true });
@@ -161,7 +161,7 @@ export const AdminLoginPage: React.FC = () => {
           navigate(from, { replace: true });
         }, 800);
       } else {
-        setError(res.error || 'Invalid code. Use the 20-digit secret code (95872214678769441578) or request an OTP.');
+        setError(res.error || 'Invalid code. Please enter your 20-digit Admin Secret Key or request an Email OTP.');
       }
     } catch (err: any) {
       setError(err.message || 'Verification failed. Please try again.');
@@ -446,33 +446,11 @@ export const AdminLoginPage: React.FC = () => {
                   Verification code has been dispatched to <strong>{forgotEmail}</strong>. You can also use your 20-digit Admin Secret Code.
                 </div>
 
-                {forgotDebugOtp && (
-                  <div className="p-2.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-lg flex items-center justify-between">
-                    <span className="text-[11px] text-amber-900 dark:text-amber-200 font-medium">
-                      Reset OTP: <strong className="font-mono text-xs">{forgotDebugOtp}</strong>
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setResetCode(forgotDebugOtp)}
-                      className="text-[10px] bg-amber-600 text-white px-2 py-0.5 rounded font-sans font-bold hover:bg-amber-700"
-                    >
-                      Auto-Fill
-                    </button>
-                  </div>
-                )}
-
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="text-slate-700 dark:text-slate-300 font-semibold">
-                      Reset OTP or Admin Secret Code
+                      Reset OTP or Admin Secret Key
                     </label>
-                    <button
-                      type="button"
-                      onClick={() => setResetCode('95872214678769441578')}
-                      className="text-[10px] text-cyan-700 dark:text-cyan-400 hover:underline font-semibold"
-                    >
-                      Use Secret Key
-                    </button>
                   </div>
                   <div className="relative">
                     <Key className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -691,38 +669,26 @@ export const AdminLoginPage: React.FC = () => {
                 <span>Admin Secret Key or Email OTP Required</span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                Enter the 20-digit Admin Secret Code (95872214678769441578). If not remembered, click "Send OTP to Email" below.
+                Enter your 20-digit Admin Secret Key. If not remembered, click "Send OTP to Email" below.
               </p>
             </div>
 
             <div>
               <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
-                Admin Secret Code or OTP
+                Admin Secret Key or Email OTP
               </label>
               <div className="relative">
                 <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
-                  type="text"
+                  type="password"
                   required
                   autoFocus
                   value={secretCodeOrOtp}
                   onChange={(e) => setSecretCodeOrOtp(e.target.value.trim())}
-                  placeholder="Enter 20-digit code or 6-digit OTP"
+                  placeholder="Enter 20-digit Secret Key or 6-digit OTP"
                   className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-cyan-600 font-mono tracking-wider"
                 />
               </div>
-            </div>
-
-            {/* Quick helper for the admin secret code */}
-            <div className="flex items-center justify-between text-[11px] text-slate-500">
-              <span>Key: 95872214678769441578</span>
-              <button
-                type="button"
-                onClick={() => setSecretCodeOrOtp('95872214678769441578')}
-                className="text-cyan-700 hover:text-cyan-800 dark:text-cyan-400 font-semibold hover:underline"
-              >
-                Insert Secret Key
-              </button>
             </div>
 
             {/* OTP dispatch button if code is not remembered */}
@@ -744,22 +710,6 @@ export const AdminLoginPage: React.FC = () => {
                     : 'कोड याद न हो तो Email पर OTP भेजें (Send OTP)'}
                 </span>
               </button>
-
-              {/* Show direct debug copy badge if OTP was generated */}
-              {debugOtpCode && (
-                <div className="p-2.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-lg flex items-center justify-between">
-                  <div className="text-[11px] text-amber-900 dark:text-amber-200 font-medium">
-                    OTP Generated for {targetEmail}: <strong className="font-mono text-xs">{debugOtpCode}</strong>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setSecretCodeOrOtp(debugOtpCode)}
-                    className="text-[10px] bg-amber-600 text-white px-2 py-0.5 rounded font-sans font-bold hover:bg-amber-700"
-                  >
-                    Auto-Fill
-                  </button>
-                </div>
-              )}
             </div>
 
             {/* Submit 2FA */}

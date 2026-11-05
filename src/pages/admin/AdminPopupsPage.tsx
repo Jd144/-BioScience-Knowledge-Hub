@@ -23,6 +23,7 @@ import {
   X
 } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext.tsx';
+import { safeFetchJson } from '../../utils/safeApi.ts';
 
 interface PopupButton {
   id: string;
@@ -98,20 +99,14 @@ export const AdminPopupsPage: React.FC = () => {
   const [formData, setFormData] = useState(defaultFormState);
 
   const fetchPopups = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch('/api/admin/popups', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setPopups(data);
-      }
-    } catch {
-      setStatusMessage({ text: 'Failed to load popups', type: 'error' });
-    } finally {
-      setLoading(false);
+    setLoading(true);
+    const res = await safeFetchJson<WebsitePopup[]>('/api/admin/popups');
+    if (res.ok && res.data) {
+      setPopups(res.data);
+    } else {
+      setStatusMessage({ text: res.error || 'Failed to load popups', type: 'error' });
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -148,36 +143,29 @@ export const AdminPopupsPage: React.FC = () => {
   };
 
   const handleToggle = async (id: string) => {
-    try {
-      const res = await fetch(`/api/admin/popups/${id}/toggle`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setPopups((prev) =>
-          prev.map((p) => (p.id === id ? { ...p, enabled: data.enabled } : p))
-        );
-        setStatusMessage({ text: `Popup ${data.enabled ? 'enabled' : 'disabled'} successfully.`, type: 'success' });
-      }
-    } catch {
-      setStatusMessage({ text: 'Error toggling popup status', type: 'error' });
+    const res = await safeFetchJson<{ success: boolean; enabled: boolean }>(`/api/admin/popups/${id}/toggle`, {
+      method: 'POST',
+    });
+    if (res.ok && res.data) {
+      setPopups((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, enabled: res.data!.enabled } : p))
+      );
+      setStatusMessage({ text: `Popup ${res.data.enabled ? 'enabled' : 'disabled'} successfully.`, type: 'success' });
+    } else {
+      setStatusMessage({ text: res.error || 'Error toggling popup status', type: 'error' });
     }
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this announcement?')) return;
-    try {
-      const res = await fetch(`/api/admin/popups/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        setPopups((prev) => prev.filter((p) => p.id !== id));
-        setStatusMessage({ text: 'Popup deleted successfully.', type: 'success' });
-      }
-    } catch {
-      setStatusMessage({ text: 'Error deleting popup', type: 'error' });
+    const res = await safeFetchJson(`/api/admin/popups/${id}`, {
+      method: 'DELETE',
+    });
+    if (res.ok) {
+      setPopups((prev) => prev.filter((p) => p.id !== id));
+      setStatusMessage({ text: 'Popup deleted successfully.', type: 'success' });
+    } else {
+      setStatusMessage({ text: res.error || 'Error deleting popup', type: 'error' });
     }
   };
 
@@ -188,40 +176,31 @@ export const AdminPopupsPage: React.FC = () => {
       return;
     }
 
-    try {
-      const url = editingPopup
-        ? `/api/admin/popups/${editingPopup.id}`
-        : '/api/admin/popups';
-      const method = editingPopup ? 'PUT' : 'POST';
+    const url = editingPopup
+      ? `/api/admin/popups/${editingPopup.id}`
+      : '/api/admin/popups';
+    const method = editingPopup ? 'PUT' : 'POST';
 
-      const payload = {
-        ...formData,
-        startDateTime: formData.startDateTime ? new Date(formData.startDateTime).toISOString() : undefined,
-        expiryDateTime: formData.expiryDateTime ? new Date(formData.expiryDateTime).toISOString() : undefined,
-      };
+    const payload = {
+      ...formData,
+      startDateTime: formData.startDateTime ? new Date(formData.startDateTime).toISOString() : undefined,
+      expiryDateTime: formData.expiryDateTime ? new Date(formData.expiryDateTime).toISOString() : undefined,
+    };
 
-      const res = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
+    const res = await safeFetchJson<{ success: boolean; popup: WebsitePopup }>(url, {
+      method,
+      body: JSON.stringify(payload),
+    });
+
+    if (res.ok) {
+      setStatusMessage({
+        text: `Popup ${editingPopup ? 'updated' : 'created'} successfully!`,
+        type: 'success',
       });
-
-      if (res.ok) {
-        setStatusMessage({
-          text: `Popup ${editingPopup ? 'updated' : 'created'} successfully!`,
-          type: 'success',
-        });
-        setModalOpen(false);
-        fetchPopups();
-      } else {
-        const data = await res.json();
-        alert(data.error || 'Failed to save popup.');
-      }
-    } catch {
-      alert('Network error while saving popup.');
+      setModalOpen(false);
+      fetchPopups();
+    } else {
+      alert(res.error || 'Failed to save popup.');
     }
   };
 

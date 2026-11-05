@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext.tsx';
 import { useMaintenance } from '../../context/MaintenanceContext.tsx';
+import { safeFetchJson } from '../../utils/safeApi.ts';
 
 export const AdminDashboardPage: React.FC = () => {
   const { adminUser, token } = useAdminAuth();
@@ -38,20 +39,12 @@ export const AdminDashboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchStats = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch('/api/admin/dashboard/stats', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const json = await res.json();
-        setStats(json);
-      }
-    } catch (e) {
-      console.warn('Failed to load dashboard stats:', e);
-    } finally {
-      setLoading(false);
+    setLoading(true);
+    const res = await safeFetchJson('/api/admin/dashboard/stats');
+    if (res.ok && res.data) {
+      setStats(res.data);
     }
+    setLoading(false);
   };
 
   useEffect(() => {

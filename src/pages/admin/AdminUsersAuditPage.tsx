@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Users, Shield, Plus, Trash2, Key, History, AlertCircle } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext.tsx';
+import { safeFetchJson } from '../../utils/safeApi.ts';
 
 export const AdminUsersAuditPage: React.FC = () => {
   const { token, adminUser, hasRole } = useAdminAuth();
@@ -47,50 +48,42 @@ export const AdminUsersAuditPage: React.FC = () => {
     setErrorMsg(null);
     setSuccessMsg(null);
 
-    try {
-      const res = await fetch('/api/admin/auth/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          email: newEmail,
-          fullName: newFullName,
-          role: newRole,
-          password: newPassword,
-        }),
-      });
+    const res = await safeFetchJson<{ success: boolean; user: any }>('/api/admin/auth/users', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: newEmail,
+        fullName: newFullName,
+        role: newRole,
+        password: newPassword,
+      }),
+    });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to create user.');
-
-      setSuccessMsg(`Administrator ${newEmail} created successfully.`);
-      setShowAddUser(false);
-      setNewEmail('');
-      setNewFullName('');
-      setNewPassword('');
-      fetchData();
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Operation failed.');
+    if (!res.ok) {
+      setErrorMsg(res.error || 'Failed to create user.');
+      return;
     }
+
+    setSuccessMsg(`Administrator ${newEmail} created successfully.`);
+    setShowAddUser(false);
+    setNewEmail('');
+    setNewFullName('');
+    setNewPassword('');
+    fetchData();
   };
 
   const handleDeleteUser = async (id: string, email: string) => {
     if (!window.confirm(`Are you sure you want to remove ${email}?`)) return;
-    try {
-      const res = await fetch(`/api/admin/auth/users/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to delete user.');
+    const res = await safeFetchJson(`/api/admin/auth/users/${id}`, {
+      method: 'DELETE',
+    });
 
-      setSuccessMsg(`User ${email} removed.`);
-      fetchData();
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Error deleting user.');
+    if (!res.ok) {
+      setErrorMsg(res.error || 'Failed to delete user.');
+      return;
     }
+
+    setSuccessMsg(`User ${email} removed.`);
+    fetchData();
   };
 
   return (

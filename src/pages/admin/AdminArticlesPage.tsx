@@ -14,6 +14,7 @@ import {
   FileCheck,
 } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext.tsx';
+import { safeFetchJson } from '../../utils/safeApi.ts';
 
 export const AdminArticlesPage: React.FC = () => {
   const { token, adminUser } = useAdminAuth();
@@ -29,20 +30,12 @@ export const AdminArticlesPage: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const fetchArticles = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch('/api/admin/cms/articles', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const json = await res.json();
-        setArticles(json);
-      }
-    } catch (e) {
-      console.warn('Failed to load articles:', e);
-    } finally {
-      setLoading(false);
+    setLoading(true);
+    const res = await safeFetchJson<any[]>('/api/admin/cms/articles');
+    if (res.ok && res.data) {
+      setArticles(res.data);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -59,27 +52,21 @@ export const AdminArticlesPage: React.FC = () => {
     const url = isNew ? '/api/admin/cms/articles' : `/api/admin/cms/articles/${selectedArticle.id}`;
     const method = isNew ? 'POST' : 'PUT';
 
-    try {
-      const res = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ ...selectedArticle, changeNote }),
-      });
+    const res = await safeFetchJson<{ success: boolean; article: any }>(url, {
+      method,
+      body: JSON.stringify({ ...selectedArticle, changeNote }),
+    });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to save article.');
-
-      setSuccessMsg(isNew ? 'New article created.' : 'Article updated and revision logged.');
-      setIsCreating(false);
-      setSelectedArticle(null);
-      setChangeNote('');
-      fetchArticles();
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Operation failed.');
+    if (!res.ok) {
+      setErrorMsg(res.error || 'Failed to save article.');
+      return;
     }
+
+    setSuccessMsg(isNew ? 'New article created.' : 'Article updated and revision logged.');
+    setIsCreating(false);
+    setSelectedArticle(null);
+    setChangeNote('');
+    fetchArticles();
   };
 
   const handleDelete = async (id: string, title: string) => {

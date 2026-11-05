@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, Download, Trash2, CheckCircle2, MessageSquare, AlertCircle, RefreshCw } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext.tsx';
+import { safeFetchJson } from '../../utils/safeApi.ts';
 
 export const AdminContactNewsletterPage: React.FC = () => {
   const { token } = useAdminAuth();
@@ -12,19 +13,14 @@ export const AdminContactNewsletterPage: React.FC = () => {
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   const fetchData = async () => {
-    try {
-      setLoading(true);
-      const [cRes, sRes] = await Promise.all([
-        fetch('/api/admin/contacts', { headers: { Authorization: `Bearer ${token}` } }),
-        fetch('/api/admin/newsletter', { headers: { Authorization: `Bearer ${token}` } }),
-      ]);
-      if (cRes.ok) setContacts(await cRes.json());
-      if (sRes.ok) setSubscribers(await sRes.json());
-    } catch (e) {
-      console.warn('Failed to load contact/newsletter data:', e);
-    } finally {
-      setLoading(false);
-    }
+    setLoading(true);
+    const [cRes, sRes] = await Promise.all([
+      safeFetchJson<any[]>('/api/admin/contacts'),
+      safeFetchJson<any[]>('/api/admin/newsletter'),
+    ]);
+    if (cRes.ok && cRes.data) setContacts(cRes.data);
+    if (sRes.ok && sRes.data) setSubscribers(sRes.data);
+    setLoading(false);
   };
 
   useEffect(() => {

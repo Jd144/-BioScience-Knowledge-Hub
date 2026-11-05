@@ -177,7 +177,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           require2FA: true,
           tempToken: fallbackTempToken,
           email: PRIMARY_ADMIN_EMAIL,
-          message: 'Password verified. Enter your 20-digit Admin Secret Code (95872214678769441578) or request an Email OTP.',
+          message: 'Password verified. Enter your 20-digit Admin Secret Key or request an Email OTP.',
         };
       }
 
@@ -198,7 +198,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           require2FA: true,
           tempToken: fallbackTempToken,
           email: PRIMARY_ADMIN_EMAIL,
-          message: 'Password verified. Enter your 20-digit Admin Secret Code (95872214678769441578) or request an Email OTP.',
+          message: 'Password verified. Enter your 20-digit Admin Secret Key or request an Email OTP.',
         };
       }
       return { success: false, error: 'Invalid credentials or network connection issue.' };
@@ -283,7 +283,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     return {
       success: false,
-      error: 'Invalid verification code. Please enter the 20-digit secret code (95872214678769441578) or valid email OTP.',
+      error: 'Invalid verification code. Please enter your 20-digit Admin Secret Key or valid email OTP.',
     };
   };
 
