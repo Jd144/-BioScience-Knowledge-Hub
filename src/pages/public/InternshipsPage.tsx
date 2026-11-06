@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext.tsx';
+import { safeFetchJson } from '../../utils/safeApi.ts';
 import { INTERNSHIP_OPPORTUNITIES } from '../../data/internshipsData.ts';
 import {
   GraduationCap,
@@ -25,10 +26,10 @@ export const InternshipsPage: React.FC = () => {
 
   // Fetch live opportunities published by the Autonomous AI engine & Admin CMS
   useEffect(() => {
-    fetch('/api/public/opportunities?type=internship')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.opportunities && Array.isArray(data.opportunities)) {
+    safeFetchJson<{ opportunities: any[] }>('/api/public/opportunities?type=internship')
+      .then((res) => {
+        if (res.ok && res.data && res.data.opportunities && Array.isArray(res.data.opportunities)) {
+          const data = res.data;
           // Map to internship interface shape
           const mapped = data.opportunities.map((opp: any) => ({
             id: opp.id,

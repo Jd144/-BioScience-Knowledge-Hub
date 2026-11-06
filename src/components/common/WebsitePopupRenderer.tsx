@@ -9,6 +9,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { X, ExternalLink } from 'lucide-react';
 
+import { safeFetchJson } from '../../utils/safeApi.ts';
+
 interface PopupButton {
   id: string;
   label: string;
@@ -49,9 +51,9 @@ export const WebsitePopupRenderer: React.FC = () => {
 
     async function fetchActivePopups() {
       try {
-        const res = await fetch('/api/popups/active');
-        if (!res.ok) return;
-        const popups: WebsitePopup[] = await res.json();
+        const res = await safeFetchJson<WebsitePopup[]>('/api/popups/active');
+        if (!res.ok || !res.data) return;
+        const popups = res.data;
         if (!isMounted || !popups || popups.length === 0) return;
 
         // Find the first popup that satisfies frequency constraints

@@ -147,73 +147,58 @@ export const AdminAiControlCenterPage: React.FC = () => {
 
   const fetchStatus = useCallback(async () => {
     try {
-      const res = await fetch('/api/admin/ai/status', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setStatusData(data);
+      const res = await safeFetchJson<AiStatusData>('/api/admin/ai/status');
+      if (res.ok && res.data) {
+        setStatusData(res.data);
       }
     } catch (e) {
       console.warn('Failed to fetch AI status:', e);
     }
-  }, [token]);
+  }, []);
 
   const fetchResearchQueue = useCallback(async () => {
     try {
-      const res = await fetch('/api/admin/ai/research/queue', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setResearchItems(data.items || []);
+      const res = await safeFetchJson<{ items: ResearchItem[] }>('/api/admin/ai/research/queue');
+      if (res.ok && res.data) {
+        setResearchItems(res.data.items || []);
       }
     } catch (e) {
       console.warn('Failed to fetch research queue:', e);
     }
-  }, [token]);
+  }, []);
 
   const fetchExamProposals = useCallback(async () => {
     try {
-      const res = await fetch('/api/admin/ai/exams/proposals', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setExamProposals(data);
+      const res = await safeFetchJson<ExamProposal[]>('/api/admin/ai/exams/proposals');
+      if (res.ok && res.data) {
+        setExamProposals(res.data);
       }
     } catch (e) {
       console.warn('Failed to fetch exam proposals:', e);
     }
-  }, [token]);
+  }, []);
 
   const fetchLogs = useCallback(async () => {
     try {
-      const res = await fetch('/api/admin/ai/logs?limit=50', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setActivityLogs(data.logs || []);
+      const res = await safeFetchJson<{ logs: AiLog[] }>('/api/admin/ai/logs?limit=50');
+      if (res.ok && res.data) {
+        setActivityLogs(res.data.logs || []);
       }
     } catch (e) {
       console.warn('Failed to fetch activity logs:', e);
     }
-  }, [token]);
+  }, []);
 
   const fetchDispatches = useCallback(async () => {
     try {
-      const res = await fetch('/api/admin/ai/dispatches', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setWeeklyDispatches(data);
+      const res = await safeFetchJson<any[]>('/api/admin/ai/dispatches');
+      if (res.ok && res.data) {
+        setWeeklyDispatches(res.data);
       }
     } catch (e) {
       console.warn('Failed to fetch dispatches:', e);
     }
-  }, [token]);
+  }, []);
 
   // Initial load
   useEffect(() => {
@@ -251,12 +236,8 @@ export const AdminAiControlCenterPage: React.FC = () => {
     setActionError(null);
     setActionSuccess(null);
     try {
-      const res = await fetch('/api/admin/ai/research/run', {
+      const res = await safeFetchJson<{ recordsFound?: number }>('/api/admin/ai/research/run', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify({
           category: researchCategory !== 'all' ? researchCategory : undefined,
           targetInstitution: targetInstitution || undefined,
@@ -266,14 +247,13 @@ export const AdminAiControlCenterPage: React.FC = () => {
         }),
       });
 
-      const data = await res.json();
       if (res.ok) {
-        setActionSuccess(`Research cycle completed! Discovered ${data.recordsFound || 0} genuine opportunities.`);
+        setActionSuccess(`Research cycle completed! Discovered ${res.data?.recordsFound || 0} genuine opportunities.`);
         fetchResearchQueue();
         fetchStatus();
         fetchLogs();
       } else {
-        setActionError(data.error || 'Research execution failed.');
+        setActionError(res.error || 'Research execution failed.');
       }
     } catch (e: any) {
       setActionError(e.message || 'Error executing research cycle.');
@@ -285,14 +265,15 @@ export const AdminAiControlCenterPage: React.FC = () => {
   // Verify Record
   const handleVerifyRecord = async (id: string) => {
     try {
-      const res = await fetch(`/api/admin/ai/research/verify/${id}`, {
+      const res = await safeFetchJson(`/api/admin/ai/research/verify/${id}`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
         setActionSuccess('Record verified through official portal comparison pipeline.');
         fetchResearchQueue();
         fetchStatus();
+      } else {
+        setActionError(res.error || 'Verification error.');
       }
     } catch (e: any) {
       setActionError(e.message || 'Verification error.');
@@ -302,17 +283,15 @@ export const AdminAiControlCenterPage: React.FC = () => {
   // Publish Record to Live Site
   const handlePublishRecord = async (id: string) => {
     try {
-      const res = await fetch(`/api/admin/ai/research/publish/${id}`, {
+      const res = await safeFetchJson<{ opportunity: { title: string } }>(`/api/admin/ai/research/publish/${id}`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
       });
-      const data = await res.json();
-      if (res.ok) {
-        setActionSuccess(`Published to live site: "${data.opportunity.title}"`);
+      if (res.ok && res.data) {
+        setActionSuccess(`Published to live site: "${res.data.opportunity.title}"`);
         fetchResearchQueue();
         fetchStatus();
       } else {
-        setActionError(data.error || 'Publish failed.');
+        setActionError(res.error || 'Publish failed.');
       }
     } catch (e: any) {
       setActionError(e.message || 'Error publishing record.');
@@ -322,17 +301,15 @@ export const AdminAiControlCenterPage: React.FC = () => {
   // Batch Publish All Verified Records to Live Site
   const handlePublishAllVerified = async () => {
     try {
-      const res = await fetch('/api/admin/ai/research/publish-all-verified', {
+      const res = await safeFetchJson<{ publishedCount: number }>('/api/admin/ai/research/publish-all-verified', {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
       });
-      const data = await res.json();
-      if (res.ok) {
-        setActionSuccess(`Successfully published ${data.publishedCount} verified opportunities to the live website!`);
+      if (res.ok && res.data) {
+        setActionSuccess(`Successfully published ${res.data.publishedCount} verified opportunities to the live website!`);
         fetchResearchQueue();
         fetchStatus();
       } else {
-        setActionError(data.error || 'Batch publish failed.');
+        setActionError(res.error || 'Batch publish failed.');
       }
     } catch (e: any) {
       setActionError(e.message || 'Error publishing verified items.');
@@ -343,14 +320,15 @@ export const AdminAiControlCenterPage: React.FC = () => {
   const handleRejectRecord = async (id: string) => {
     if (!confirm('Are you sure you want to reject and remove this research lead?')) return;
     try {
-      const res = await fetch(`/api/admin/ai/research/${id}`, {
+      const res = await safeFetchJson(`/api/admin/ai/research/${id}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
         setActionSuccess('Record removed from research queue.');
         fetchResearchQueue();
         fetchStatus();
+      } else {
+        setActionError(res.error || 'Error removing record.');
       }
     } catch (e: any) {
       setActionError(e.message || 'Error removing record.');
@@ -362,17 +340,15 @@ export const AdminAiControlCenterPage: React.FC = () => {
     setActionError(null);
     setActionSuccess(null);
     try {
-      const res = await fetch(`/api/admin/ai/exams/monitor/${code}`, {
+      const res = await safeFetchJson<{ proposalsGenerated: number }>(`/api/admin/ai/exams/monitor/${code}`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
       });
-      const data = await res.json();
-      if (res.ok) {
-        setActionSuccess(`Exam bulletin check for ${code} finished. Proposals generated: ${data.proposalsGenerated}`);
+      if (res.ok && res.data) {
+        setActionSuccess(`Exam bulletin check for ${code} finished. Proposals generated: ${res.data.proposalsGenerated}`);
         fetchExamProposals();
         fetchStatus();
       } else {
-        setActionError(data.error || 'Exam check failed.');
+        setActionError(res.error || 'Exam check failed.');
       }
     } catch (e: any) {
       setActionError(e.message || 'Error monitoring examination.');

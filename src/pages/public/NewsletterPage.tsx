@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext.tsx';
+import { safeFetchJson } from '../../utils/safeApi.ts';
 import {
   Mail,
   CheckCircle2,
@@ -62,13 +63,12 @@ export const NewsletterPage: React.FC = () => {
 
   // Fetch published weekly dispatches from backend
   useEffect(() => {
-    fetch('/api/public/dispatches')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.dispatches && Array.isArray(data.dispatches)) {
-          setPublishedDispatches(data.dispatches);
-          if (data.dispatches.length > 0) {
-            setSelectedDispatch(data.dispatches[0]);
+    safeFetchJson<{ dispatches: any[] }>('/api/public/dispatches')
+      .then((res) => {
+        if (res.ok && res.data && res.data.dispatches && Array.isArray(res.data.dispatches)) {
+          setPublishedDispatches(res.data.dispatches);
+          if (res.data.dispatches.length > 0) {
+            setSelectedDispatch(res.data.dispatches[0]);
           }
         }
       })
@@ -95,14 +95,12 @@ export const NewsletterPage: React.FC = () => {
 
     try {
       // Send to server backend
-      const res = await fetch('/api/public/newsletter/subscribe', {
+      const res = await safeFetchJson<{ error?: string }>('/api/public/newsletter/subscribe', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: cleanEmail, preferredCategories: selectedTopics }),
       });
-      const data = await res.json();
       if (!res.ok) {
-        setErrorMessage(data.error || 'Failed to register subscription.');
+        setErrorMessage(res.error || 'Failed to register subscription.');
         return;
       }
 

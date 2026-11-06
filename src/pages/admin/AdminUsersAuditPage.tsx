@@ -25,11 +25,11 @@ export const AdminUsersAuditPage: React.FC = () => {
     try {
       setLoading(true);
       const [uRes, aRes] = await Promise.all([
-        fetch('/api/admin/auth/users', { headers: { Authorization: `Bearer ${token}` } }),
-        fetch('/api/admin/audit-logs', { headers: { Authorization: `Bearer ${token}` } }),
+        safeFetchJson<any[]>('/api/admin/auth/users'),
+        safeFetchJson<any[]>('/api/admin/audit-logs'),
       ]);
-      if (uRes.ok) setUsers(await uRes.json());
-      if (aRes.ok) setAuditLogs(await aRes.json());
+      if (uRes.ok && uRes.data) setUsers(uRes.data);
+      if (aRes.ok && aRes.data) setAuditLogs(aRes.data);
     } catch (e) {
       console.warn('Failed to load users/audit data:', e);
     } finally {

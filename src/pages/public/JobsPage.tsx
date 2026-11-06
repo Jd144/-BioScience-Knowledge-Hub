@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext.tsx';
+import { safeFetchJson } from '../../utils/safeApi.ts';
 import { BIOTECH_JOBS } from '../../data/jobsData.ts';
 import {
   Briefcase,
@@ -28,11 +29,10 @@ export const JobsPage: React.FC = () => {
 
   // Fetch live opportunities published by the Autonomous AI engine & Admin CMS
   useEffect(() => {
-    fetch('/api/public/opportunities?type=job')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.opportunities && Array.isArray(data.opportunities)) {
-          setLiveDbJobs(data.opportunities);
+    safeFetchJson<{ opportunities: any[] }>('/api/public/opportunities?type=job')
+      .then((res) => {
+        if (res.ok && res.data && res.data.opportunities && Array.isArray(res.data.opportunities)) {
+          setLiveDbJobs(res.data.opportunities);
         }
       })
       .catch((e) => console.warn('Could not load live database jobs:', e));

@@ -442,7 +442,7 @@ adminRouter.post('/auth/verify-2fa', async (req: Request, res: Response) => {
 
   if (!isSecretCodeMatch && !isOtpMatch) {
     return res.status(401).json({
-      error: 'Invalid security code or OTP. Please enter the valid Admin Secret Code (95872214678769441578) or click "Send OTP to Email".',
+      error: 'Invalid security code or OTP. Please enter the valid Admin Secret Key or click "Send OTP to Email".',
     });
   }
 

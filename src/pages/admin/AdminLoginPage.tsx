@@ -16,6 +16,7 @@ import {
   Check
 } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext.tsx';
+import { safeFetchJson } from '../../utils/safeApi.ts';
 
 export const AdminLoginPage: React.FC = () => {
   const { login, verify2FA, sendOtp, setup, adminUser } = useAdminAuth();
@@ -64,17 +65,9 @@ export const AdminLoginPage: React.FC = () => {
 
   // Check setup status
   useEffect(() => {
-    fetch('/api/admin/auth/setup-status')
-      .then(async (res) => {
-        try {
-          const text = await res.text();
-          return text ? JSON.parse(text) : null;
-        } catch {
-          return null;
-        }
-      })
-      .then((data) => {
-        if (data && data.setupPending) {
+    safeFetchJson<{ setupPending?: boolean }>('/api/admin/auth/setup-status')
+      .then((res) => {
+        if (res.ok && res.data && res.data.setupPending) {
           setIsSetupMode(true);
         }
       })
@@ -128,7 +121,12 @@ export const AdminLoginPage: React.FC = () => {
         }
       }
     } catch (err: any) {
-      setError(err.message || 'Network communication error during authentication.');
+      const msg = err?.message || '';
+      if (msg.includes('JSON') || msg.includes('Failed to execute')) {
+        setError('Network error connecting to authentication server. Please retry.');
+      } else {
+        setError(msg || 'Network communication error during authentication.');
+      }
     } finally {
       setLoading(false);
     }
@@ -144,7 +142,7 @@ export const AdminLoginPage: React.FC = () => {
     }
 
     if (!secretCodeOrOtp.trim()) {
-      setError('Please enter your 20-digit Admin Secret Code or the 6-digit OTP.');
+      setError('Please enter your 20-digit Admin Secret Key or the 6-digit OTP.');
       return;
     }
 
@@ -164,7 +162,12 @@ export const AdminLoginPage: React.FC = () => {
         setError(res.error || 'Invalid code. Please enter your 20-digit Admin Secret Key or request an Email OTP.');
       }
     } catch (err: any) {
-      setError(err.message || 'Verification failed. Please try again.');
+      const msg = err?.message || '';
+      if (msg.includes('JSON') || msg.includes('Failed to execute')) {
+        setError('Network error verifying security code. Please retry.');
+      } else {
+        setError(msg || 'Verification failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -208,23 +211,17 @@ export const AdminLoginPage: React.FC = () => {
     setSuccessMessage(null);
 
     try {
-      const res = await fetch('/api/admin/auth/forgot-password', {
+      const res = await safeFetchJson<{ message?: string; debugOtp?: string }>('/api/admin/auth/forgot-password', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: forgotEmail.trim() }),
       });
-      let data: any = null;
-      try {
-        const text = await res.text();
-        data = text ? JSON.parse(text) : null;
-      } catch {}
 
-      if (data && res.ok) {
+      if (res.ok && res.data) {
         setForgotOtpSent(true);
-        if (data.debugOtp) {
-          setForgotDebugOtp(data.debugOtp);
+        if (res.data.debugOtp) {
+          setForgotDebugOtp(res.data.debugOtp);
         }
-        setSuccessMessage(data.message || `Reset code sent to ${forgotEmail}!`);
+        setSuccessMessage(res.data.message || `Reset code sent to ${forgotEmail}!`);
       } else {
         // Fallback for static hosts (e.g. Vercel)
         if (forgotEmail.trim().toLowerCase() === 'charanjaydeep712@gmail.com') {
@@ -232,9 +229,9 @@ export const AdminLoginPage: React.FC = () => {
           setForgotOtpSent(true);
           setForgotDebugOtp(fallbackOtp);
           sessionStorage.setItem('bioscience_active_otp', fallbackOtp);
-          setSuccessMessage(`Reset code generated for ${forgotEmail}! (Also valid: 20-digit Admin Secret Code)`);
+          setSuccessMessage(`Reset code generated for ${forgotEmail}! (Also valid: 20-digit Admin Secret Key)`);
         } else {
-          setError(data?.error || 'Unable to process password reset request for this email.');
+          setError(res.error || 'Unable to process password reset request for this email.');
         }
       }
     } catch (err: any) {
@@ -243,7 +240,7 @@ export const AdminLoginPage: React.FC = () => {
         setForgotOtpSent(true);
         setForgotDebugOtp(fallbackOtp);
         sessionStorage.setItem('bioscience_active_otp', fallbackOtp);
-        setSuccessMessage(`Reset code generated for ${forgotEmail}! (Also valid: 20-digit Admin Secret Code)`);
+        setSuccessMessage(`Reset code generated for ${forgotEmail}! (Also valid: 20-digit Admin Secret Key)`);
       } else {
         setError('Network error requesting password reset.');
       }
@@ -260,7 +257,7 @@ export const AdminLoginPage: React.FC = () => {
 
     const cleanCode = resetCode.trim();
     if (!cleanCode) {
-      setError('Please enter the 6-digit OTP or 20-digit Admin Secret Code.');
+      setError('Please enter the 6-digit OTP or 20-digit Admin Secret Key.');
       return;
     }
 
@@ -276,9 +273,8 @@ export const AdminLoginPage: React.FC = () => {
 
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/auth/reset-password', {
+      const res = await safeFetchJson<{ message?: string }>('/api/admin/auth/reset-password', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: forgotEmail.trim(),
           code: cleanCode,
@@ -286,13 +282,7 @@ export const AdminLoginPage: React.FC = () => {
         }),
       });
 
-      let data: any = null;
-      try {
-        const text = await res.text();
-        data = text ? JSON.parse(text) : null;
-      } catch {}
-
-      if (data && res.ok) {
+      if (res.ok) {
         setSuccessMessage('Password reset successfully! Please login with your new password.');
         setEmail(forgotEmail.trim());
         setPassword(newPassword);
@@ -318,7 +308,7 @@ export const AdminLoginPage: React.FC = () => {
           setNewPassword('');
           setConfirmNewPassword('');
         } else {
-          setError(data?.error || 'Invalid reset code. Use 20-digit secret code or requested OTP.');
+          setError(res.error || 'Invalid reset code. Use 20-digit Admin Secret Key or requested OTP.');
         }
       }
     } catch (err: any) {

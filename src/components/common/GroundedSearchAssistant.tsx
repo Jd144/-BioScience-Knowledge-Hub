@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext.tsx';
+import { safeFetchJson } from '../../utils/safeApi.ts';
 import { Search, Sparkles, ExternalLink, RefreshCw, Send, BookOpen, AlertCircle } from 'lucide-react';
 
 interface GroundedSearchAssistantProps {
@@ -32,22 +33,19 @@ export const GroundedSearchAssistant: React.FC<GroundedSearchAssistantProps> = (
     setSources([]);
 
     try {
-      const response = await fetch('/api/gemini-search-grounding', {
+      const res = await safeFetchJson<{ text: string; sources: { title: string; url: string }[] }>('/api/gemini-search-grounding', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           prompt: `You are an expert scientific researcher and biotechnology professor at BioScience Hub. Provide a detailed, accurate, and evidence-based explanation for: "${promptToSend}". Include scientific principles, real protein/chemical identifiers, and cite authoritative sources. Answer thoroughly in English with clear headings.`,
         }),
       });
 
-      if (!response.ok) {
-        const errData = await response.json().catch(() => ({}));
-        throw new Error(errData.error || `HTTP ${response.status}: Failed to retrieve search grounded results`);
+      if (!res.ok || !res.data) {
+        throw new Error(res.error || `Failed to retrieve search grounded results`);
       }
 
-      const data = await response.json();
-      setResultText(data.text);
-      setSources(data.sources || []);
+      setResultText(res.data.text);
+      setSources(res.data.sources || []);
     } catch (err: any) {
       console.error('Search grounding error:', err);
       let friendlyMsg = err.message || 'Unable to connect to Google Search Grounding service.';

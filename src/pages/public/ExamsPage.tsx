@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext.tsx';
+import { safeFetchJson } from '../../utils/safeApi.ts';
 import { COMPETITIVE_EXAMINATIONS } from '../../data/examsData.ts';
 import { BIOSCIENCE_MASTERY_URLS, getMasteryExamPrepUrl } from '../../data/ecosystemLinks.ts';
 import { GraduationCap, ArrowRight, ExternalLink, ShieldCheck, AlertTriangle, BookOpen, Calendar, Sparkles } from 'lucide-react';
@@ -10,11 +11,10 @@ export const ExamsPage: React.FC = () => {
   const [liveExams, setLiveExams] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('/api/public/exams')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.examinations && Array.isArray(data.examinations)) {
-          setLiveExams(data.examinations);
+    safeFetchJson<{ examinations: any[] }>('/api/public/exams')
+      .then((res) => {
+        if (res.ok && res.data && res.data.examinations && Array.isArray(res.data.examinations)) {
+          setLiveExams(res.data.examinations);
         }
       })
       .catch((e) => console.warn('Could not load live exam config:', e));

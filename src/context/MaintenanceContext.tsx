@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
+import { safeFetchJson } from '../utils/safeApi.ts';
+
 export interface MaintenanceData {
   enabled: boolean;
   title: string;
@@ -36,10 +38,9 @@ export const MaintenanceProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   const fetchStatus = useCallback(async () => {
     try {
-      const res = await fetch('/api/maintenance/status');
-      if (res.ok) {
-        const json = await res.json();
-        setData(json);
+      const res = await safeFetchJson<MaintenanceData>('/api/maintenance/status');
+      if (res.ok && res.data) {
+        setData(res.data);
       }
     } catch (e) {
       console.warn('Failed to fetch maintenance status:', e);

@@ -9,7 +9,7 @@
       "isInitialSetupPending": false,
       "createdAt": "2026-11-02T14:04:11.677Z",
       "failedLoginAttempts": 0,
-      "lastLoginAt": "2026-11-05T11:22:45.647Z"
+      "lastLoginAt": "2026-11-06T09:17:45.968Z"
     }
   ],
   "adminSessions": [
@@ -76,6 +76,22 @@
       "expiresAt": "2026-11-06T11:22:45.647Z",
       "ip": "127.0.0.1",
       "userAgent": ""
+    },
+    {
+      "token": "97b0ef707bdbeaa46a79a5d4faac82a89f6a58bc053869fe9390187fd95119ec",
+      "userId": "usr-superadmin-01",
+      "createdAt": "2026-11-06T09:17:19.080Z",
+      "expiresAt": "2026-11-07T09:17:19.080Z",
+      "ip": "127.0.0.1",
+      "userAgent": "node"
+    },
+    {
+      "token": "3cd846f46d884035e8a5860727551e7a41d75c4eea5e94c52c5045b9fcb1898e",
+      "userId": "usr-superadmin-01",
+      "createdAt": "2026-11-06T09:17:45.968Z",
+      "expiresAt": "2026-11-07T09:17:45.968Z",
+      "ip": "127.0.0.1",
+      "userAgent": "node"
     }
   ],
   "maintenance": {
@@ -1012,6 +1028,68 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "log-1793956665968-53dq",
+      "timestamp": "2026-11-06T09:17:45.968Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_SUCCESSFUL_WITH_2FA",
+      "resource": "AUTH",
+      "details": {
+        "verificationType": "SECRET_CODE_VERIFIED",
+        "userAgent": "node"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793956665952-59t7",
+      "timestamp": "2026-11-06T09:17:45.952Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_STEP1_VERIFIED",
+      "resource": "AUTH",
+      "details": {
+        "message": "Password verified. 2FA Secret Key / OTP prompt initiated."
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793956639080-rq9b",
+      "timestamp": "2026-11-06T09:17:19.080Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_SUCCESSFUL_WITH_2FA",
+      "resource": "AUTH",
+      "details": {
+        "verificationType": "SECRET_CODE_VERIFIED",
+        "userAgent": "node"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793956639050-v1zt",
+      "timestamp": "2026-11-06T09:17:19.050Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_STEP1_VERIFIED",
+      "resource": "AUTH",
+      "details": {
+        "message": "Password verified. 2FA Secret Key / OTP prompt initiated."
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793956113169-5m42",
+      "timestamp": "2026-11-06T09:08:33.169Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_STEP1_VERIFIED",
+      "resource": "AUTH",
+      "details": {
+        "message": "Password verified. 2FA Secret Key / OTP prompt initiated."
+      },
+      "ip": "127.0.0.1"
+    },
     {
       "id": "log-1793877765647-nu7k",
       "timestamp": "2026-11-05T11:22:45.647Z",
