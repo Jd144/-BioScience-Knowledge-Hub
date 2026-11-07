@@ -212,7 +212,7 @@ export const AdminSubjectsTopicsPage: React.FC = () => {
   const handleSaveModalSubject = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingSubjectData.name?.en || !editingSubjectData.slug) {
-      alert('Please provide at least the English name and URL slug.');
+      setStatusMessage({ text: 'Please provide at least the English name and URL slug.', type: 'error' });
       return;
     }
 
@@ -226,7 +226,7 @@ export const AdminSubjectsTopicsPage: React.FC = () => {
       setSubjectModalOpen(false);
       fetchSubjects();
     } else {
-      alert(res.error || 'Failed to create subject.');
+      setStatusMessage({ text: res.error || 'Failed to create subject.', type: 'error' });
     }
   };
 

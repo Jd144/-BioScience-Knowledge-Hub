@@ -41,9 +41,27 @@ export const MaintenanceProvider: React.FC<{ children: React.ReactNode }> = ({ c
       const res = await safeFetchJson<MaintenanceData>('/api/maintenance/status');
       if (res.ok && res.data) {
         setData(res.data);
+        try {
+          localStorage.setItem('bsh_maintenance_cache', JSON.stringify(res.data));
+        } catch {}
+      } else if (typeof window !== 'undefined') {
+        const cached = localStorage.getItem('bsh_maintenance_cache');
+        if (cached) {
+          try {
+            setData(JSON.parse(cached));
+          } catch {}
+        }
       }
     } catch (e) {
-      console.warn('Failed to fetch maintenance status:', e);
+      console.warn('Failed to fetch maintenance status, checking local cache:', e);
+      if (typeof window !== 'undefined') {
+        const cached = localStorage.getItem('bsh_maintenance_cache');
+        if (cached) {
+          try {
+            setData(JSON.parse(cached));
+          } catch {}
+        }
+      }
     } finally {
       setLoading(false);
     }

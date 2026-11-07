@@ -19,6 +19,7 @@ const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 app.use(express.json());
 
+
 // Mount Public & Admin API Routers
 app.use('/api/public', publicRouter);
 app.use('/api/admin/ai', aiRouter);

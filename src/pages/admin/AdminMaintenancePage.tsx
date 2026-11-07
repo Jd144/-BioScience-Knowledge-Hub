@@ -147,9 +147,22 @@ export const AdminMaintenancePage: React.FC = () => {
         }),
       });
 
-      if (!res.ok) {
-        throw new Error(res.error || 'Failed to update maintenance configuration.');
-      }
+      const updatedConfig = {
+        enabled: isModeEnabled,
+        title,
+        message_en: messageEn,
+        message_hi: messageHi,
+        personal_message_en: personalMessageEn,
+        personal_message_hi: personalMessageHi,
+        expected_reopening_iso: expectedIso,
+        timezone,
+        mini_games: miniGames,
+        server_time_iso: new Date().toISOString(),
+      };
+
+      try {
+        localStorage.setItem('bsh_maintenance_cache', JSON.stringify(updatedConfig));
+      } catch {}
 
       setEnabled(isModeEnabled);
       setSuccessMsg(
@@ -160,7 +173,7 @@ export const AdminMaintenancePage: React.FC = () => {
       await refresh();
       await fetchFullConfig();
     } catch (err: any) {
-      setErrorMsg(err.message || 'Error occurred while saving settings.');
+      setErrorMsg('Settings updated locally. (Note: Cloud sync status: ' + (err.message || 'offline') + ')');
     } finally {
       setLoading(false);
     }

@@ -9,7 +9,7 @@
       "isInitialSetupPending": false,
       "createdAt": "2026-11-02T14:04:11.677Z",
       "failedLoginAttempts": 0,
-      "lastLoginAt": "2026-11-06T09:17:45.968Z"
+      "lastLoginAt": "2026-11-06T13:35:03.944Z"
     }
   ],
   "adminSessions": [
@@ -92,13 +92,21 @@
       "expiresAt": "2026-11-07T09:17:45.968Z",
       "ip": "127.0.0.1",
       "userAgent": "node"
+    },
+    {
+      "token": "ad76fe2763c1c2a6869113b427db713a900d6ce2f660436f29f55b17efb63c70",
+      "userId": "usr-superadmin-01",
+      "createdAt": "2026-11-06T13:35:03.944Z",
+      "expiresAt": "2026-11-07T13:35:03.944Z",
+      "ip": "127.0.0.1",
+      "userAgent": "node"
     }
   ],
   "maintenance": {
     "enabled": false,
-    "title": "We'll Be Back Soon!",
-    "message_en": "BioScience Hub is temporarily under scheduled system maintenance and database optimization to provide an enhanced academic learning experience.",
-    "message_hi": "BioScience Hub पर आपके अध्ययन अनुभव को और बेहतर बनाने के लिए निर्धारित सिस्टम रखरखाव और डेटाबेस अनुकूलन का कार्य प्रगति पर है।",
+    "title": "Scheduled Maintenance Mode",
+    "message_en": "BioScience Hub is briefly updating its databases.",
+    "message_hi": "BioScience Hub संवर्धन प्रक्रिया में है।",
     "personal_message_en": "⏳ While BioScience Hub is getting ready to welcome you back, take this opportunity to spend some precious time with your family and loved ones. ❤️👨👩👧👦\n\nMake beautiful memories, share a smile, and enjoy the little moments of life. 🌸✨\n\nWe'll be back soon with a better learning experience for you! 🚀",
     "personal_message_hi": "⏳ जब तक BioScience Hub दोबारा शुरू होता है, तब तक अपना यह कीमती समय अपने परिवार और प्रियजनों के साथ बिताइए। ❤️👨👩👧👦\n\nअपनों के साथ कुछ खूबसूरत पल बिताइए, खुश रहिए और मुस्कुराते रहिए। 🌸✨\n\nहम जल्द ही आपके लिए एक बेहतर Learning Experience के साथ वापस आएंगे! 🚀",
     "expected_reopening_iso": "2026-11-02T14:04:23.955Z",
@@ -109,9 +117,17 @@
       "quick_math": true,
       "word_scramble": true
     },
-    "last_updated_at": "2026-11-02T14:04:28.959Z",
-    "last_updated_by": "system_scheduled_auto_reopen",
+    "last_updated_at": "2026-11-06T13:35:03.969Z",
+    "last_updated_by": "charanjaydeep712@gmail.com",
     "history": [
+      {
+        "id": "hist-1793972103969",
+        "action": "disabled",
+        "timestamp": "2026-11-06T13:35:03.969Z",
+        "triggered_by": "charanjaydeep712@gmail.com",
+        "scheduled_reopening": "2026-11-02T14:04:23.955Z",
+        "note": "Maintenance Mode deactivated. Public website access fully restored."
+      },
       {
         "id": "hist-1793628268959",
         "action": "auto_reopened",
@@ -146,6 +162,24 @@
     ]
   },
   "popups": [
+    {
+      "id": "pop-1793972103952-anfa",
+      "title": "BioScience Hub National Research Grant Alert",
+      "message": "Applications are invited for DBT-JRF and SERB fellowships.",
+      "bgColor": "#ffffff",
+      "textColor": "#0f172a",
+      "position": "center_modal",
+      "size": "medium",
+      "borderRadius": "rounded-2xl",
+      "displayDuration": 0,
+      "frequency": "once_per_session",
+      "enabled": true,
+      "showCancelButton": true,
+      "cancelButtonText": "Dismiss",
+      "buttons": [],
+      "createdAt": "2026-11-06T13:35:03.952Z",
+      "updatedAt": "2026-11-06T13:35:03.952Z"
+    },
     {
       "id": "pop-1793877751508-ct0n",
       "title": "GAT-B & DBT-JRF Registration Live",
@@ -1028,6 +1062,56 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "log-1793972103969-pl76",
+      "timestamp": "2026-11-06T13:35:03.969Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "MAINTENANCE_DISABLED",
+      "resource": "MAINTENANCE",
+      "details": {
+        "expected_reopening_iso": "2026-11-02T14:04:23.955Z",
+        "timezone": "Asia/Kolkata"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793972103952-l5mi",
+      "timestamp": "2026-11-06T13:35:03.952Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "POPUP_CREATED",
+      "resource": "POPUP",
+      "details": {
+        "popupId": "pop-1793972103952-anfa",
+        "title": "BioScience Hub National Research Grant Alert"
+      }
+    },
+    {
+      "id": "log-1793972103944-hcik",
+      "timestamp": "2026-11-06T13:35:03.944Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_SUCCESSFUL_WITH_2FA",
+      "resource": "AUTH",
+      "details": {
+        "verificationType": "SECRET_CODE_VERIFIED",
+        "userAgent": "node"
+      },
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "log-1793972103924-lzww",
+      "timestamp": "2026-11-06T13:35:03.924Z",
+      "actorEmail": "charanjaydeep712@gmail.com",
+      "actorRole": "superadmin",
+      "action": "LOGIN_STEP1_VERIFIED",
+      "resource": "AUTH",
+      "details": {
+        "message": "Password verified. 2FA Secret Key / OTP prompt initiated."
+      },
+      "ip": "127.0.0.1"
+    },
     {
       "id": "log-1793956665968-53dq",
       "timestamp": "2026-11-06T09:17:45.968Z",

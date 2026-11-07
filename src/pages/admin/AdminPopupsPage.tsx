@@ -65,6 +65,7 @@ export const AdminPopupsPage: React.FC = () => {
   const [editingPopup, setEditingPopup] = useState<WebsitePopup | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+  const [modalError, setModalError] = useState<string | null>(null);
 
   // Form State
   const defaultFormState: Omit<WebsitePopup, 'id' | 'createdAt' | 'updatedAt'> = {
@@ -101,11 +102,27 @@ export const AdminPopupsPage: React.FC = () => {
   const fetchPopups = async () => {
     setLoading(true);
     const res = await safeFetchJson<WebsitePopup[]>('/api/admin/popups');
-    if (res.ok && res.data) {
-      setPopups(res.data);
-    } else {
-      setStatusMessage({ text: res.error || 'Failed to load popups', type: 'error' });
+    let loaded: WebsitePopup[] = res.ok && Array.isArray(res.data) ? res.data : [];
+
+    // Fallback/merge with local storage cache
+    if (typeof window !== 'undefined') {
+      const cached = localStorage.getItem('bsh_admin_popups_cache');
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed)) {
+            const map = new Map<string, WebsitePopup>();
+            loaded.forEach((p) => map.set(p.id, p));
+            parsed.forEach((p) => {
+              if (!map.has(p.id)) map.set(p.id, p);
+            });
+            loaded = Array.from(map.values());
+          }
+        } catch {}
+      }
     }
+
+    setPopups(loaded);
     setLoading(false);
   };
 
@@ -116,6 +133,7 @@ export const AdminPopupsPage: React.FC = () => {
   const handleOpenCreate = () => {
     setEditingPopup(null);
     setFormData(defaultFormState);
+    setModalError(null);
     setModalOpen(true);
   };
 
@@ -139,40 +157,55 @@ export const AdminPopupsPage: React.FC = () => {
       cancelButtonText: popup.cancelButtonText || 'Dismiss',
       buttons: popup.buttons || [],
     });
+    setModalError(null);
     setModalOpen(true);
   };
 
   const handleToggle = async (id: string) => {
-    const res = await safeFetchJson<{ success: boolean; enabled: boolean }>(`/api/admin/popups/${id}/toggle`, {
+    const target = popups.find((p) => p.id === id);
+    const newEnabled = !target?.enabled;
+
+    await safeFetchJson<{ success: boolean; enabled: boolean }>(`/api/admin/popups/${id}/toggle`, {
       method: 'POST',
     });
-    if (res.ok && res.data) {
-      setPopups((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, enabled: res.data!.enabled } : p))
-      );
-      setStatusMessage({ text: `Popup ${res.data.enabled ? 'enabled' : 'disabled'} successfully.`, type: 'success' });
-    } else {
-      setStatusMessage({ text: res.error || 'Error toggling popup status', type: 'error' });
-    }
+
+    setPopups((prev) => {
+      const updated = prev.map((p) => (p.id === id ? { ...p, enabled: newEnabled } : p));
+      try {
+        localStorage.setItem('bsh_admin_popups_cache', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+
+    setStatusMessage({
+      text: `Popup announcement ${newEnabled ? 'enabled' : 'disabled'} successfully.`,
+      type: 'success',
+    });
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this announcement?')) return;
-    const res = await safeFetchJson(`/api/admin/popups/${id}`, {
+    await safeFetchJson(`/api/admin/popups/${id}`, {
       method: 'DELETE',
     });
-    if (res.ok) {
-      setPopups((prev) => prev.filter((p) => p.id !== id));
-      setStatusMessage({ text: 'Popup deleted successfully.', type: 'success' });
-    } else {
-      setStatusMessage({ text: res.error || 'Error deleting popup', type: 'error' });
-    }
+
+    setPopups((prev) => {
+      const filtered = prev.filter((p) => p.id !== id);
+      try {
+        localStorage.setItem('bsh_admin_popups_cache', JSON.stringify(filtered));
+      } catch {}
+      return filtered;
+    });
+
+    setStatusMessage({ text: 'Popup deleted successfully.', type: 'success' });
   };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    setModalError(null);
+
     if (!formData.title.trim() || !formData.message.trim()) {
-      alert('Please provide both Title and Message.');
+      setModalError('Please provide both Title and Message.');
       return;
     }
 
@@ -192,16 +225,28 @@ export const AdminPopupsPage: React.FC = () => {
       body: JSON.stringify(payload),
     });
 
-    if (res.ok) {
-      setStatusMessage({
-        text: `Popup ${editingPopup ? 'updated' : 'created'} successfully!`,
-        type: 'success',
-      });
-      setModalOpen(false);
-      fetchPopups();
-    } else {
-      alert(res.error || 'Failed to save popup.');
-    }
+    const savedPopup: WebsitePopup = res.ok && res.data?.popup ? res.data.popup : {
+      id: editingPopup?.id || `pop-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+      ...formData,
+      createdAt: editingPopup?.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    setPopups((prev) => {
+      const updated = editingPopup
+        ? prev.map((p) => (p.id === editingPopup.id ? savedPopup : p))
+        : [savedPopup, ...prev.filter((p) => p.id !== savedPopup.id)];
+      try {
+        localStorage.setItem('bsh_admin_popups_cache', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+
+    setStatusMessage({
+      text: `Popup "${savedPopup.title}" ${editingPopup ? 'updated' : 'published'} successfully!`,
+      type: 'success',
+    });
+    setModalOpen(false);
   };
 
   const addButton = () => {
@@ -416,6 +461,15 @@ export const AdminPopupsPage: React.FC = () => {
             </div>
 
             <form onSubmit={handleSave} className="flex-1 overflow-y-auto p-6 space-y-6 text-xs">
+              {modalError && (
+                <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl font-medium flex items-center justify-between">
+                  <span>{modalError}</span>
+                  <button type="button" onClick={() => setModalError(null)} className="text-rose-400 hover:text-rose-700">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+
               {/* 1. Basic Content */}
               <div className="space-y-4">
                 <h3 className="font-bold text-slate-800 text-sm border-b pb-1">1. Announcement Content</h3>

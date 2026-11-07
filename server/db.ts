@@ -7,16 +7,28 @@ import { DEFAULT_11_SUBJECTS } from './data/defaultSubjects.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const DATA_DIR = path.resolve(__dirname, 'data');
-const STORE_PATH = path.resolve(DATA_DIR, 'store.json');
-const UPLOADS_DIR = path.resolve(__dirname, 'uploads');
+// Detect serverless environment (Vercel, AWS Lambda, Cloud Functions)
+const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.LAMBDA_TASK_ROOT);
 
-// Ensure directories exist
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
+const DATA_DIR = isServerless ? '/tmp/data' : path.resolve(__dirname, 'data');
+const STORE_PATH = isServerless ? '/tmp/data/store.json' : path.resolve(DATA_DIR, 'store.json');
+const UPLOADS_DIR = isServerless ? '/tmp/uploads' : path.resolve(__dirname, 'uploads');
+
+// Ensure directories exist safely without throwing read-only filesystem errors
+try {
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+  }
+} catch (e) {
+  console.warn('Notice initializing DATA_DIR:', e);
 }
-if (!fs.existsSync(UPLOADS_DIR)) {
-  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+
+try {
+  if (!fs.existsSync(UPLOADS_DIR)) {
+    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+  }
+} catch (e) {
+  console.warn('Notice initializing UPLOADS_DIR:', e);
 }
 
 export type AdminRole = 'superadmin' | 'editor' | 'reviewer' | 'viewer';
@@ -814,12 +826,29 @@ class Database {
 
   private load(): DataStore {
     try {
-      if (fs.existsSync(STORE_PATH)) {
-        const raw = fs.readFileSync(STORE_PATH, 'utf-8');
+      // 1. Try writable store path (/tmp/data/store.json in serverless)
+      // 2. Fallback to bundled repository seed paths
+      const candidatePaths = [
+        STORE_PATH,
+        path.resolve(__dirname, 'server', 'data', 'store.json'),
+        path.resolve(__dirname, 'data', 'store.json'),
+        path.resolve(process.cwd(), 'server', 'data', 'store.json'),
+        path.resolve(process.cwd(), 'data', 'store.json'),
+      ];
+      let pathToRead: string | null = null;
+      for (const p of candidatePaths) {
+        if (p && fs.existsSync(p)) {
+          pathToRead = p;
+          break;
+        }
+      }
+
+      if (pathToRead) {
+        const raw = fs.readFileSync(pathToRead, 'utf-8');
         const parsed = JSON.parse(raw);
         // Ensure default properties exist in loaded store
         const defaults = createDefaultStore();
-        return {
+        const merged: DataStore = {
           ...defaults,
           ...parsed,
           maintenance: {
@@ -854,9 +883,14 @@ class Database {
           aiActivityLogs: Array.isArray(parsed.aiActivityLogs) ? parsed.aiActivityLogs : defaults.aiActivityLogs,
           aiTaskCheckpoints: Array.isArray(parsed.aiTaskCheckpoints) ? parsed.aiTaskCheckpoints : [],
         };
+
+        if (isServerless && pathToRead !== STORE_PATH) {
+          this.saveImmediate(merged);
+        }
+        return merged;
       }
     } catch (e) {
-      console.error('Error loading database store, creating default:', e);
+      console.warn('Notice loading database store, creating default:', e);
     }
     const def = createDefaultStore();
     this.saveImmediate(def);
@@ -865,17 +899,25 @@ class Database {
 
   private saveImmediate(dataToSave: DataStore): void {
     try {
+      const parentDir = path.dirname(STORE_PATH);
+      if (!fs.existsSync(parentDir)) {
+        fs.mkdirSync(parentDir, { recursive: true });
+      }
       fs.writeFileSync(STORE_PATH, JSON.stringify(dataToSave, null, 2), 'utf-8');
     } catch (e) {
-      console.error('Error writing database store:', e);
+      console.warn('Database save notice:', e);
     }
   }
 
   public save(): void {
     if (this.writeTimer) clearTimeout(this.writeTimer);
-    this.writeTimer = setTimeout(() => {
+    if (isServerless) {
       this.saveImmediate(this.data);
-    }, 100);
+    } else {
+      this.writeTimer = setTimeout(() => {
+        this.saveImmediate(this.data);
+      }, 100);
+    }
   }
 
   public getData(): DataStore {
@@ -992,7 +1034,12 @@ class Database {
 
 export const db = new Database();
 
-// Start a periodic 10-second check for automatic reopening
-setInterval(() => {
-  db.checkAndAutoExpireMaintenance();
-}, 10000);
+// Start a periodic 10-second check for automatic reopening (long-running node environments only)
+if (!isServerless) {
+  const reopenTimer = setInterval(() => {
+    db.checkAndAutoExpireMaintenance();
+  }, 10000);
+  if (reopenTimer && typeof reopenTimer.unref === 'function') {
+    reopenTimer.unref();
+  }
+}

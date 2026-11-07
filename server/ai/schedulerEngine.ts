@@ -116,6 +116,8 @@ export class SchedulerEngine {
 
   private startBackgroundTimer(): void {
     if (this.intervalTimer) clearInterval(this.intervalTimer);
+    const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.LAMBDA_TASK_ROOT);
+    if (isServerless) return;
 
     // Periodic check every 15 minutes to trigger auto-tasks if scheduled and due
     this.intervalTimer = setInterval(() => {
@@ -132,6 +134,10 @@ export class SchedulerEngine {
         this.runDailyCycle().catch((e) => console.warn('[SchedulerEngine] Scheduled daily cycle error:', e.message));
       }
     }, 15 * 60 * 1000);
+
+    if (this.intervalTimer && typeof this.intervalTimer.unref === 'function') {
+      this.intervalTimer.unref();
+    }
   }
 }
 

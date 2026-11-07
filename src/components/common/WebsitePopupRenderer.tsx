@@ -52,8 +52,21 @@ export const WebsitePopupRenderer: React.FC = () => {
     async function fetchActivePopups() {
       try {
         const res = await safeFetchJson<WebsitePopup[]>('/api/popups/active');
-        if (!res.ok || !res.data) return;
-        const popups = res.data;
+        let popups: WebsitePopup[] = res.ok && Array.isArray(res.data) ? res.data : [];
+
+        // Check local cache if server returned empty (e.g. offline or newly created in browser)
+        if (popups.length === 0 && typeof window !== 'undefined') {
+          const cached = localStorage.getItem('bsh_admin_popups_cache');
+          if (cached) {
+            try {
+              const parsed = JSON.parse(cached);
+              if (Array.isArray(parsed)) {
+                popups = parsed.filter((p) => p.enabled);
+              }
+            } catch {}
+          }
+        }
+
         if (!isMounted || !popups || popups.length === 0) return;
 
         // Find the first popup that satisfies frequency constraints
